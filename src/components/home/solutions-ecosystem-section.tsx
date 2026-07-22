@@ -126,9 +126,51 @@ const connectorLines = [
 
 export function SolutionsEcosystemSection() {
   const sectionRef = useRef<HTMLElement>(null);
+  const desktopExperienceRef = useRef<HTMLDivElement>(null);
+  const scrollTriggerRef = useRef<ScrollTrigger | null>(null);
+  const activeRef = useRef(0);
+  const isClickSyncingRef = useRef(false);
   const [active, setActive] = useState(0);
 
   const solution = solutions[active];
+
+  const activateStage = (index: number) => {
+    const safeIndex = Math.max(0, Math.min(solutions.length - 1, index));
+
+    if (activeRef.current === safeIndex) return;
+
+    activeRef.current = safeIndex;
+    setActive(safeIndex);
+  };
+
+  const handleDesktopNodeClick = (index: number) => {
+    activateStage(index);
+
+    const trigger = scrollTriggerRef.current;
+
+    if (!trigger) return;
+
+    const targetProgress =
+      solutions.length > 1 ? index / (solutions.length - 1) : 0;
+
+    const targetScroll =
+      trigger.start + (trigger.end - trigger.start) * targetProgress;
+
+    isClickSyncingRef.current = true;
+
+    window.scrollTo({
+      top: targetScroll,
+      behavior: "smooth",
+    });
+
+    window.setTimeout(() => {
+      isClickSyncingRef.current = false;
+    }, 700);
+  };
+
+  useEffect(() => {
+    activeRef.current = active;
+  }, [active]);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -160,9 +202,82 @@ export function SolutionsEcosystemSection() {
         ease: "none",
         transformOrigin: "50% 50%",
       });
+
+      const mm = gsap.matchMedia();
+
+      mm.add(
+        {
+          desktop: "(min-width: 1024px)",
+          reduceMotion: "(prefers-reduced-motion: reduce)",
+        },
+        (context) => {
+          const conditions = context.conditions as {
+            desktop?: boolean;
+            reduceMotion?: boolean;
+          };
+
+          if (
+            !conditions.desktop ||
+            conditions.reduceMotion ||
+            !desktopExperienceRef.current
+          ) {
+            return;
+          }
+
+          const trigger = ScrollTrigger.create({
+            trigger: desktopExperienceRef.current,
+            start: "top top+=96",
+            end: () =>
+              `+=${Math.max(
+                window.innerHeight * 2.15,
+                solutions.length * 260
+              )}`,
+            pin: true,
+            pinSpacing: true,
+            scrub: 0.35,
+            anticipatePin: 1,
+            invalidateOnRefresh: true,
+
+            onUpdate: (self) => {
+              if (isClickSyncingRef.current) return;
+
+              const rawIndex = Math.round(
+                self.progress * (solutions.length - 1)
+              );
+
+              activateStage(rawIndex);
+            },
+
+            onEnterBack: (self) => {
+              if (isClickSyncingRef.current) return;
+
+              const rawIndex = Math.round(
+                self.progress * (solutions.length - 1)
+              );
+
+              activateStage(rawIndex);
+            },
+          });
+
+          scrollTriggerRef.current = trigger;
+
+          return () => {
+            if (scrollTriggerRef.current === trigger) {
+              scrollTriggerRef.current = null;
+            }
+
+            trigger.kill();
+          };
+        }
+      );
+
+      return () => mm.revert();
     }, sectionRef);
 
-    return () => ctx.revert();
+    return () => {
+      scrollTriggerRef.current = null;
+      ctx.revert();
+    };
   }, []);
 
   return (
@@ -211,7 +326,10 @@ export function SolutionsEcosystemSection() {
         </div>
 
         {/* DESKTOP UNIFIED EXPERIENCE */}
-        <div className="hidden min-h-[650px] grid-cols-[0.78fr_1.22fr] items-center gap-12 lg:grid xl:gap-20">
+        <div
+          ref={desktopExperienceRef}
+          className="hidden min-h-[650px] grid-cols-[0.78fr_1.22fr] items-center gap-12 lg:grid xl:gap-20"
+        >
           {/* ACTIVE INFORMATION */}
           <div className="solutions-reveal relative z-10">
             <AnimatePresence mode="wait">
@@ -362,7 +480,7 @@ export function SolutionsEcosystemSection() {
                   type="button"
                   aria-pressed={isActive}
                   aria-label={`View ${item.title}`}
-                  onClick={() => setActive(index)}
+                  onClick={() => handleDesktopNodeClick(index)}
                   whileHover={{ y: -4, scale: 1.015 }}
                   whileTap={{ scale: 0.985 }}
                   className={`absolute ${item.position} z-20 w-[205px] rounded-[20px] border p-3.5 text-left outline-none transition-[border-color,background-color,box-shadow] duration-300 focus-visible:ring-2 focus-visible:ring-[#f56616]/50 ${
