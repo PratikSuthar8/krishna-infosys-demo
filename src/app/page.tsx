@@ -3,6 +3,7 @@ import { TrustEngineeringSection } from "@/components/home/trust-engineering-sec
 import { SolutionsEcosystemSection } from "@/components/home/solutions-ecosystem-section";
 import { ProvenScaleSection } from "@/components/home/proven-scale-section";
 import { IndustriesSection } from "@/components/home/industries-section";
+import { WhyKrishnaSection } from "@/components/home/why-krishna-section";
 
 export default function Home() {
   return (
@@ -12,6 +13,7 @@ export default function Home() {
       <SolutionsEcosystemSection />
       <ProvenScaleSection />
       <IndustriesSection />
+      <WhyKrishnaSection />
     </main>
   );
 }
