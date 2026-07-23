@@ -6,6 +6,7 @@ import { IndustriesSection } from "@/components/home/industries-section";
 import { WhyKrishnaSection } from "@/components/home/why-krishna-section";
 import { TechnologyEcosystemSection } from "@/components/home/technology-ecosystem-section";
 import { ClientSuccessSection } from "@/components/home/client-success-section";
+import { FinalCtaSection } from "@/components/home/final-cta-section";
 
 export default function Home() {
   return (
@@ -18,6 +19,7 @@ export default function Home() {
       <WhyKrishnaSection />
       <TechnologyEcosystemSection />
       <ClientSuccessSection />
+      <FinalCtaSection />
     </main>
   );
 }
