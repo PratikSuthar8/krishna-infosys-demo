@@ -54,7 +54,7 @@ const principles = [
     statement: "Accountability continues after handover.",
     description:
       "Long-term relationships are built through availability, responsive support and measurable service accountability.",
-    proofs: ["24/7 availability", "<1.5% complaint ratio", "10+ year client relationships"],
+    proofs: ["Responsive support", "Service accountability", "Long-term client relationships"],
     icon: Headphones,
   },
 ];
@@ -321,7 +321,7 @@ export function WhyKrishnaSection() {
                 Securing your world. Simplifying your business.
                 <span className="text-white/35">
                   {" "}
-                  For 24+ years and counting.
+                  From engineering intent to long-term accountability.
                 </span>
               </p>
             </div>

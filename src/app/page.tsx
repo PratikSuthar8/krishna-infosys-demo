@@ -5,6 +5,7 @@ import { ProvenScaleSection } from "@/components/home/proven-scale-section";
 import { IndustriesSection } from "@/components/home/industries-section";
 import { WhyKrishnaSection } from "@/components/home/why-krishna-section";
 import { TechnologyEcosystemSection } from "@/components/home/technology-ecosystem-section";
+import { ClientSuccessSection } from "@/components/home/client-success-section";
 
 export default function Home() {
   return (
@@ -16,6 +17,7 @@ export default function Home() {
       <IndustriesSection />
       <WhyKrishnaSection />
       <TechnologyEcosystemSection />
+      <ClientSuccessSection />
     </main>
   );
 }

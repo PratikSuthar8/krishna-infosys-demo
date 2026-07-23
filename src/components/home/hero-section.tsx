@@ -55,9 +55,9 @@ const systems = [
 ];
 
 const stats = [
-  { value: "24+", label: "Years of experience" },
-  { value: "825+", label: "Clients served" },
-  { value: "2,100+", label: "Projects delivered" },
+  { value: "ELV", label: "End-to-end integration" },
+  { value: "OEM", label: "Multi-brand engineering" },
+  { value: "IND", label: "Pan-India execution" },
 ];
 
 export function HeroSection() {
