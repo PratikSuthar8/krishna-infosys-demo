@@ -1,0 +1,3388 @@
+janick@Janick:~/projects/krishna-infosys$ cat src/components/home/solutions-ecosystem-section.tsx
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import {
+  ArrowUpRight,
+  Camera,
+  ShieldCheck,
+  Radio,
+  Network,
+  Flame,
+  HousePlug,
+  Cable,
+  ScanFace,
+} from "lucide-react";
+
+gsap.registerPlugin(ScrollTrigger);
+
+const solutions = [
+  {
+    id: "security",
+    number: "01",
+    short: "SEC",
+    title: "Security & Surveillance",
+    description:
+      "Integrated electronic security architecture designed around visibility, controlled access and proactive protection.",
+    items: [
+      "CCTV Surveillance",
+      "Intrusion Alarm",
+      "Access Control",
+      "Time & Attendance",
+      "Digital Locks",
+    ],
+    icon: Camera,
+    position: "left-[0%] top-[7%]",
+  },
+  {
+    id: "communication",
+    number: "02",
+    short: "COM",
+    title: "Communication Systems",
+    description:
+      "Connected communication infrastructure engineered for clear, dependable communication across facilities.",
+    items: [
+      "Public Address",
+      "Intercom / EPABX",
+      "Video Conference",
+      "Video Door Phone",
+    ],
+    icon: Radio,
+    position: "right-[0%] top-[7%]",
+  },
+  {
+    id: "network",
+    number: "03",
+    short: "NET",
+    title: "Network Infrastructure",
+    description:
+      "The digital backbone connecting people, systems and infrastructure through structured high-performance networks.",
+    items: [
+      "IT Network Solutions",
+      "Fiber Solutions",
+      "Wi-Fi / RF",
+      "Structured Cabling",
+    ],
+    icon: Network,
+    position: "right-[-1%] top-[43%]",
+  },
+  {
+    id: "fire",
+    number: "04",
+    short: "FAS",
+    title: "Fire & Life Safety",
+    description:
+      "Detection and alert infrastructure designed to strengthen response readiness and protect occupied environments.",
+    items: [
+      "Fire Alarm Systems",
+      "Integrated Alert Architecture",
+    ],
+    icon: Flame,
+    position: "right-[5%] bottom-[2%]",
+  },
+  {
+    id: "automation",
+    number: "05",
+    short: "AUT",
+    title: "Automation & Experience",
+    description:
+      "Intelligent automation and audiovisual environments that bring control, convenience and experience together.",
+    items: [
+      "Home Automation",
+      "Home Theatre",
+      "Audio Video Solutions",
+      "Multi-room Integration",
+    ],
+    icon: HousePlug,
+    position: "left-[5%] bottom-[2%]",
+  },
+  {
+    id: "perimeter",
+    number: "06",
+    short: "ACC",
+    title: "Entrance & Perimeter",
+    description:
+      "Controlled vehicle and pedestrian movement integrated into the wider security ecosystem.",
+    items: [
+      "Boom Barriers",
+      "Gate Automation",
+      "Entrance Control",
+    ],
+    icon: ScanFace,
+    position: "left-[-1%] top-[43%]",
+  },
+];
+
+const connectorLines = [
+  [260, 260, 82, 82],
+  [260, 260, 438, 82],
+  [260, 260, 493, 260],
+  [260, 260, 418, 444],
+  [260, 260, 102, 444],
+  [260, 260, 28, 260],
+];
+
+export function SolutionsEcosystemSection() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const desktopExperienceRef = useRef<HTMLDivElement>(null);
+  const scrollTriggerRef = useRef<ScrollTrigger | null>(null);
+  const activeRef = useRef(0);
+  const isClickSyncingRef = useRef(false);
+  const [active, setActive] = useState(0);
+
+  const solution = solutions[active];
+
+  const activateStage = (index: number) => {
+    const safeIndex = Math.max(0, Math.min(solutions.length - 1, index));
+
+    if (activeRef.current === safeIndex) return;
+
+    activeRef.current = safeIndex;
+    setActive(safeIndex);
+  };
+
+  const handleDesktopNodeClick = (index: number) => {
+    activateStage(index);
+
+    const trigger = scrollTriggerRef.current;
+
+    if (!trigger) return;
+
+    const targetProgress =
+      solutions.length > 1 ? index / (solutions.length - 1) : 0;
+
+    const targetScroll =
+      trigger.start + (trigger.end - trigger.start) * targetProgress;
+
+    isClickSyncingRef.current = true;
+
+    window.scrollTo({
+      top: targetScroll,
+      behavior: "smooth",
+    });
+
+    window.setTimeout(() => {
+      isClickSyncingRef.current = false;
+    }, 700);
+  };
+
+  useEffect(() => {
+    activeRef.current = active;
+  }, [active]);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.from(".solutions-reveal", {
+        y: 35,
+        opacity: 0,
+        duration: 0.85,
+        stagger: 0.08,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top 74%",
+          once: true,
+        },
+      });
+
+      gsap.to(".ecosystem-orbit-a", {
+        rotate: 360,
+        duration: 55,
+        repeat: -1,
+        ease: "none",
+        transformOrigin: "50% 50%",
+      });
+
+      gsap.to(".ecosystem-orbit-b", {
+        rotate: -360,
+        duration: 72,
+        repeat: -1,
+        ease: "none",
+        transformOrigin: "50% 50%",
+      });
+
+      const mm = gsap.matchMedia();
+
+      mm.add(
+        {
+          desktop: "(min-width: 1024px)",
+          reduceMotion: "(prefers-reduced-motion: reduce)",
+        },
+        (context) => {
+          const conditions = context.conditions as {
+            desktop?: boolean;
+            reduceMotion?: boolean;
+          };
+
+          if (
+            !conditions.desktop ||
+            conditions.reduceMotion ||
+            !desktopExperienceRef.current
+          ) {
+            return;
+          }
+
+          const trigger = ScrollTrigger.create({
+            trigger: desktopExperienceRef.current,
+            start: "top top+=96",
+            end: () =>
+              `+=${Math.max(
+                window.innerHeight * 2.15,
+                solutions.length * 260
+              )}`,
+            pin: true,
+            pinSpacing: true,
+            scrub: 0.35,
+            anticipatePin: 1,
+            invalidateOnRefresh: true,
+
+            onUpdate: (self) => {
+              if (isClickSyncingRef.current) return;
+
+              const rawIndex = Math.round(
+                self.progress * (solutions.length - 1)
+              );
+
+              activateStage(rawIndex);
+            },
+
+            onEnterBack: (self) => {
+              if (isClickSyncingRef.current) return;
+
+              const rawIndex = Math.round(
+                self.progress * (solutions.length - 1)
+              );
+
+              activateStage(rawIndex);
+            },
+          });
+
+          scrollTriggerRef.current = trigger;
+
+          return () => {
+            if (scrollTriggerRef.current === trigger) {
+              scrollTriggerRef.current = null;
+            }
+
+            trigger.kill();
+          };
+        }
+      );
+
+      return () => mm.revert();
+    }, sectionRef);
+
+    return () => {
+      scrollTriggerRef.current = null;
+      ctx.revert();
+    };
+  }, []);
+
+  return (
+    <section
+      ref={sectionRef}
+      className="relative overflow-hidden bg-[#f7f6f3] text-[#171717]"
+    >
+      {/* TECHNICAL GRID */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 opacity-[0.42]"
+        style={{
+          backgroundImage:
+            "linear-gradient(rgba(20,20,20,.045) 1px, transparent 1px), linear-gradient(90deg, rgba(20,20,20,.045) 1px, transparent 1px)",
+          backgroundSize: "72px 72px",
+          maskImage:
+            "linear-gradient(to bottom, transparent, black 10%, black 90%, transparent)",
+        }}
+      />
+
+      <div className="relative mx-auto max-w-[1500px] px-5 py-20 sm:px-8 lg:px-12 lg:py-24 xl:px-16">
+        {/* SECTION INTRO */}
+        <div className="solutions-reveal mb-12 flex flex-col gap-6 border-b border-black/10 pb-8 lg:mb-8 lg:flex-row lg:items-end lg:justify-between">
+          <div>
+            <div className="flex items-center gap-3">
+              <span className="h-px w-8 bg-[#f56616]" />
+
+              <span className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[#f56616]">
+                Integrated solutions ecosystem
+              </span>
+            </div>
+
+            <h2 className="mt-5 max-w-[850px] text-[clamp(2.8rem,4.7vw,5.2rem)] font-medium leading-[0.93] tracking-[-0.055em]">
+              One infrastructure.
+              <span className="ml-[0.18em] text-black/30">
+                Every system connected.
+              </span>
+            </h2>
+          </div>
+
+          <p className="max-w-[420px] text-sm leading-6 text-black/50 lg:pb-1 lg:text-base lg:leading-7">
+            Six integrated ELV disciplines engineered as one coordinated
+            environment — from design and supply through integration,
+            commissioning and lifecycle support.
+          </p>
+        </div>
+
+        {/* DESKTOP UNIFIED EXPERIENCE */}
+        <div
+          ref={desktopExperienceRef}
+          className="hidden min-h-[650px] grid-cols-[0.78fr_1.22fr] items-center gap-12 lg:grid xl:gap-20"
+        >
+          {/* ACTIVE INFORMATION */}
+          <div className="solutions-reveal relative z-10">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={solution.id}
+                initial={{ opacity: 0, y: 14 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.28, ease: "easeOut" }}
+              >
+                <div className="flex items-center gap-4">
+                  <span className="text-[11px] font-bold tracking-[0.2em] text-[#f56616]">
+                    {solution.number}
+                  </span>
+
+                  <span className="h-px w-10 bg-[#f56616]" />
+
+                  <span className="text-[9px] font-semibold uppercase tracking-[0.22em] text-black/35">
+                    {solution.short} / Active system
+                  </span>
+                </div>
+
+                <h3 className="mt-6 max-w-[560px] text-[clamp(2.7rem,4vw,4.7rem)] font-medium leading-[0.94] tracking-[-0.055em]">
+                  {solution.title}
+                </h3>
+
+                <p className="mt-6 max-w-[510px] text-base leading-7 text-black/50 xl:text-lg xl:leading-8">
+                  {solution.description}
+                </p>
+
+                <div className="mt-8 max-w-[540px] border-t border-black/10">
+                  {solution.items.map((item, index) => (
+                    <motion.button
+                      key={`${solution.id}-${item}`}
+                      type="button"
+                      initial={{ opacity: 0, x: 12 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{
+                        delay: index * 0.045,
+                        duration: 0.28,
+                      }}
+                      className="group flex w-full items-center justify-between border-b border-black/10 py-3.5 text-left"
+                    >
+                      <span className="text-sm font-medium text-black/60 transition-colors duration-300 group-hover:text-black">
+                        {item}
+                      </span>
+
+                      <span className="flex h-7 w-7 items-center justify-center rounded-full border border-black/10 transition-all duration-300 group-hover:border-[#f56616]/40 group-hover:bg-[#f56616] group-hover:text-white">
+                        <ArrowUpRight
+                          size={13}
+                          className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                        />
+                      </span>
+                    </motion.button>
+                  ))}
+                </div>
+
+                <div className="mt-7 flex items-center gap-3">
+                  <span className="h-1.5 w-1.5 rounded-full bg-[#f56616]" />
+
+                  <span className="text-[9px] font-semibold uppercase tracking-[0.2em] text-black/35">
+                    Select any system from the ecosystem
+                  </span>
+                </div>
+              </motion.div>
+            </AnimatePresence>
+          </div>
+
+          {/* INTERACTIVE ECOSYSTEM */}
+          <div className="solutions-reveal relative mx-auto h-[610px] w-full max-w-[760px]">
+            {/* ORBIT SYSTEM */}
+            <div className="absolute left-1/2 top-1/2 h-[520px] w-[520px] -translate-x-1/2 -translate-y-1/2">
+              <div className="ecosystem-orbit-a absolute inset-0 rounded-full border border-black/[0.07]">
+                <span className="absolute left-1/2 top-[-4px] h-2 w-2 -translate-x-1/2 rounded-full bg-[#f56616]" />
+              </div>
+
+              <div className="ecosystem-orbit-b absolute inset-[12%] rounded-full border border-dashed border-[#f56616]/25">
+                <span className="absolute bottom-[18%] right-[2%] h-1.5 w-1.5 rounded-full bg-[#171717]" />
+              </div>
+
+              <div className="absolute inset-[25%] rounded-full border border-black/[0.08]" />
+
+              <div className="absolute inset-[37%] rounded-full border border-dashed border-black/[0.07]" />
+
+              <svg
+                className="pointer-events-none absolute inset-0 h-full w-full"
+                viewBox="0 0 520 520"
+                fill="none"
+              >
+                {connectorLines.map((line, index) => (
+                  <motion.line
+                    key={index}
+                    x1={line[0]}
+                    y1={line[1]}
+                    x2={line[2]}
+                    y2={line[3]}
+                    stroke={
+                      active === index
+                        ? "#f56616"
+                        : "rgba(23,23,23,.11)"
+                    }
+                    strokeWidth={active === index ? 1.6 : 1}
+                    strokeDasharray={
+                      active === index ? "6 7" : "3 9"
+                    }
+                    animate={{
+                      opacity: active === index ? 1 : 0.45,
+                    }}
+                    transition={{ duration: 0.3 }}
+                  />
+                ))}
+              </svg>
+
+              {/* CORE */}
+              <motion.div
+                animate={{ scale: [1, 1.018, 1] }}
+                transition={{
+                  duration: 4,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+                className="absolute left-1/2 top-1/2 z-10 flex h-[158px] w-[158px] -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-centerrounded-full border-[11px] border-white bg-[#171717] text-center shadow-[0_30px_70px_rgba(0,0,0,.16)]"
+              >
+                <Cable
+                  size={24}
+                  strokeWidth={1.4}
+                  className="text-[#f56616]"
+                />
+
+                <span className="mt-3 text-[8px] font-semibold uppercase tracking-[0.22em] text-white/40">
+                  Integrated
+                </span>
+
+                <strong className="mt-1 text-lg tracking-[-0.04em] text-white">
+                  ELV Core
+                </strong>
+              </motion.div>
+            </div>
+
+            {/* CLICKABLE NODES */}
+            {solutions.map((item, index) => {
+              const Icon = item.icon;
+              const isActive = active === index;
+
+              return (
+                <motion.button
+                  key={item.id}
+                  type="button"
+                  aria-pressed={isActive}
+                  aria-label={`View ${item.title}`}
+                  onClick={() => handleDesktopNodeClick(index)}
+                  whileHover={{ y: -4, scale: 1.015 }}
+                  whileTap={{ scale: 0.985 }}
+                  className={`absolute ${item.position} z-20 w-[205px] rounded-[20px] border p-3.5 text-left outline-none transition-[border-color,background-color,box-shadow] duration-300 focus-visible:ring-2 focus-visible:ring-[#f56616]/50 ${
+                    isActive
+                      ? "border-[#f56616]/50 bg-white shadow-[0_22px_55px_rgba(0,0,0,.11)]"
+                      : "border-black/[0.08] bg-white/80 shadow-[0_12px_32px_rgba(0,0,0,.045)] backdrop-blur-md hover:border-black/15 hover:bg-white"
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <motion.span
+                      animate={{
+                        backgroundColor: isActive
+                          ? "#f56616"
+                          : "rgba(245,102,22,.10)",
+                        color: isActive
+                          ? "#ffffff"
+                          : "#f56616",
+                      }}
+                      transition={{ duration: 0.25 }}
+                      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full"
+                    >
+                      <Icon size={18} strokeWidth={1.6} />
+                    </motion.span>
+
+                    <span className="min-w-0">
+                      <span
+                        className={`block text-[8px] font-bold uppercase tracking-[0.2em] transition-colors ${
+                          isActive
+                            ? "text-[#f56616]"
+                            : "text-black/30"
+                        }`}
+                      >
+                        {item.number} / {item.short}
+                      </span>
+
+                      <span className="mt-1 block text-[13px] font-semibold leading-[1.1] tracking-[-0.02em]">
+                        {item.title}
+                      </span>
+                    </span>
+                  </div>
+
+                  {isActive && (
+                    <motion.span
+                      layoutId="active-node-line"
+                      className="absolute bottom-[-1px] left-5 right-5 h-px bg-[#f56616]"
+                    />
+                  )}
+                </motion.button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* MOBILE / TABLET EXPERIENCE */}
+        <div className="lg:hidden">
+          <div className="solutions-reveal flex gap-2 overflow-x-auto pb-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            {solutions.map((item, index) => {
+              const Icon = item.icon;
+              const isActive = active === index;
+
+              return (
+                <button
+                  key={item.id}
+                  type="button"
+                  aria-pressed={isActive}
+                  onClick={() => setActive(index)}
+                  className={`flex shrink-0 items-center gap-2.5 rounded-full border px-4 py-3 text-sm font-semibold transition-all ${
+                    isActive
+                      ? "border-[#171717] bg-[#171717] text-white"
+                      : "border-black/10 bg-white/70 text-black/60"
+                  }`}
+                >
+                  <Icon
+                    size={16}
+                    className={
+                      isActive
+                        ? "text-[#f56616]"
+                        : "text-black/40"
+                    }
+                  />
+
+                  {item.short}
+                </button>
+              );
+            })}
+          </div>
+
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={solution.id}
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.25 }}
+              className="mt-5 rounded-[28px] border border-black/[0.08] bg-white/65 p-6 backdrop-blur sm:p-8"
+            >
+              <div className="flex items-center gap-3">
+                <span className="text-[10px] font-bold tracking-[0.18em] text-[#f56616]">
+                  {solution.number}
+                </span>
+
+                <span className="h-px w-8 bg-[#f56616]/60" />
+
+                <span className="text-[9px] font-semibold uppercase tracking-[0.18em] text-black/30">
+                  {solution.short}
+                </span>
+              </div>
+
+              <h3 className="mt-5 text-[clamp(2rem,8vw,3.4rem)] font-medium leading-[0.98] tracking-[-0.05em]">
+                {solution.title}
+              </h3>
+
+              <p className="mt-5 max-w-[600px] text-sm leading-6 text-black/50 sm:text-base sm:leading-7">
+                {solution.description}
+              </p>
+
+              <div className="mt-7 border-t border-black/10">
+                {solution.items.map((item, index) => (
+                  <motion.button
+                    key={item}
+                    type="button"
+                    initial={{ opacity: 0, x: 10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: index * 0.04 }}
+                    className="group flex w-full items-center justify-between border-b border-black/10 py-4 text-left"
+                  >
+                    <span className="text-sm font-medium text-black/65">
+                      {item}
+                    </span>
+
+                    <ArrowUpRight
+                      size={15}
+                      className="text-black/30"
+                    />
+                  </motion.button>
+                ))}
+              </div>
+            </motion.div>
+          </AnimatePresence>
+        </div>
+
+        {/* SYSTEM STRIP */}
+        <div className="solutions-reveal mt-12 flex flex-col gap-5 border-t border-black/10 pt-6 sm:flex-row sm:items-center sm:justify-between lg:mt-6">
+          <div className="flex items-center gap-3">
+            <ShieldCheck
+              size={17}
+              strokeWidth={1.5}
+              className="text-[#f56616]"
+            />
+
+            <span className="text-[9px] font-semibold uppercase tracking-[0.18em] text-black/40 sm:text-[10px]">
+              Design · Supply · Install · Integrate · Maintain
+            </span>
+          </div>
+
+          <div className="flex items-center gap-4 text-[9px] font-semibold uppercase tracking-[0.18em] text-black/35 sm:text-[10px]">
+            <span>Turnkey ELV</span>
+            <span className="h-1 w-1 rounded-full bg-[#f56616]" />
+            <span>One accountable partner</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+janick@Janick:~/projects/krishna-infosys$ cat src/components/home/proven-scale-section.tsx
+"use client";
+
+import { useEffect, useRef } from "react";
+import { motion } from "framer-motion";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import {
+  ArrowUpRight,
+  Award,
+  Building2,
+  CheckCircle2,
+  MapPinned,
+  ShieldCheck,
+} from "lucide-react";
+
+gsap.registerPlugin(ScrollTrigger);
+
+const metrics = [
+  {
+    value: 825,
+    suffix: "+",
+    label: "Clients",
+    note: "Relationships built across sectors and operating environments.",
+    icon: Building2,
+  },
+  {
+    value: 2100,
+    suffix: "+",
+    label: "Projects completed",
+    note: "ELV projects delivered across diverse infrastructure requirements.",
+    icon: CheckCircle2,
+  },
+  {
+    value: 1.5,
+    prefix: "<",
+    suffix: "%",
+    label: "Complaint ratio",
+    note: "A service benchmark shaped by engineering discipline and support.",
+    icon: ShieldCheck,
+    decimals: 1,
+  },
+];
+
+const journey = [
+  {
+    year: "2001",
+    title: "Founded",
+    description: "Servers & Networking",
+  },
+  {
+    year: "2007",
+    title: "ELV evolution",
+    description: "Pivoted to ELV Projects",
+  },
+  {
+    year: "2019",
+    title: "Expanded reach",
+    description: "Pan-India Expansion",
+  },
+  {
+    year: "Today",
+    title: "Built at scale",
+    description: "825+ Clients · 2,100+ Projects",
+  },
+];
+
+export function ProvenScaleSection() {
+  const sectionRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.from(".proof-reveal", {
+        y: 42,
+        opacity: 0,
+        duration: 0.9,
+        stagger: 0.1,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: ".proof-intro",
+          start: "top 78%",
+          once: true,
+        },
+      });
+
+      gsap.utils.toArray<HTMLElement>(".proof-metric").forEach((metric) => {
+        const number = metric.querySelector<HTMLElement>("[data-count]");
+        if (!number) return;
+
+        const target = Number(number.dataset.count ?? 0);
+        const decimals = Number(number.dataset.decimals ?? 0);
+        const counter = { value: 0 };
+
+        gsap.to(counter, {
+          value: target,
+          duration: 1.7,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: metric,
+            start: "top 84%",
+            once: true,
+          },
+          onUpdate: () => {
+            number.textContent =
+              decimals > 0
+                ? counter.value.toFixed(decimals)
+                : Math.round(counter.value).toLocaleString("en-IN");
+          },
+        });
+
+        gsap.from(metric, {
+          y: 35,
+          opacity: 0,
+          duration: 0.85,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: metric,
+            start: "top 86%",
+            once: true,
+          },
+        });
+      });
+
+      gsap.from(".journey-line-progress", {
+        scaleX: 0,
+        transformOrigin: "left center",
+        duration: 1.5,
+        ease: "power3.inOut",
+        scrollTrigger: {
+          trigger: ".proof-journey",
+          start: "top 80%",
+          once: true,
+        },
+      });
+
+      gsap.from(".journey-item", {
+        y: 24,
+        opacity: 0,
+        duration: 0.75,
+        stagger: 0.13,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: ".proof-journey",
+          start: "top 78%",
+          once: true,
+        },
+      });
+
+      gsap.to(".proof-orbit", {
+        rotate: 360,
+        duration: 55,
+        repeat: -1,
+        ease: "none",
+        transformOrigin: "50% 50%",
+      });
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
+
+  return (
+    <section
+      ref={sectionRef}
+      className="relative overflow-hidden bg-white text-[#171717]"
+    >
+      {/* Technical background */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 opacity-[0.28]"
+        style={{
+          backgroundImage:
+            "linear-gradient(rgba(20,20,20,.04) 1px, transparent 1px), linear-gradient(90deg, rgba(20,20,20,.04) 1px, transparent 1px)",
+          backgroundSize: "72px 72px",
+          maskImage:
+            "linear-gradient(to bottom, transparent, black 14%, black 86%, transparent)",
+        }}
+      />
+
+      {/* Decorative engineering vector */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -right-44 top-12 hidden h-[460px] w-[460px] rounded-full border border-black/[0.04] lg:block"
+      >
+        <div className="proof-orbit absolute inset-12 rounded-full border border-dashed border-[#f56616]/15">
+          <span className="absolute left-1/2 top-[-4px] h-2 w-2 -translate-x-1/2 rounded-full bg-[#f56616]" />
+        </div>
+
+        <div className="absolute inset-28 rounded-full border border-black/[0.05]" />
+
+        <div className="absolute left-1/2 top-1/2 h-px w-[75%] -translate-x-1/2 bg-black/[0.04]" />
+        <div className="absolute left-1/2 top-1/2 h-[75%] w-px -translate-y-1/2 bg-black/[0.04]" />
+      </div>
+
+      <div className="relative mx-auto max-w-[1500px] px-5 py-20 sm:px-8 lg:px-12 lg:py-28 xl:px-16">
+        {/* INTRO */}
+        <div className="proof-intro grid gap-12 border-b border-black/10 pb-16 lg:grid-cols-[0.72fr_1.28fr] lg:gap-20 lg:pb-20">
+          <div className="proof-reveal">
+            <div className="flex items-center gap-3">
+              <span className="h-px w-8 bg-[#f56616]" />
+
+              <span className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[#f56616]">
+                Proven at scale
+              </span>
+            </div>
+
+            <div className="mt-8 flex items-center gap-4">
+              <span className="flex h-12 w-12 items-center justify-center rounded-full border border-black/10 bg-[#f7f6f3] text-[#f56616]">
+                <Award size={20} strokeWidth={1.5} />
+              </span>
+
+              <div>
+                <div className="text-sm font-semibold">
+                  ISO 9001:2015
+                </div>
+                <div className="mt-1 text-xs text-black/40">
+                  Certified processes
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <h2 className="proof-reveal max-w-[930px] text-[clamp(3rem,5.4vw,5.9rem)] font-medium leading-[0.93] tracking-[-0.06em]">
+              Trust isn&apos;t claimed.
+              <span className="block text-black/30">
+                It&apos;s accumulated.
+              </span>
+            </h2>
+
+            <div className="proof-reveal mt-8 grid max-w-[900px] gap-6 border-t border-black/10 pt-7 sm:grid-cols-2">
+              <p className="text-base leading-7 text-black/60 sm:text-lg sm:leading-8">
+                Since 2001, Krishna Infosys has evolved from servers and
+                networking into an end-to-end ELV turnkey solutions partner.
+              </p>
+
+              <div className="flex items-start gap-3 text-sm leading-7 text-black/45 sm:text-base">
+                <MapPinned
+                  size={18}
+                  strokeWidth={1.5}
+                  className="mt-1 shrink-0 text-[#f56616]"
+                />
+
+                <p>
+                  Delivering across India — from Gujarat metros to the
+                  Lakshadweep Islands.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* METRICS */}
+        <div className="grid border-b border-black/10 lg:grid-cols-3">
+          {metrics.map((metric, index) => {
+            const Icon = metric.icon;
+
+            return (
+              <motion.div
+                key={metric.label}
+                whileHover={{ y: -4 }}
+                transition={{
+                  type: "spring",
+                  stiffness: 260,
+                  damping: 22,
+                }}
+                className={`proof-metric group relative min-h-[310px] py-10 lg:px-9 lg:py-12 ${
+                  index !== 0
+                    ? "border-t border-black/10 lg:border-l lg:border-t-0"
+                    : ""
+                }`}
+              >
+                <div className="flex items-start justify-between gap-6">
+                  <span className="text-[9px] font-bold uppercase tracking-[0.22em] text-black/30">
+                    Evidence / 0{index + 1}
+                  </span>
+
+                  <span className="flex h-10 w-10 items-center justify-center rounded-full border border-black/10 text-black/35 transition-all duration-300 group-hover:border-[#f56616]/30 group-hover:bg-[#f56616] group-hover:text-white">
+                    <Icon size={17} strokeWidth={1.5} />
+                  </span>
+                </div>
+
+                <div className="mt-14 flex items-start tracking-[-0.07em]">
+                  {metric.prefix && (
+                    <span className="mr-1 mt-2 text-[clamp(2rem,3vw,3.2rem)] font-medium text-[#f56616]">
+                      {metric.prefix}
+                    </span>
+                  )}
+
+                  <span
+                    data-count={metric.value}
+                    data-decimals={metric.decimals ?? 0}
+                    className="text-[clamp(4rem,6.5vw,7rem)] font-medium leading-[0.82]"
+                  >
+                    0
+                  </span>
+
+                  <span className="ml-1 text-[clamp(2.3rem,3.5vw,4rem)] font-medium leading-none text-[#f56616]">
+                    {metric.suffix}
+                  </span>
+                </div>
+
+                <div className="mt-7 border-t border-black/10 pt-5">
+                  <h3 className="text-lg font-semibold tracking-[-0.025em]">
+                    {metric.label}
+                  </h3>
+
+                  <p className="mt-2 max-w-[330px] text-sm leading-6 text-black/45">
+                    {metric.note}
+                  </p>
+                </div>
+              </motion.div>
+            );
+          })}
+        </div>
+
+        {/* SUPPORTING PROOF STRIP */}
+        <div className="grid border-b border-black/10 sm:grid-cols-2">
+          <div className="flex min-h-[125px] items-center justify-between gap-8 py-7 sm:pr-8">
+            <div>
+              <span className="text-[9px] font-semibold uppercase tracking-[0.2em] text-black/30">
+                Team capability
+              </span>
+
+              <div className="mt-2 flex items-baseline gap-2">
+                <strong className="text-3xl font-semibold tracking-[-0.05em]">
+                  22
+                </strong>
+
+                <span className="text-sm font-medium text-black/45">
+                  Expert staff
+                </span>
+              </div>
+            </div>
+
+            <span className="hidden h-10 w-10 items-center justify-center rounded-full bg-[#f7f6f3] text-[#f56616] sm:flex">
+              <Building2 size={17} strokeWidth={1.5} />
+            </span>
+          </div>
+
+          <div className="flex min-h-[125px] items-center justify-between gap-8 border-t border-black/10 py-7 sm:border-l sm:border-t-0 sm:pl-8">
+            <div>
+              <span className="text-[9px] font-semibold uppercase tracking-[0.2em] text-black/30">
+                Established
+              </span>
+
+              <div className="mt-2 flex items-baseline gap-2">
+                <strong className="text-3xl font-semibold tracking-[-0.05em]">
+                  Since 2001
+                </strong>
+              </div>
+            </div>
+
+            <span className="hidden h-10 w-10 items-center justify-center rounded-full bg-[#171717] text-[#f56616] sm:flex">
+              <Award size={17} strokeWidth={1.5} />
+            </span>
+          </div>
+        </div>
+
+        {/* JOURNEY */}
+        <div className="proof-journey pt-16 lg:pt-20">
+          <div className="grid gap-10 lg:grid-cols-[0.62fr_1.38fr] lg:gap-20">
+            <div>
+              <div className="journey-item flex items-center gap-3">
+                <span className="h-px w-8 bg-[#f56616]" />
+
+                <span className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#f56616]">
+                  The journey
+                </span>
+              </div>
+
+              <p className="journey-item mt-5 max-w-[390px] text-[clamp(1.7rem,2.6vw,2.8rem)] font-medium leading-[1.05] tracking-[-0.045em]">
+                Built through evolution,
+                <span className="text-black/30">
+                  {" "}
+                  not overnight.
+                </span>
+              </p>
+            </div>
+
+            <div className="relative">
+              <div className="absolute left-[5px] top-[8px] bottom-[8px] w-px bg-black/10 lg:left-0 lg:right-0 lg:top-[7px] lg:h-px lg:w-auto" />
+
+              <div className="journey-line-progress absolute left-[5px] top-[8px] hidden h-px bg-[#f56616] lg:block lg:left-0 lg:right-0" />
+
+              <div className="relative grid gap-0 lg:grid-cols-4">
+                {journey.map((item, index) => (
+                  <motion.div
+                    key={item.year}
+                    whileHover={{ y: -3 }}
+                    className="journey-item relative grid grid-cols-[28px_1fr] gap-4 pb-8 last:pb-0 lg:block lg:pb-0 lg:pr-6"
+                  >
+                    <div className="relative z-10 mt-[2px] h-[11px] w-[11px] rounded-full border-[3px] border-white bg-[#f56616] shadow-[0_0_0_1px_rgba(245,102,22,.25)] lg:mt-[2px]" />
+
+                    <div className="lg:mt-7">
+                      <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#f56616]">
+                        {item.year}
+                      </span>
+
+                      <h3 className="mt-2 text-base font-semibold tracking-[-0.025em]">
+                        {item.title}
+                      </h3>
+
+                      <p className="mt-1.5 text-xs leading-5 text-black/40">
+                        {item.description}
+                      </p>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* END CAP */}
+        <div className="mt-16 flex flex-col gap-5 border-t border-black/10 pt-6 sm:flex-row sm:items-center sm:justify-between lg:mt-20">
+          <div className="flex items-center gap-3">
+            <ShieldCheck
+              size={17}
+              strokeWidth={1.5}
+              className="text-[#f56616]"
+            />
+
+            <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-black/40">
+              Experience · Scale · Accountability
+            </span>
+          </div>
+
+          <motion.div
+            whileHover={{ x: 3 }}
+            className="flex items-center gap-3 text-[10px] font-semibold uppercase tracking-[0.18em] text-black/40"
+          >
+            <span>Engineering trust since 2001</span>
+            <ArrowUpRight size={15} className="text-[#f56616]" />
+          </motion.div>
+        </div>
+      </div>
+    </section>
+  );
+}
+janick@Janick:~/projects/krishna-infosys$ cat src/components/home/industries-section.tsx
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import {
+  ArrowUpRight,
+  Building2,
+  Check,
+  Factory,
+  GraduationCap,
+  HeartPulse,
+  Hotel,
+  Landmark,
+  Network,
+  PackageCheck,
+  Pill,
+  type LucideIcon,
+} from "lucide-react";
+
+gsap.registerPlugin(ScrollTrigger);
+
+type Industry = {
+  number: string;
+  short: string;
+  title: string;
+  environments: string;
+  statement: string;
+  description: string;
+  focus: string[];
+  icon: LucideIcon;
+  pattern: "hospitality" | "health" | "factory" | "logistics" | "education" | "finance" | "network" | "pharma";
+};
+
+const industries: Industry[] = [
+  {
+    number: "01",
+    short: "HSP",
+    title: "Hospitality",
+    environments: "Hotels · Resorts · Serviced Apartments",
+    statement: "Connected experiences without compromising security.",
+    description:
+      "Integrated ELV infrastructure for hospitality environments where guest experience, communication, security and operational continuity need to workas one coordinated ecosystem.",
+    focus: [
+      "Guest & perimeter security",
+      "Communication infrastructure",
+      "Connected building environments",
+    ],
+    icon: Hotel,
+    pattern: "hospitality",
+  },
+  {
+    number: "02",
+    short: "HLT",
+    title: "Healthcare",
+    environments: "Hospitals · Clinics · Diagnostic Centres",
+    statement: "Infrastructure engineered around critical environments.",
+    description:
+      "Dependable low-voltage systems for healthcare environments where controlled access, communication, surveillance and infrastructure availability demand disciplined engineering.",
+    focus: [
+      "Controlled access",
+      "Surveillance coverage",
+      "Reliable communication",
+    ],
+    icon: HeartPulse,
+    pattern: "health",
+  },
+  {
+    number: "03",
+    short: "MFG",
+    title: "Manufacturing",
+    environments: "Food · Pharma · Auto Plants",
+    statement: "Visibility and control across complex operations.",
+    description:
+      "Coordinated ELV architecture for production environments spanning surveillance, access, networking and communication across operationally demanding facilities.",
+    focus: [
+      "Plant-wide surveillance",
+      "Access & attendance",
+      "Network backbone",
+    ],
+    icon: Factory,
+    pattern: "factory",
+  },
+  {
+    number: "04",
+    short: "LOG",
+    title: "Logistics",
+    environments: "Warehouses · Distribution Centres",
+    statement: "Connected infrastructure across every movement point.",
+    description:
+      "Integrated security, communication and network infrastructure designed for warehouses, distribution facilities and multi-site logistics operations.",
+    focus: [
+      "Perimeter visibility",
+      "Multi-site connectivity",
+      "Access management",
+    ],
+    icon: PackageCheck,
+    pattern: "logistics",
+  },
+  {
+    number: "05",
+    short: "EDU",
+    title: "Education",
+    environments: "Schools · Colleges · Campuses",
+    statement: "Safer, better-connected learning environments.",
+    description:
+      "Scalable ELV systems for educational campuses that bring surveillance, communication, networking and controlled access into one manageable environment.",
+    focus: [
+      "Campus surveillance",
+      "Communication systems",
+      "Structured networking",
+    ],
+    icon: GraduationCap,
+    pattern: "education",
+  },
+  {
+    number: "06",
+    short: "BNK",
+    title: "Banking & Finance",
+    environments: "Branches · ATMs · Vaults",
+    statement: "Security infrastructure where accountability is essential.",
+    description:
+      "Security-led ELV architecture for financial environments requiring controlled access, traceable surveillance and dependable infrastructure across sensitive spaces.",
+    focus: [
+      "Critical surveillance",
+      "Controlled access",
+      "Secure environments",
+    ],
+    icon: Landmark,
+    pattern: "finance",
+  },
+  {
+    number: "07",
+    short: "IT",
+    title: "IT / Corporate",
+    environments: "Data Centres · Offices · IT Parks",
+    statement: "The connected backbone behind modern workplaces.",
+    description:
+      "Integrated network, security, communication and access infrastructure engineered for connected workplaces, technology environments and business-critical facilities.",
+    focus: [
+      "Structured networks",
+      "Enterprise security",
+      "Unified communication",
+    ],
+    icon: Network,
+    pattern: "network",
+  },
+  {
+    number: "08",
+    short: "PFB",
+    title: "Pharma / F&B",
+    environments: "Clean Rooms · Production Facilities",
+    statement: "Precision infrastructure for controlled production.",
+    description:
+      "Engineered ELV environments supporting security, connectivity and operational visibility across controlled production and process-driven facilities.",
+    focus: [
+      "Controlled environments",
+      "Operational visibility",
+      "Reliable connectivity",
+    ],
+    icon: Pill,
+    pattern: "pharma",
+  },
+];
+
+function TechnicalPattern({
+  type,
+  active,
+}: {
+  type: Industry["pattern"];
+  active: boolean;
+}) {
+  if (!active) return null;
+
+  if (type === "factory") {
+    return (
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 overflow-hidden opacity-[0.075]"
+      >
+        <div className="absolute -bottom-10 -right-10 h-[72%] w-[72%]">
+          <div className="absolute bottom-0 left-[8%] h-[48%] w-[14%] border-x border-t border-black" />
+          <div className="absolute bottom-0 left-[25%] h-[68%] w-[16%] border-x border-t border-black" />
+          <div className="absolute bottom-0 left-[44%] h-[40%] w-[14%] border-x border-t border-black" />
+          <div className="absolute bottom-0 left-[61%] h-[80%] w-[12%] border-x border-t border-black" />
+          <div className="absolute bottom-0 left-[76%] h-[57%] w-[15%] border-x border-t border-black" />
+          <div className="absolute bottom-[22%] left-0 h-px w-full bg-black" />
+          <div className="absolute bottom-[44%] left-0 h-px w-full bg-black" />
+        </div>
+      </div>
+    );
+  }
+
+  if (type === "network") {
+    return (
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 overflow-hidden opacity-[0.07]"
+      >
+        <div
+          className="absolute inset-y-0 right-0 w-[72%]"
+          style={{
+            backgroundImage:
+              "linear-gradient(90deg, transparent 49%, rgba(0,0,0,.9) 50%, transparent 51%)",
+            backgroundSize: "46px 100%",
+          }}
+        />
+        {[18, 34, 51, 68, 84].map((top, index) => (
+          <span
+            key={top}
+            className="absolute right-[8%] h-2 w-2 rounded-full bg-black"
+            style={{
+              top: `${top}%`,
+              right: `${8 + index * 11}%`,
+            }}
+          />
+        ))}
+      </div>
+    );
+  }
+
+  if (type === "health") {
+    return (
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 overflow-hidden opacity-[0.06]"
+      >
+        <div className="absolute right-[8%] top-1/2 h-px w-[68%] bg-black" />
+        <div className="absolute right-[12%] top-[calc(50%-32px)] h-16 w-px bg-black" />
+        <div className="absolute right-[28%] top-[calc(50%-70px)] h-[140px] w-px bg-black" />
+        <div className="absolute right-[44%] top-[calc(50%-44px)] h-[88px] w-px bg-black" />
+        <div className="absolute right-[60%] top-[calc(50%-90px)] h-[180px] w-px bg-black" />
+      </div>
+    );
+  }
+
+  if (type === "hospitality") {
+    return (
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 opacity-[0.06]"
+        style={{
+          backgroundImage:
+            "linear-gradient(90deg, rgba(0,0,0,.9) 1px, transparent 1px), linear-gradient(rgba(0,0,0,.9) 1px, transparent 1px)",
+          backgroundSize: "58px 58px",
+          maskImage:
+            "linear-gradient(to left, black, transparent 78%)",
+        }}
+      />
+    );
+  }
+
+  if (type === "logistics") {
+    return (
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 overflow-hidden opacity-[0.065]"
+      >
+        {[0, 1, 2, 3, 4].map((index) => (
+          <div
+            key={index}
+            className="absolute h-px w-[65%] origin-right rotate-[-18deg] bg-black"
+            style={{
+              right: "-8%",
+              top: `${22 + index * 15}%`,
+            }}
+          />
+        ))}
+      </div>
+    );
+  }
+
+  if (type === "education") {
+    return (
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 opacity-[0.055]"
+        style={{
+          backgroundImage:
+            "linear-gradient(rgba(0,0,0,.9) 1px, transparent 1px)",
+          backgroundSize: "100% 42px",
+          maskImage:
+            "linear-gradient(to left, black, transparent 75%)",
+        }}
+      />
+    );
+  }
+
+  if (type === "finance") {
+    return (
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 overflow-hidden opacity-[0.06]"
+      >
+        <div className="absolute bottom-[10%] right-[7%] flex h-[72%] w-[68%] items-end justify-between gap-4">
+          {[38, 61, 48, 82, 66, 94, 73].map((height, index) => (
+            <div
+              key={index}
+              className="flex-1 border-x border-t border-black"
+              style={{ height: `${height}%` }}
+            />
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div
+      aria-hidden="true"
+      className="pointer-events-none absolute inset-0 opacity-[0.055]"
+      style={{
+        backgroundImage:
+          "linear-gradient(45deg, rgba(0,0,0,.8) 1px, transparent 1px), linear-gradient(-45deg, rgba(0,0,0,.8) 1px, transparent 1px)",
+        backgroundSize: "34px 34px",
+        maskImage:
+          "linear-gradient(to left, black, transparent 72%)",
+      }}
+    />
+  );
+}
+
+export function IndustriesSection() {
+  const sectionRef = useRef<HTMLElement>(null);
+
+  /*
+   * active = panel currently displayed.
+   * locked = panel explicitly selected by click.
+   *
+   * Hover can temporarily preview another panel.
+   * When the pointer leaves the panorama, we return to the locked panel.
+   */
+  const [active, setActive] = useState(2);
+  const [locked, setLocked] = useState(2);
+  const [mobileActive, setMobileActive] = useState<number | null>(0);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.from(".industries-heading-reveal", {
+        y: 44,
+        opacity: 0,
+        duration: 0.95,
+        stagger: 0.1,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top 76%",
+          once: true,
+        },
+      });
+
+      gsap.from(".industry-panorama", {
+        y: 48,
+        opacity: 0,
+        duration: 1,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: ".industry-panorama",
+          start: "top 84%",
+          once: true,
+        },
+      });
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
+
+  const selectDesktopIndustry = (index: number) => {
+    setActive(index);
+    setLocked(index);
+  };
+
+  return (
+    <section
+      ref={sectionRef}
+      className="relative overflow-hidden bg-[#111111] text-white"
+    >
+      {/* Quiet architectural background */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 opacity-[0.13]"
+        style={{
+          backgroundImage:
+            "linear-gradient(rgba(255,255,255,.045) 1px, transparent 1px)",
+          backgroundSize: "100% 72px",
+          maskImage:
+            "linear-gradient(to bottom, transparent, black 15%, black 88%, transparent)",
+        }}
+      />
+
+      <div className="relative mx-auto max-w-[1600px] px-5 py-20 sm:px-8 lg:px-12 lg:py-28 xl:px-16">
+        {/* HEADER */}
+        <div className="grid gap-10 lg:grid-cols-[0.62fr_1.38fr] lg:gap-20">
+          <div className="industries-heading-reveal">
+            <div className="flex items-center gap-3">
+              <span className="h-px w-8 bg-[#f56616]" />
+
+              <span className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[#f56616]">
+                Market segments we serve
+              </span>
+            </div>
+
+            <div className="mt-5 flex items-center gap-3 text-[10px] font-medium uppercase tracking-[0.16em] text-white/25">
+              <Building2 size={14} strokeWidth={1.5} />
+
+              <span>08 operating environments</span>
+            </div>
+          </div>
+
+          <div>
+            <h2 className="industries-heading-reveal max-w-[980px] text-[clamp(3rem,5.4vw,5.8rem)] font-medium leading-[0.93] tracking-[-0.06em]">
+              Infrastructure changes
+              <span className="block text-white/32">
+                with the environment.
+              </span>
+            </h2>
+
+            <div className="industries-heading-reveal mt-8 grid max-w-[900px] gap-6 border-t border-white/10 pt-6 sm:grid-cols-[0.85fr_1.15fr]">
+              <p className="text-[clamp(1.25rem,2vw,1.8rem)] font-medium leading-[1.15] tracking-[-0.03em] text-white/80">
+                We engineer accordingly.
+              </p>
+
+              <p className="max-w-[600px] text-sm leading-7 text-white/42 sm:text-base">
+                Every facility creates a different operational challenge.
+                Our ELV architecture is shaped around the people, processes,
+                risks and infrastructure of each environment.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* DESKTOP PANORAMA */}
+        <div
+          className="industry-panorama mt-14 hidden h-[610px] overflow-hidden border border-white/10 lg:flex xl:h-[650px]"
+          onMouseLeave={() => setActive(locked)}
+        >
+          {industries.map((industry, index) => {
+            const Icon = industry.icon;
+            const isActive = active === index;
+
+            return (
+              <motion.article
+                key={industry.title}
+                layout
+                transition={{
+                  layout: {
+                    type: "spring",
+                    stiffness: 180,
+                    damping: 25,
+                    mass: 0.85,
+                  },
+                }}
+                onMouseEnter={() => setActive(index)}
+                onFocus={() => setActive(index)}
+                onClick={() => selectDesktopIndustry(index)}
+                className={`relative min-w-0 cursor-pointer overflow-hidden border-r border-white/10 last:border-r-0 ${
+                  isActive
+                    ? "bg-[#f2f0ea] text-[#171717]"
+                    : "bg-[#161616] text-white"
+                }`}
+                style={{
+                  flex: isActive ? "5.4 1 0%" : "0.72 1 0%",
+                }}
+                tabIndex={0}
+                role="button"
+                aria-expanded={isActive}
+              >
+                <TechnicalPattern
+                  type={industry.pattern}
+                  active={isActive}
+                />
+
+                <AnimatePresence initial={false} mode="popLayout">
+                  {isActive ? (
+                    <motion.div
+                      key="expanded"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{
+                        duration: 0.3,
+                        delay: 0.08,
+                      }}
+                      className="relative z-10 flex h-full flex-col p-8 xl:p-10"
+                    >
+                      {/* Expanded top */}
+                      <div className="flex items-start justify-between gap-8">
+                        <div>
+                          <div className="flex items-center gap-3">
+                            <span className="text-[10px] font-bold tracking-[0.2em] text-[#f56616]">
+                              {industry.number} / {industry.short}
+                            </span>
+
+                            <span className="h-px w-12 bg-[#f56616]/50" />
+                          </div>
+
+                          <div className="mt-3 text-[10px] font-semibold uppercase tracking-[0.17em] text-black/35">
+                            {industry.environments}
+                          </div>
+                        </div>
+
+                        <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full border border-black/10 bg-white/55 text-[#f56616]">
+                          <Icon size={23} strokeWidth={1.45} />
+                        </div>
+                      </div>
+
+                      {/* Expanded main */}
+                      <div className="mt-auto max-w-[720px] pb-5">
+                        <motion.h3
+                          key={`${industry.title}-title`}
+                          initial={{ y: 18, opacity: 0 }}
+                          animate={{ y: 0, opacity: 1 }}
+                          transition={{
+                            duration: 0.38,
+                            delay: 0.08,
+                          }}
+                          className="text-[clamp(3rem,5vw,5.7rem)] font-medium leading-[0.88] tracking-[-0.065em]"
+                        >
+                          {industry.title}
+                        </motion.h3>
+
+                        <motion.p
+                          key={`${industry.title}-statement`}
+                          initial={{ y: 16, opacity: 0 }}
+                          animate={{ y: 0, opacity: 1 }}
+                          transition={{
+                            duration: 0.38,
+                            delay: 0.13,
+                          }}
+                          className="mt-6 max-w-[650px] text-[clamp(1.35rem,2vw,2rem)] font-medium leading-[1.12] tracking-[-0.035em] text-black/72"
+                        >
+                          {industry.statement}
+                        </motion.p>
+
+                        <motion.p
+                          key={`${industry.title}-description`}
+                          initial={{ y: 14, opacity: 0 }}
+                          animate={{ y: 0, opacity: 1 }}
+                          transition={{
+                            duration: 0.38,
+                            delay: 0.18,
+                          }}
+                          className="mt-5 max-w-[650px] text-sm leading-7 text-black/50 xl:text-base"
+                        >
+                          {industry.description}
+                        </motion.p>
+                      </div>
+
+                      {/* Expanded focus */}
+                      <div className="grid grid-cols-3 border-t border-black/10">
+                        {industry.focus.map((item, focusIndex) => (
+                          <motion.div
+                            key={item}
+                            initial={{ y: 12, opacity: 0 }}
+                            animate={{ y: 0, opacity: 1 }}
+                            transition={{
+                              delay: 0.2 + focusIndex * 0.055,
+                            }}
+                            className="border-r border-black/10 px-4 py-5 first:pl-0 last:border-r-0"
+                          >
+                            <div className="flex items-start gap-2.5">
+                              <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-[#f56616]/30 text-[#f56616]">
+                                <Check size={10} strokeWidth={2.2} />
+                              </span>
+
+                              <span className="text-xs font-semibold leading-5 text-black/58">
+                                {item}
+                              </span>
+                            </div>
+                          </motion.div>
+                        ))}
+                      </div>
+                    </motion.div>
+                  ) : (
+                    <motion.div
+                      key="collapsed"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{
+                        duration: 0.22,
+                        delay: 0.1,
+                      }}
+                      className="relative z-10 flex h-full flex-col items-center py-7"
+                    >
+                      <span className="text-[9px] font-bold tracking-[0.2em] text-white/22">
+                        {industry.number}
+                      </span>
+
+                      <div className="mt-7 flex h-10 w-10 items-center justify-center rounded-full border border-white/10 text-white/35 transition-colorsduration-300 hover:border-[#f56616]/35 hover:text-[#f56616]">
+                        <Icon size={17} strokeWidth={1.5} />
+                      </div>
+
+                      <div className="flex flex-1 items-center justify-center">
+                        <span
+                          className="whitespace-nowrap text-[13px] font-semibold tracking-[0.02em] text-white/48"
+                          style={{
+                            writingMode: "vertical-rl",
+                            transform: "rotate(180deg)",
+                          }}
+                        >
+                          {industry.title}
+                        </span>
+                      </div>
+
+                      <ArrowUpRight
+                        size={14}
+                        className="text-white/20"
+                      />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.article>
+            );
+          })}
+        </div>
+
+        {/* DESKTOP INTERACTION NOTE */}
+        <div className="industries-heading-reveal mt-4 hidden items-center justify-between lg:flex">
+          <span className="text-[9px] font-semibold uppercase tracking-[0.18em] text-white/22">
+            Hover to preview · Click to hold
+          </span>
+
+          <div className="flex items-center gap-2">
+            {industries.map((industry, index) => (
+              <button
+                key={industry.short}
+                type="button"
+                onClick={() => selectDesktopIndustry(index)}
+                aria-label={`Open ${industry.title}`}
+                className={`h-1 transition-all duration-300 ${
+                  active === index
+                    ? "w-8 bg-[#f56616]"
+                    : "w-3 bg-white/15 hover:bg-white/35"
+                }`}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* MOBILE / TABLET */}
+        <div className="industry-panorama mt-12 border-t border-white/10 lg:hidden">
+          {industries.map((industry, index) => {
+            const Icon = industry.icon;
+            const isOpen = mobileActive === index;
+
+            return (
+              <div
+                key={industry.title}
+                className="border-b border-white/10"
+              >
+                <button
+                  type="button"
+                  onClick={() =>
+                    setMobileActive((current) =>
+                      current === index ? null : index
+                    )
+                  }
+                  className="flex w-full items-center gap-4 py-5 text-left"
+                  aria-expanded={isOpen}
+                >
+                  <span
+                    className={`w-7 text-[9px] font-bold tracking-[0.18em] ${
+                      isOpen ? "text-[#f56616]" : "text-white/22"
+                    }`}
+                  >
+                    {industry.number}
+                  </span>
+
+                  <span
+                    className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full border transition-colors ${
+                      isOpen
+                        ? "border-[#f56616]/40 bg-[#f56616]/10 text-[#f56616]"
+                        : "border-white/10 text-white/35"
+                    }`}
+                  >
+                    <Icon size={17} strokeWidth={1.5} />
+                  </span>
+
+                  <div className="min-w-0 flex-1">
+                    <div
+                      className={`text-[17px] font-semibold tracking-[-0.025em] ${
+                        isOpen ? "text-white" : "text-white/60"
+                      }`}
+                    >
+                      {industry.title}
+                    </div>
+
+                    <div className="mt-1 truncate text-[9px] font-medium uppercase tracking-[0.12em] text-white/25">
+                      {industry.environments}
+                    </div>
+                  </div>
+
+                  <motion.span
+                    animate={{
+                      rotate: isOpen ? 45 : 0,
+                    }}
+                    transition={{
+                      duration: 0.25,
+                    }}
+                    className={`text-xl font-light ${
+                      isOpen ? "text-[#f56616]" : "text-white/30"
+                    }`}
+                  >
+                    +
+                  </motion.span>
+                </button>
+
+                <AnimatePresence initial={false}>
+                  {isOpen && (
+                    <motion.div
+                      initial={{
+                        height: 0,
+                        opacity: 0,
+                      }}
+                      animate={{
+                        height: "auto",
+                        opacity: 1,
+                      }}
+                      exit={{
+                        height: 0,
+                        opacity: 0,
+                      }}
+                      transition={{
+                        duration: 0.4,
+                        ease: [0.22, 1, 0.36, 1],
+                      }}
+                      className="overflow-hidden"
+                    >
+                      <div className="relative mb-5 overflow-hidden bg-[#f2f0ea] p-6 text-[#171717] sm:p-8">
+                        <TechnicalPattern
+                          type={industry.pattern}
+                          active
+                        />
+
+                        <div className="relative z-10">
+                          <span className="text-[9px] font-bold uppercase tracking-[0.18em] text-[#f56616]">
+                            {industry.short} / Environment profile
+                          </span>
+
+                          <h3 className="mt-7 max-w-[600px] text-[clamp(2.3rem,8vw,4rem)] font-medium leading-[0.94] tracking-[-0.055em]">
+                            {industry.statement}
+                          </h3>
+
+                          <p className="mt-5 max-w-[650px] text-sm leading-7 text-black/52 sm:text-base">
+                            {industry.description}
+                          </p>
+
+                          <div className="mt-8 grid gap-0 border-t border-black/10 sm:grid-cols-3">
+                            {industry.focus.map((item) => (
+                              <div
+                                key={item}
+                                className="flex items-start gap-2.5 border-b border-black/10 py-4 sm:border-b-0 sm:border-r sm:px-4 sm:first:pl-0 sm:last:border-r-0"
+                              >
+                                <Check
+                                  size={14}
+                                  strokeWidth={2}
+                                  className="mt-0.5 shrink-0 text-[#f56616]"
+                                />
+
+                                <span className="text-xs font-semibold leading-5 text-black/58">
+                                  {item}
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* FOOTER LINE */}
+        <div className="industries-heading-reveal mt-12 flex flex-col gap-5 border-t border-white/10 pt-6 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center gap-3">
+            <span className="h-2 w-2 bg-[#f56616]" />
+
+            <span className="text-[10px] font-semibold uppercase tracking-[0.17em] text-white/32">
+              Engineered around the environment — never a one-size-fits-all specification
+            </span>
+          </div>
+
+          <button
+            type="button"
+            className="group flex w-fit items-center gap-2 text-xs font-semibold text-white/55 transition-colors hover:text-white"
+          >
+            Explore industry solutions
+
+            <ArrowUpRight
+              size={15}
+              className="text-[#f56616] transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+            />
+          </button>
+        </div>
+      </div>
+    </section>
+  );
+}
+janick@Janick:~/projects/krishna-infosys$ cat src/components/home/why-krishna-section.tsx
+"use client";
+
+import { useEffect, useRef } from "react";
+import { motion } from "framer-motion";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import {
+  ArrowUpRight,
+  BadgeCheck,
+  BrainCircuit,
+  FileCheck2,
+  Headphones,
+  ScanLine,
+  ShieldCheck,
+} from "lucide-react";
+
+gsap.registerPlugin(ScrollTrigger);
+
+const principles = [
+  {
+    number: "01",
+    label: "Technically Sound",
+    statement: "No guesswork.",
+    description:
+      "Experienced technical teams translate requirements into documented system architecture before execution begins.",
+    proofs: ["Experienced technical team", "AutoCAD designs", "Parametric BOQ"],
+    icon: BrainCircuit,
+  },
+  {
+    number: "02",
+    label: "Advanced Security",
+    statement: "Built beyond the conventional.",
+    description:
+      "Modern surveillance capabilities extend beyond conventional monitoring into intelligent, proactive security environments.",
+    proofs: ["AI-enabled CCTV", "Thermal imaging", "ANPR systems"],
+    icon: ScanLine,
+  },
+  {
+    number: "03",
+    label: "Purity & Surety",
+    statement: "What is specified is what gets delivered.",
+    description:
+      "Material integrity and documentation protect the technical intent of every system from specification through installation.",
+    proofs: [
+      "100% genuine OEM materials",
+      "Every device documented",
+      "Zero substitute components",
+    ],
+    icon: FileCheck2,
+  },
+  {
+    number: "04",
+    label: "True Commitment",
+    statement: "Accountability continues after handover.",
+    description:
+      "Long-term relationships are built through availability, responsive support and measurable service accountability.",
+    proofs: ["Responsive support", "Service accountability", "Long-term client relationships"],
+    icon: Headphones,
+  },
+];
+
+export function WhyKrishnaSection() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const lineRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.from(".trust-equation-reveal", {
+        y: 42,
+        opacity: 0,
+        duration: 0.9,
+        stagger: 0.09,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top 76%",
+          once: true,
+        },
+      });
+
+      gsap.from(".trust-principle", {
+        y: 55,
+        opacity: 0,
+        duration: 0.85,
+        stagger: 0.1,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: ".trust-principles",
+          start: "top 78%",
+          once: true,
+        },
+      });
+
+      if (lineRef.current) {
+        gsap.fromTo(
+          lineRef.current,
+          { scaleX: 0 },
+          {
+            scaleX: 1,
+            duration: 1.5,
+            ease: "power3.inOut",
+            scrollTrigger: {
+              trigger: ".trust-result",
+              start: "top 82%",
+              once: true,
+            },
+          }
+        );
+      }
+
+      gsap.from(".trust-letter", {
+        yPercent: 110,
+        duration: 0.9,
+        stagger: 0.055,
+        ease: "power4.out",
+        scrollTrigger: {
+          trigger: ".trust-result",
+          start: "top 76%",
+          once: true,
+        },
+      });
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
+
+  return (
+    <section
+      ref={sectionRef}
+      className="relative overflow-hidden bg-[#f3f1ec] text-[#171717]"
+    >
+      {/* restrained architectural grid */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 opacity-[0.32]"
+        style={{
+          backgroundImage:
+            "linear-gradient(rgba(23,23,23,.035) 1px, transparent 1px), linear-gradient(90deg, rgba(23,23,23,.035) 1px, transparent 1px)",
+          backgroundSize: "96px 96px",
+          maskImage:
+            "linear-gradient(to bottom, transparent, black 15%, black 88%, transparent)",
+        }}
+      />
+
+      <div className="relative mx-auto max-w-[1500px] px-5 py-20 sm:px-8 lg:px-12 lg:py-28 xl:px-16">
+        {/* HEADER */}
+        <div className="grid gap-10 border-b border-black/10 pb-14 lg:grid-cols-[0.62fr_1.38fr] lg:gap-20 lg:pb-20">
+          <div className="trust-equation-reveal">
+            <div className="flex items-center gap-3">
+              <span className="h-px w-8 bg-[#f56616]" />
+
+              <span className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[#f56616]">
+                The Krishna Infosys Trust Equation
+              </span>
+            </div>
+
+            <div className="mt-7 flex items-center gap-3 text-black/35">
+              <ShieldCheck size={17} strokeWidth={1.5} />
+
+              <span className="text-[10px] font-semibold uppercase tracking-[0.17em]">
+                Engineering trust since 2001
+              </span>
+            </div>
+          </div>
+
+          <div>
+            <h2 className="trust-equation-reveal max-w-[950px] text-[clamp(2.9rem,5.4vw,5.8rem)] font-medium leading-[0.92] tracking-[-0.06em]">
+              Trust is not a claim.
+              <span className="block text-black/30">
+                It is an equation.
+              </span>
+            </h2>
+
+            <div className="trust-equation-reveal mt-8 grid max-w-[900px] gap-5 border-t border-black/10 pt-6 sm:grid-cols-[1.15fr_0.85fr]">
+              <p className="text-base leading-7 text-black/58 sm:text-lg sm:leading-8">
+                Reliable infrastructure depends on more than products.
+                Technical depth, advanced capability, supply integrity and
+                long-term commitment have to work together.
+              </p>
+
+              <p className="text-sm leading-7 text-black/38">
+                Four principles define how Krishna Infosys approaches the
+                systems it designs, delivers and supports.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* EQUATION LABELS */}
+        <div className="trust-equation-reveal hidden border-b border-black/10 py-5 lg:grid lg:grid-cols-4">
+          {["Technical depth", "Advanced capability", "Supply integrity", "Commitment"].map(
+            (item, index) => (
+              <div
+                key={item}
+                className={`flex items-center ${
+                  index !== 0 ? "border-l border-black/10 pl-6" : ""
+                }`}
+              >
+                <span className="mr-3 font-mono text-[9px] text-[#f56616]">
+                  0{index + 1}
+                </span>
+
+                <span className="text-[9px] font-bold uppercase tracking-[0.18em] text-black/30">
+                  {item}
+                </span>
+
+                {index < 3 && (
+                  <span className="ml-auto pr-6 text-lg font-light text-black/20">
+                    +
+                  </span>
+                )}
+              </div>
+            )
+          )}
+        </div>
+
+        {/* PRINCIPLES */}
+        <div className="trust-principles grid border-black/10 lg:grid-cols-2 lg:border-b">
+          {principles.map((principle, index) => {
+            const Icon = principle.icon;
+
+            return (
+              <article
+                key={principle.number}
+                className={`trust-principle group relative border-b border-black/10 py-10 sm:py-12 lg:min-h-[440px] lg:border-b-0 lg:p-12 xl:min-h-[470px] xl:p-14 ${
+                  index % 2 === 1 ? "lg:border-l" : ""
+                } ${index >= 2 ? "lg:border-t" : ""}`}
+              >
+                <div className="pointer-events-none absolute left-0 top-0 h-[2px] w-full origin-left scale-x-0 bg-[#f56616] transition-transform duration-500 ease-out group-hover:scale-x-100" />
+
+                <div className="flex items-start justify-between gap-8">
+                  <div>
+                    <span className="font-mono text-[10px] font-semibold tracking-[0.18em] text-[#f56616]">
+                      {principle.number}
+                    </span>
+
+                    <div className="mt-3 text-[10px] font-bold uppercase tracking-[0.2em] text-black/35">
+                      {principle.label}
+                    </div>
+                  </div>
+
+                  <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full border border-black/10 bg-white/60 text-[#f56616] transition-transform duration-300 ease-out group-hover:-rotate-3 group-hover:scale-[1.03] sm:h-16 sm:w-16">
+                    <Icon size={25} strokeWidth={1.35} />
+                  </div>
+                </div>
+
+                <div className="mt-12 max-w-[570px]">
+                  <h3 className="text-[clamp(2rem,3.4vw,3.8rem)] font-medium leading-[0.96] tracking-[-0.05em]">
+                    {principle.statement}
+                  </h3>
+
+                  <p className="mt-6 max-w-[540px] text-sm leading-7 text-black/48 sm:text-base">
+                    {principle.description}
+                  </p>
+                </div>
+
+                <div className="mt-10 grid gap-0 border-t border-black/10 sm:grid-cols-3 lg:mt-12">
+                  {principle.proofs.map((proof, proofIndex) => (
+                    <div
+                      key={proof}
+                      className={`flex items-start gap-2.5 py-4 sm:pr-4 ${
+                        proofIndex > 0
+                          ? "border-t border-black/10 sm:border-l sm:border-t-0 sm:pl-4"
+                          : ""
+                      }`}
+                    >
+                      <BadgeCheck
+                        size={15}
+                        strokeWidth={1.6}
+                        className="mt-0.5 shrink-0 text-[#f56616]"
+                      />
+
+                      <span className="text-xs font-semibold leading-5 text-black/55">
+                        {proof}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </article>
+            );
+          })}
+        </div>
+
+        {/* RESULT */}
+        <div className="trust-result relative mt-16 overflow-hidden bg-[#171717] text-white lg:mt-24">
+          <div
+            ref={lineRef}
+            className="absolute left-0 right-0 top-0 h-[3px] origin-left bg-[#f56616]"
+          />
+
+          <div className="grid lg:grid-cols-[1.2fr_0.8fr]">
+            <div className="px-6 py-12 sm:px-10 sm:py-16 lg:px-14 lg:py-20 xl:px-16">
+              <div className="flex items-center gap-3">
+                <span className="font-mono text-[9px] font-bold uppercase tracking-[0.2em] text-[#f56616]">
+                  The result
+                </span>
+
+                <span className="h-px w-12 bg-[#f56616]/50" />
+              </div>
+
+              <div className="mt-8 overflow-hidden">
+                <div
+                  aria-label="Trust"
+                  className="flex text-[clamp(4.8rem,11vw,10rem)] font-semibold leading-[0.78] tracking-[-0.085em]"
+                >
+                  {"TRUST".split("").map((letter, index) => (
+                    <span
+                      key={`${letter}-${index}`}
+                      className="trust-letter inline-block"
+                    >
+                      {letter}
+                    </span>
+                  ))}
+                  <span className="trust-letter inline-block text-[#f56616]">
+                    .
+                  </span>
+                </div>
+              </div>
+
+              <p className="mt-9 max-w-[650px] text-[clamp(1.25rem,2vw,1.8rem)] font-medium leading-[1.25] tracking-[-0.025em] text-white/72">
+                Securing your world. Simplifying your business.
+                <span className="text-white/35">
+                  {" "}
+                  From engineering intent to long-term accountability.
+                </span>
+              </p>
+            </div>
+
+            <div className="flex flex-col justify-between border-t border-white/10 p-6 sm:p-10 lg:border-l lg:border-t-0 lg:p-12">
+              <div>
+                <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/30">
+                  Trust equation
+                </div>
+
+                <div className="mt-7 space-y-4">
+                  {[
+                    "Technical depth",
+                    "Advanced security",
+                    "Purity & surety",
+                    "True commitment",
+                  ].map((item, index) => (
+                    <div
+                      key={item}
+                      className="flex items-center gap-4 border-b border-white/10 pb-4"
+                    >
+                      <span className="font-mono text-[9px] text-[#f56616]">
+                        0{index + 1}
+                      </span>
+
+                      <span className="text-sm font-medium text-white/60">
+                        {item}
+                      </span>
+
+                      <span className="ml-auto text-white/20">
+                        {index < 3 ? "+" : "="}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <motion.a
+                href="/about"
+                whileHover={{ x: 4 }}
+                className="group mt-12 flex items-center justify-between border-t border-white/10 pt-5"
+              >
+                <span className="text-sm font-semibold">
+                  Discover Krishna Infosys
+                </span>
+
+                <span className="flex h-11 w-11 items-center justify-center rounded-full bg-[#f56616] text-white transition-transform duration-300 group-hover:rotate-45">
+                  <ArrowUpRight size={17} />
+                </span>
+              </motion.a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+janick@Janick:~/projects/krishna-infosys$ cat src/components/home/technology-ecosystem-section.tsx
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import {
+  ArrowUpRight,
+  AudioLines,
+  Cable,
+  Camera,
+  Check,
+  Cpu,
+  Network,
+  Radio,
+  ShieldCheck,
+  SlidersHorizontal,
+} from "lucide-react";
+
+gsap.registerPlugin(ScrollTrigger);
+
+const domains = [
+  {
+    id: "security",
+    number: "01",
+    short: "SEC",
+    title: "Security & Access",
+    statement: "Visibility, verification and controlled movement.",
+    description:
+      "Integrated security architecture spanning surveillance, access and perimeter systems — engineered as one coordinated protection environment.",
+    capabilities: [
+      "IP / Analog CCTV",
+      "Thermal Imaging",
+      "ANPR Systems",
+      "Access Control",
+      "Intrusion Alarm",
+      "Boom Barriers",
+      "Video Door Phone",
+    ],
+    integration:
+      "Security events can become actionable triggers across cameras, access systems and connected infrastructure.",
+    icon: Camera,
+  },
+  {
+    id: "communication",
+    number: "02",
+    short: "COM",
+    title: "Communication",
+    statement: "Communication infrastructure that stays connected.",
+    description:
+      "Voice, conferencing and public-address systems designed around clear communication, operational reach and emergency response.",
+    capabilities: [
+      "Intercom / EPABX",
+      "Video Conferencing",
+      "Public Address",
+      "Emergency PA",
+      "FTTH Infrastructure",
+      "DTH Infrastructure",
+    ],
+    integration:
+      "Communication systems can participate directly in security and emergency workflows instead of operating in isolation.",
+    icon: Radio,
+  },
+  {
+    id: "av",
+    number: "03",
+    short: "AV",
+    title: "Audio Visual",
+    statement: "Technology designed around how spaces are experienced.",
+    description:
+      "Integrated audiovisual environments for boardrooms, auditoriums, professional spaces and high-performance entertainment.",
+    capabilities: [
+      "Home Theatre",
+      "Professional Audio",
+      "Conference Rooms",
+      "Auditoriums",
+      "Digital Signage",
+      "Projection Systems",
+    ],
+    integration:
+      "Audio and visual infrastructure is engineered around the space, application and wider technology environment.",
+    icon: AudioLines,
+  },
+  {
+    id: "network",
+    number: "04",
+    short: "NET",
+    title: "Networking & Data",
+    statement: "The backbone behind every connected system.",
+    description:
+      "Structured network infrastructure designed from physical cabling through connectivity, server environments and data-centre foundations.",
+    capabilities: [
+      "Structured Cabling",
+      "Cat6 Infrastructure",
+      "Fiber Networks",
+      "Wi-Fi / RF Links",
+      "Server Rooms",
+      "Data Centres",
+      "Rack & Patch Systems",
+    ],
+    integration:
+      "A properly engineered network becomes the common backbone connecting security, communication and intelligent systems.",
+    icon: Network,
+  },
+  {
+    id: "automation",
+    number: "05",
+    short: "AUT",
+    title: "Automation & Safety",
+    statement: "Systems that respond, not simply operate.",
+    description:
+      "Automation and life-safety infrastructure connecting building controls, fire detection and coordinated system responses.",
+    capabilities: [
+      "Home Automation",
+      "Building Automation",
+      "Lighting Control",
+      "HVAC Control",
+      "Curtain Control",
+      "Fire Alarm Systems",
+      "System Integration",
+    ],
+    integration:
+      "Connected events can trigger coordinated responses across fire, access, surveillance, communication and building controls.",
+    icon: SlidersHorizontal,
+  },
+];
+
+const oems = [
+  "CP Plus",
+  "PRAMA",
+  "Panasonic",
+  "i-PRO",
+  "Hikvision",
+  "Honeywell",
+  "Bosch",
+  "D-Link",
+  "Cisco",
+  "Panasonic",
+];
+
+export function TechnologyEcosystemSection() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const [active, setActive] = useState(0);
+
+  const domain = domains[active];
+  const ActiveIcon = domain.icon;
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.from(".tech-console-reveal", {
+        y: 34,
+        opacity: 0,
+        duration: 0.9,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top 76%",
+          once: true,
+        },
+      });
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
+
+  return (
+    <section
+      ref={sectionRef}
+      className="relative overflow-hidden bg-[#faf9f7] text-[#171717]"
+    >
+      <div className="mx-auto max-w-[1600px] px-5 py-20 sm:px-8 lg:px-10 lg:py-24 xl:px-12">
+        {/* SECTION INTRO */}
+        <div className="mb-10 grid gap-7 lg:grid-cols-[0.34fr_0.66fr] lg:gap-14">
+          <div>
+            <div className="flex items-center gap-3">
+              <span className="h-px w-8 bg-[#f56616]" />
+              <span className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[#f56616]">
+                Technology ecosystem
+              </span>
+            </div>
+
+            <div className="mt-5 flex items-center gap-3 text-black/35">
+              <Cpu size={16} strokeWidth={1.5} />
+              <span className="text-[9px] font-semibold uppercase tracking-[0.18em]">
+                Multi-system ELV capability
+              </span>
+            </div>
+          </div>
+
+          <div>
+            <h2 className="max-w-[930px] text-[clamp(2.7rem,4.8vw,5.3rem)] font-medium leading-[0.94] tracking-[-0.058em]">
+              Technology without silos.
+              <span className="block text-black/27">
+                Systems designed to work together.
+              </span>
+            </h2>
+          </div>
+        </div>
+
+        {/* MOBILE SELECTOR */}
+        <div className="mb-5 lg:hidden">
+          <div className="flex gap-2 overflow-x-auto pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            {domains.map((item, index) => {
+              const Icon = item.icon;
+              const isActive = active === index;
+
+              return (
+                <button
+                  key={item.id}
+                  type="button"
+                  onClick={() => setActive(index)}
+                  className={`flex shrink-0 items-center gap-2 rounded-full border px-4 py-3 text-sm font-semibold ${isActive
+                    ? "border-[#171717] bg-[#171717] text-white"
+                    : "border-black/10 bg-white text-black/55"
+                    }`}
+                >
+                  <Icon
+                    size={15}
+                    className={isActive ? "text-[#f56616]" : ""}
+                  />
+                  {item.short}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* UNIFIED TECHNOLOGY CONSOLE */}
+        <div className="tech-console-reveal overflow-hidden rounded-[2px] border border-black/[0.12] bg-[#f7f6f3]">
+          {/* TOP BAR */}
+          <div className="hidden min-h-[64px] border-b border-black/10 lg:grid lg:grid-cols-[0.28fr_0.52fr_0.20fr]">
+            <div className="flex items-center justify-between border-r border-black/10 px-7">
+              <span className="text-[9px] font-bold uppercase tracking-[0.22em] text-black/35">
+                Technology channels
+              </span>
+
+              <SlidersHorizontal
+                size={15}
+                strokeWidth={1.5}
+                className="text-[#f56616]"
+              />
+            </div>
+
+            <div className="flex items-center justify-between border-r border-black/10 px-8">
+              <div className="flex items-center gap-3">
+                <span className="h-2 w-2 rounded-full bg-[#f56616]" />
+                <span className="text-[9px] font-bold uppercase tracking-[0.21em] text-black/35">
+                  Active specification / {domain.short}
+                </span>
+              </div>
+
+              <span className="font-mono text-[9px] text-black/25">
+                {domain.number} / 05
+              </span>
+            </div>
+
+            <div className="flex items-center px-7">
+              <span className="text-[9px] font-bold uppercase tracking-[0.21em] text-black/35">
+                Preferred OEM ecosystem
+              </span>
+            </div>
+          </div>
+
+          {/* MAIN CONSOLE */}
+          <div className="grid items-stretch lg:grid-cols-[0.28fr_0.52fr_0.20fr]">
+            {/* LEFT CHANNEL NAVIGATION */}
+            <div className="hidden border-r border-black/10 lg:flex lg:flex-col">
+              {domains.map((item, index) => {
+                const Icon = item.icon;
+                const isActive = active === index;
+
+                return (
+                  <button
+                    key={item.id}
+                    type="button"
+                    onClick={() => setActive(index)}
+                    onFocus={() => setActive(index)}
+                    className={`group relative flex min-h-[115px] items-center gap-4 border-b border-black/10 px-6 py-3 text-left transition-colors duration-300 last:border-b-0 ${isActive
+                      ? "bg-[#171717] text-white"
+                      : "bg-[#faf9f7] hover:bg-white"
+                      }`}
+                  >
+                    <span
+                      className={`w-4 font-mono text-[12px] font-bold ${isActive ? "text-[#f56616]" : "text-black/25"
+                        }`}
+                    >
+                      {item.number}
+                    </span>
+
+                    <span
+                      className={`flex h-[40px] w-[40px] shrink-0 items-center justify-center rounded-full border ${isActive
+                        ? "border-[#f56616]/45 bg-white/[0.035] text-[#f56616]"
+                        : "border-black/10 bg-white text-black/40"
+                        }`}
+                    >
+                      <Icon size={25} strokeWidth={1.45} />
+                    </span>
+
+                    <span className="min-w-0 flex-1">
+                      <span
+                        className={`block text-[12px] font-bold uppercase tracking-[0.19em] ${isActive ? "text-white/35" : "text-black/27"
+                          }`}
+                      >
+                        {item.short}
+                      </span>
+
+                      <span className="mt-0.5 block text-[15px] font-semibold tracking-[-0.025em]">
+                        {item.title}
+                      </span>
+                    </span>
+
+                    <ArrowUpRight
+                      size={15}
+                      className={
+                        isActive
+                          ? "text-[#f56616]"
+                          : "text-black/25 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                      }
+                    />
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* CENTER ACTIVE SPECIFICATION */}
+            <div className="min-w-0 border-black/10 lg:border-r">
+              {/* MOBILE ACTIVE BAR */}
+              <div className="flex h-14 items-center justify-between border-b border-black/10 px-5 lg:hidden">
+                <div className="flex items-center gap-3">
+                  <span className="h-2 w-2 rounded-full bg-[#f56616]" />
+                  <span className="text-[8px] font-bold uppercase tracking-[0.18em] text-black/35">
+                    Active specification / {domain.short}
+                  </span>
+                </div>
+
+                <span className="font-mono text-[8px] text-black/25">
+                  {domain.number} / 05
+                </span>
+              </div>
+
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={domain.id}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  transition={{ duration: 0.24, ease: "easeOut" }}
+                  className="flex h-full min-h-[570px] flex-col p-6 sm:p-8 lg:p-9 xl:p-10"
+                >
+                  <div className="flex items-start justify-between gap-8">
+                    <div className="min-w-0">
+                      <span className="text-[9px] font-bold uppercase tracking-[0.21em] text-[#f56616]">
+                        {domain.title}
+                      </span>
+
+                      <h3 className="mt-5 max-w-[720px] text-[clamp(2.4rem,3.8vw,4.15rem)] font-medium leading-[0.96] tracking-[-0.055em]">
+                        {domain.statement}
+                      </h3>
+                    </div>
+
+                    {/* TECHNICAL ICON */}
+                    <div className="relative hidden h-[108px] w-[108px] shrink-0 items-center justify-center sm:flex">
+                      <div className="absolute inset-0 rounded-full border border-[#f56616]/25" />
+
+                      <span className="absolute left-1/2 top-[-3px] h-1.5 w-1.5 -translate-x-1/2 rounded-full bg-[#f56616]" />
+                      <span className="absolute right-[-3px] top-1/2 h-1.5 w-1.5 -translate-y-1/2 rounded-full bg-[#f56616]" />
+                      <span className="absolute bottom-[-3px] left-1/2 h-1.5 w-1.5 -translate-x-1/2 rounded-full bg-[#f56616]" />
+                      <span className="absolute left-[-3px] top-1/2 h-1.5 w-1.5 -translate-y-1/2 rounded-full bg-[#f56616]" />
+
+                      <div className="flex h-[68px] w-[68px] items-center justify-center rounded-full bg-[#171717] text-[#f56616] shadow-[0_14px_35px_rgba(0,0,0,.12)]">
+                        <ActiveIcon size={27} strokeWidth={1.3} />
+                      </div>
+                    </div>
+                  </div>
+
+                  <p className="mt-7 max-w-[760px] text-sm leading-7 text-black/48 sm:text-base sm:leading-8">
+                    {domain.description}
+                  </p>
+
+                  {/* CAPABILITIES */}
+                  <div className="mt-9">
+                    <div className="flex items-center justify-between pb-3">
+                      <span className="text-[8px] font-bold uppercase tracking-[0.21em] text-black/32">
+                        Capability architecture
+                      </span>
+
+                      <Cable
+                        size={15}
+                        strokeWidth={1.5}
+                        className="text-[#f56616]"
+                      />
+                    </div>
+
+                    <div className="grid border-l border-t border-black/10 sm:grid-cols-2 xl:grid-cols-3">
+                      {domain.capabilities.map((capability, index) => (
+                        <motion.div
+                          key={capability}
+                          initial={{ opacity: 0, y: 6 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: index * 0.025 }}
+                          className="flex min-h-[68px] items-center gap-3 border-b border-r border-black/10 bg-white/20 px-4 py-3"
+                        >
+                          <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-[#f56616]/30 text-[#f56616]">
+                            <Check size={11} strokeWidth={2} />
+                          </span>
+
+                          <span className="text-[13px] font-semibold leading-5 text-black/65">
+                            {capability}
+                          </span>
+                        </motion.div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* INTEGRATION PRINCIPLE */}
+                  <div className="mt-auto pt-6">
+                    <div className="grid gap-4 border border-black/[0.08] border-l-2 border-l-[#f56616] bg-white/75 p-5 sm:grid-cols-[auto_1fr] sm:items-center">
+                      <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#f56616]/10 text-[#f56616]">
+                        <Cpu size={18} strokeWidth={1.5} />
+                      </div>
+
+                      <div>
+                        <span className="text-[8px] font-bold uppercase tracking-[0.21em] text-black/32">
+                          Integration principle
+                        </span>
+
+                        <p className="mt-2 text-[13px] font-medium leading-6 text-black/58">
+                          {domain.integration}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              </AnimatePresence>
+            </div>
+
+            {/* RIGHT OEM ECOSYSTEM */}
+            <aside className="border-t border-black/10 bg-[#faf9f7] lg:border-t-0">
+              <div className="border-b border-black/10 px-5 py-5 lg:hidden">
+                <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-black/35">
+                  Preferred OEM ecosystem
+                </span>
+              </div>
+
+              <div className="grid grid-cols-2 gap-2 p-4 lg:p-5">
+                {oems.map((oem, index) => (
+                  <div
+                    key={`${oem}-${index}`}
+                    className="flex min-h-[74px] items-center justify-center border border-black/[0.09] bg-white px-3 text-center transition-colors hover:bg-[#f7f6f3]"
+                  >
+                    <span className="text-[13px] font-bold tracking-[-0.025em] text-black/68">
+                      {oem}
+                    </span>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mx-5 border-t border-black/10 py-6">
+                <div className="flex items-start gap-3">
+                  <ShieldCheck
+                    size={19}
+                    strokeWidth={1.4}
+                    className="mt-0.5 shrink-0 text-black/35"
+                  />
+
+                  <p className="text-[11px] leading-5 text-black/45">
+                    Products are procured through authorized distribution
+                    channels of leading OEMs with documented sourcing and
+                    manufacturer-backed support.
+                  </p>
+                </div>
+              </div>
+            </aside>
+          </div>
+
+          {/* BOTTOM ACCOUNTABILITY BAR */}
+          <div className="flex min-h-[62px] flex-col gap-4 border-t border-black/10 bg-[#faf9f7] px-6 py-5 sm:flex-row sm:items-center sm:justify-betweenlg:px-7">
+            <div className="flex items-center gap-4">
+              <ShieldCheck
+                size={18}
+                strokeWidth={1.45}
+                className="shrink-0 text-[#f56616]"
+              />
+
+              <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-[8px] font-bold uppercase tracking-[0.19em] text-black/40">
+                <span>Security</span>
+                <span className="h-1 w-1 rounded-full bg-[#f56616]" />
+                <span>Communication</span>
+                <span className="h-1 w-1 rounded-full bg-[#f56616]" />
+                <span>AV</span>
+                <span className="h-1 w-1 rounded-full bg-[#f56616]" />
+                <span>Network</span>
+                <span className="h-1 w-1 rounded-full bg-[#f56616]" />
+                <span>Automation</span>
+                <span className="h-1 w-1 rounded-full bg-[#f56616]" />
+                <span>Safety</span>
+              </div>
+            </div>
+
+            <div className="flex shrink-0 items-center gap-3">
+              <span className="text-[8px] font-bold uppercase tracking-[0.2em] text-black/40">
+                One integrated responsibility
+              </span>
+
+              <ArrowUpRight
+                size={15}
+                strokeWidth={1.6}
+                className="text-[#f56616]"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+janick@Janick:~/projects/krishna-infosys$ cat src/components/home/client-success-section.tsx
+"use client";
+
+import { useEffect, useRef } from "react";
+import Link from "next/link";
+import { motion } from "framer-motion";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import {
+  ArrowUpRight,
+  Building2,
+  Camera,
+  KeyRound,
+  MessageSquareMore,
+  Network,
+  Radio,
+  Wifi,
+} from "lucide-react";
+
+gsap.registerPlugin(ScrollTrigger);
+
+const systems = [
+  { label: "CCTV", icon: Camera },
+  { label: "EPABX", icon: MessageSquareMore },
+  { label: "Public Address", icon: Radio },
+  { label: "Access Control", icon: KeyRound },
+  { label: "Networking", icon: Network },
+  { label: "Wi-Fi", icon: Wifi },
+];
+
+export function ClientSuccessSection() {
+  const sectionRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.from(".success-reveal", {
+        y: 28,
+        opacity: 0,
+        duration: 0.8,
+        stagger: 0.07,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top 78%",
+          once: true,
+        },
+      });
+
+      gsap.from(".success-system", {
+        y: 12,
+        opacity: 0,
+        duration: 0.5,
+        stagger: 0.04,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: ".success-case",
+          start: "top 82%",
+          once: true,
+        },
+      });
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
+
+  return (
+    <section
+      ref={sectionRef}
+      className="relative overflow-hidden bg-[#f3f0ea] text-[#171717]"
+    >
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 opacity-[0.18]"
+        style={{
+          backgroundImage:
+            "linear-gradient(rgba(23,23,23,.045) 1px, transparent 1px), linear-gradient(90deg, rgba(23,23,23,.045) 1px, transparent 1px)",
+          backgroundSize: "80px 80px",
+        }}
+      />
+
+      <div className="relative mx-auto max-w-[1500px] px-5 py-16 sm:px-8 lg:px-12 lg:py-20 xl:px-16">
+
+        {/* HEADER */}
+        <div className="grid gap-8 lg:grid-cols-[0.34fr_0.66fr] lg:gap-16">
+          <div className="success-reveal">
+            <div className="flex items-center gap-3">
+              <span className="h-px w-8 bg-[#f56616]" />
+
+              <span className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[#f56616]">
+                Client success
+              </span>
+            </div>
+
+            <div className="mt-5 flex items-center gap-3 text-black/35">
+              <Building2 size={16} strokeWidth={1.5} />
+
+              <span className="text-[9px] font-semibold uppercase tracking-[0.17em]">
+                Selected project outcome
+              </span>
+            </div>
+          </div>
+
+          <div>
+            <h2 className="success-reveal max-w-[920px] text-[clamp(2.7rem,4.8vw,5.2rem)] font-medium leading-[0.93] tracking-[-0.058em]">
+              The real test begins
+              <span className="block text-black/27">
+                after handover.
+              </span>
+            </h2>
+
+            <p className="success-reveal mt-5 max-w-[680px] text-base leading-7 text-black/48">
+              One selected engagement showing how engineering decisions,
+              integration discipline and execution quality translate into
+              long-term operational results.
+            </p>
+          </div>
+        </div>
+
+        {/* COMPACT CASE STUDY */}
+        <div className="success-case mt-10 overflow-hidden border border-black/10 bg-white">
+          <div className="grid lg:grid-cols-[0.27fr_0.47fr_0.26fr]">
+
+            {/* CLIENT IDENTITY */}
+            <div className="flex flex-col justify-between border-b border-black/10 bg-[#171717] p-6 text-white sm:p-8 lg:min-h-[430px] lg:border-b-0 lg:border-r">
+              <div>
+                <div className="flex items-center justify-between gap-4">
+                  <span className="text-[8px] font-bold uppercase tracking-[0.2em] text-[#f56616]">
+                    Case / 01
+                  </span>
+
+                  <span className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 text-[#f56616]">
+                    <Building2 size={15} strokeWidth={1.5} />
+                  </span>
+                </div>
+
+                <div className="mt-12">
+                  <span className="text-[8px] font-bold uppercase tracking-[0.18em] text-white/28">
+                    Featured client
+                  </span>
+
+                  <h3 className="mt-4 text-[clamp(2.5rem,3.8vw,4.3rem)] font-medium leading-[0.88] tracking-[-0.06em]">
+                    Ramdev
+                    <span className="block text-[#f56616]">
+                      Namkeen.
+                    </span>
+                  </h3>
+
+                  <div className="mt-6 flex items-center gap-3">
+                    <span className="h-px w-8 bg-[#f56616]" />
+
+                    <span className="text-[11px] text-white/45">
+                      Chiyada Plant · Gujarat
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-10 border-t border-white/10 pt-5">
+                <span className="block font-mono text-[8px] uppercase tracking-[0.16em] text-white/25">
+                  Engagement
+                </span>
+
+                <span className="mt-2 block text-xs font-semibold text-white/65">
+                  Multi-system ELV
+                </span>
+              </div>
+            </div>
+
+            {/* PROJECT STORY */}
+            <div className="p-6 sm:p-8 lg:min-h-[430px] lg:p-9 xl:p-10">
+              <div className="flex items-center justify-between gap-5 border-b border-black/10 pb-5">
+                <span className="text-[8px] font-bold uppercase tracking-[0.2em] text-[#f56616]">
+                  Engineering challenge
+                </span>
+
+                <span className="font-mono text-[8px] uppercase tracking-[0.14em] text-black/25">
+                  Manufacturing
+                </span>
+              </div>
+
+              <h4 className="mt-7 max-w-[600px] text-[clamp(1.8rem,2.7vw,3rem)] font-medium leading-[0.98] tracking-[-0.045em]">
+                Engineering around a live-site constraint.
+              </h4>
+
+              <p className="mt-5 max-w-[620px] text-sm leading-7 text-black/48">
+                With structural work already complete and no existing ELV
+                drawings, Krishna Infosys engineered the ELV environment
+                around actual site conditions and coordinated multiple
+                technology systems into one integrated infrastructure.
+              </p>
+
+              <div className="mt-7 border-l-2 border-[#f56616] pl-5">
+                <span className="block text-[8px] font-bold uppercase tracking-[0.18em] text-black/28">
+                  Engineering response
+                </span>
+
+                <p className="mt-2 max-w-[560px] text-sm font-medium leading-6 text-black/58">
+                  A complete ELV environment designed from scratch and
+                  coordinated around real construction conditions.
+                </p>
+              </div>
+
+              {/* SYSTEM SCOPE */}
+              <div className="mt-8 border-t border-black/10 pt-5">
+                <div className="flex items-center justify-between gap-4">
+                  <span className="text-[8px] font-bold uppercase tracking-[0.18em] text-black/28">
+                    Integrated scope
+                  </span>
+
+                  <span className="font-mono text-[8px] text-black/20">
+                    06 SYSTEMS
+                  </span>
+                </div>
+
+                <div className="mt-4 grid grid-cols-2 gap-x-4 gap-y-3 sm:grid-cols-3">
+                  {systems.map((system) => {
+                    const Icon = system.icon;
+
+                    return (
+                      <motion.div
+                        key={system.label}
+                        whileHover={{ x: 2 }}
+                        className="success-system flex items-center gap-2"
+                      >
+                        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#f3f0ea] text-[#f56616]">
+                          <Icon size={12} strokeWidth={1.6} />
+                        </span>
+
+                        <span className="text-[10px] font-semibold leading-4 text-black/48">
+                          {system.label}
+                        </span>
+                      </motion.div>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+
+            {/* OUTCOME */}
+            <div className="flex flex-col justify-between border-t border-black/10 bg-[#faf9f7] p-6 sm:p-8 lg:min-h-[430px] lg:border-l lg:border-t-0 lg:p-9">
+              <div>
+                <span className="text-[8px] font-bold uppercase tracking-[0.2em] text-black/28">
+                  Reported outcome / 2025
+                </span>
+
+                <div className="mt-10 border-l-2 border-[#f56616] pl-5">
+                  <div className="text-[clamp(4.5rem,7vw,7rem)] font-medium leading-[0.72] tracking-[-0.075em]">
+                    10%
+                  </div>
+
+                  <div className="mt-6 max-w-[230px] text-[10px] font-bold uppercase leading-5 tracking-[0.14em] text-black/38">
+                    complaint rate compared with their other plant
+                  </div>
+                </div>
+
+                <p className="mt-7 max-w-[330px] text-xs leading-6 text-black/42">
+                  The case study reports significantly lower complaint
+                  incidence alongside one of the cleanest ELV installations
+                  in the client&apos;s portfolio.
+                </p>
+              </div>
+
+              <div className="mt-9 border-t border-black/10 pt-5">
+                <span className="text-[8px] font-bold uppercase tracking-[0.18em] text-black/25">
+                  What this demonstrates
+                </span>
+
+                <p className="mt-2 text-sm font-semibold leading-6 text-black/62">
+                  Engineering quality measured in operation, not presentation.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* PORTFOLIO PATH */}
+        <div className="success-reveal mt-7 flex flex-col gap-5 border-t border-black/10 pt-6 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <span className="text-[9px] font-semibold uppercase tracking-[0.18em] text-black/32">
+              This is one selected project story
+            </span>
+
+            <p className="mt-1.5 text-sm text-black/42">
+              Explore the wider portfolio for projects across industries,
+              technologies and operating environments.
+            </p>
+          </div>
+
+          <Link
+            href="/projects"
+            className="group flex w-fit shrink-0 items-center gap-3 text-[10px] font-bold uppercase tracking-[0.15em] text-[#171717]"
+          >
+            Explore projects
+
+            <span className="flex h-10 w-10 items-center justify-center rounded-full border border-black/10 bg-white text-[#f56616] transition-all duration-300 group-hover:border-[#f56616]/35 group-hover:bg-[#f56616] group-hover:text-white">
+              <ArrowUpRight
+                size={14}
+                className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+              />
+            </span>
+          </Link>
+        </div>
+      </div>
+    </section>
+  );
+}
+janick@Janick:~/projects/krishna-infosys$ cat src/components/home/final-cta-section.tsx
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
+import { AnimatePresence, motion } from "framer-motion";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import {
+  ArrowUpRight,
+  Building2,
+  Headphones,
+  MessagesSquare,
+  RefreshCw,
+} from "lucide-react";
+
+gsap.registerPlugin(ScrollTrigger);
+
+const intents = [
+  {
+    id: "new-project",
+    number: "01",
+    label: "New Project",
+    short: "NEW",
+    icon: Building2,
+    statement:
+      "Plan the ELV architecture before execution begins — coordinated around your site, operations and long-term requirements.",
+  },
+  {
+    id: "upgrade",
+    number: "02",
+    label: "Upgrade / Expansion",
+    short: "UPG",
+    icon: RefreshCw,
+    statement:
+      "Modernize or expand existing infrastructure while accounting for live systems, compatibility and operational continuity.",
+  },
+  {
+    id: "amc",
+    number: "03",
+    label: "AMC & Support",
+    short: "AMC",
+    icon: Headphones,
+    statement:
+      "Build a structured support approach around system reliability, preventive maintenance and responsive technical assistance.",
+  },
+  {
+    id: "consultation",
+    number: "04",
+    label: "Technical Consultation",
+    short: "CON",
+    icon: MessagesSquare,
+    statement:
+      "Bring us the requirement, constraint or technical question. We’ll help define the right engineering direction.",
+  },
+];
+
+export function FinalCtaSection() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const [active, setActive] = useState(0);
+
+  const activeIntent = intents[active];
+  const ActiveIcon = activeIntent.icon;
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.from(".final-cta-reveal", {
+        y: 34,
+        opacity: 0,
+        duration: 0.85,
+        stagger: 0.07,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top 78%",
+          once: true,
+        },
+      });
+
+      gsap.from(".final-cta-intent", {
+        y: 20,
+        opacity: 0,
+        duration: 0.65,
+        stagger: 0.07,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: ".final-cta-intents",
+          start: "top 84%",
+          once: true,
+        },
+      });
+
+      gsap.to(".final-orbit", {
+        rotate: 360,
+        duration: 60,
+        repeat: -1,
+        ease: "none",
+        transformOrigin: "50% 50%",
+      });
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
+
+  return (
+    <section
+      ref={sectionRef}
+      className="relative overflow-hidden bg-[#171717] text-white"
+    >
+      {/* TECHNICAL BACKGROUND */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 opacity-[0.12]"
+        style={{
+          backgroundImage:
+            "linear-gradient(rgba(255,255,255,.07) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.07) 1px, transparent 1px)",
+          backgroundSize: "72px 72px",
+          maskImage:
+            "linear-gradient(to right, black, black 72%, transparent)",
+        }}
+      />
+
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -right-[12vw] top-1/2 hidden h-[520px] w-[520px] -translate-y-1/2 rounded-full border border-white/[0.05]lg:block"
+      >
+        <div className="final-orbit absolute inset-[14%] rounded-full border border-dashed border-[#f56616]/25">
+          <span className="absolute left-1/2 top-[-4px] h-2 w-2 -translate-x-1/2 rounded-full bg-[#f56616]" />
+        </div>
+
+        <div className="absolute inset-[29%] rounded-full border border-white/[0.06]" />
+        <div className="absolute left-1/2 top-0 h-full w-px bg-white/[0.04]" />
+        <div className="absolute left-0 top-1/2 h-px w-full bg-white/[0.04]" />
+      </div>
+
+      <div className="relative mx-auto max-w-[1500px] px-5 py-16 sm:px-8 lg:px-12 lg:py-20 xl:px-16">
+        {/* TOP IDENTIFIER */}
+        <div className="final-cta-reveal flex items-center justify-between gap-6 border-b border-white/10 pb-5">
+          <div className="flex items-center gap-3">
+            <span className="h-px w-8 bg-[#f56616]" />
+
+            <span className="text-[9px] font-semibold uppercase tracking-[0.24em] text-[#f56616]">
+              Start a conversation
+            </span>
+          </div>
+
+          <span className="hidden font-mono text-[8px] uppercase tracking-[0.18em] text-white/25 sm:block">
+            Project brief / Engineering dialogue
+          </span>
+        </div>
+
+        <div className="grid gap-12 pt-10 lg:grid-cols-[0.92fr_1.08fr] lg:gap-16 xl:gap-24">
+          {/* MESSAGE */}
+          <div className="flex flex-col">
+            <h2 className="final-cta-reveal max-w-[720px] text-[clamp(3.1rem,5.4vw,6rem)] font-medium leading-[0.9] tracking-[-0.065em]">
+              Bring us the
+              <span className="block text-[#f56616]">requirement.</span>
+            </h2>
+
+            <p className="final-cta-reveal mt-6 max-w-[570px] text-[clamp(1.25rem,2vw,1.8rem)] font-medium leading-[1.15] tracking-[-0.035em] text-white/72">
+              We&apos;ll engineer what comes next.
+            </p>
+
+            <p className="final-cta-reveal mt-5 max-w-[570px] text-sm leading-7 text-white/42 sm:text-[15px]">
+              Whether you&apos;re planning new infrastructure, upgrading an
+              existing environment or looking for dependable lifecycle support,
+              start with the requirement.
+            </p>
+
+            <div className="final-cta-reveal mt-8">
+              <Link
+                href="/contact"
+                className="group inline-flex min-h-14 items-center gap-5 rounded-full bg-[#f56616] py-2 pl-7 pr-2 text-sm font-semibold text-white transition-all duration-300 hover:bg-white hover:text-[#171717]"
+              >
+                Discuss your requirement
+
+                <span className="flex h-10 w-10 items-center justify-center rounded-full bg-white/15 transition-all duration-300 group-hover:bg-[#171717]group-hover:text-white">
+                  <ArrowUpRight
+                    size={16}
+                    className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                  />
+                </span>
+              </Link>
+            </div>
+          </div>
+
+          {/* INTENT WORKSPACE */}
+          <div className="final-cta-intents border-t border-white/10 lg:border-l lg:border-t-0 lg:pl-10 xl:pl-14">
+            <div className="grid sm:grid-cols-2">
+              {intents.map((intent, index) => {
+                const Icon = intent.icon;
+                const isActive = active === index;
+
+                return (
+                  <button
+                    key={intent.id}
+                    type="button"
+                    onClick={() => setActive(index)}
+                    onMouseEnter={() => setActive(index)}
+                    onFocus={() => setActive(index)}
+                    className={`final-cta-intent group relative min-h-[105px] border-b border-white/10 px-1 py-5 text-left transition-colors duration-300sm:px-5 ${
+                      index % 2 === 0 ? "sm:border-r" : ""
+                    } ${
+                      isActive
+                        ? "bg-white/[0.055]"
+                        : "hover:bg-white/[0.025]"
+                    }`}
+                  >
+                    <div className="flex items-center gap-4">
+                      <span
+                        className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full border transition-all duration-300 ${
+                          isActive
+                            ? "border-[#f56616]/50 bg-[#f56616] text-white"
+                            : "border-white/10 text-white/35 group-hover:border-white/20 group-hover:text-white/65"
+                        }`}
+                      >
+                        <Icon size={15} strokeWidth={1.5} />
+                      </span>
+
+                      <div className="min-w-0">
+                        <span
+                          className={`block font-mono text-[7px] font-bold uppercase tracking-[0.18em] ${
+                            isActive ? "text-[#f56616]" : "text-white/20"
+                          }`}
+                        >
+                          {intent.number} / {intent.short}
+                        </span>
+
+                        <span
+                          className={`mt-1.5 block text-sm font-semibold tracking-[-0.02em] transition-colors ${
+                            isActive ? "text-white" : "text-white/55"
+                          }`}
+                        >
+                          {intent.label}
+                        </span>
+                      </div>
+                    </div>
+
+                    <span
+                      className={`absolute bottom-0 left-0 h-[2px] bg-[#f56616] transition-all duration-300 ${
+                        isActive ? "w-full" : "w-0"
+                      }`}
+                    />
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* ACTIVE RESPONSE */}
+            <div className="relative min-h-[190px] overflow-hidden border-b border-white/10 py-7 sm:px-5">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={activeIntent.id}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -6 }}
+                  transition={{ duration: 0.24, ease: "easeOut" }}
+                >
+                  <div className="flex items-center justify-between gap-5">
+                    <span className="text-[8px] font-bold uppercase tracking-[0.2em] text-white/25">
+                      Your starting point
+                    </span>
+
+                    <span className="flex h-9 w-9 items-center justify-center rounded-full border border-[#f56616]/35 text-[#f56616]">
+                      <ActiveIcon size={15} strokeWidth={1.5} />
+                    </span>
+                  </div>
+
+                  <p className="mt-6 max-w-[650px] text-[clamp(1.1rem,1.7vw,1.45rem)] font-medium leading-[1.35] tracking-[-0.025em] text-white/72">
+                    {activeIntent.statement}
+                  </p>
+                </motion.div>
+              </AnimatePresence>
+            </div>
+
+            <div className="flex items-center justify-between gap-5 pt-5 sm:px-5">
+              <span className="text-[8px] font-semibold uppercase tracking-[0.18em] text-white/22">
+                Select a requirement to begin
+              </span>
+
+              <span className="flex items-center gap-2 text-[8px] font-bold uppercase tracking-[0.16em] text-[#f56616]">
+                Design · Consult · Execute
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+janick@Janick:~/projects/krishna-infosys$  
