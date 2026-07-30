@@ -186,20 +186,19 @@ export function SolutionsIntegrationSection() {
                 </div>
 
                 {/* COMPARISON */}
-                <div className="int-compare mt-16 border border-black/10 bg-white lg:mt-20">
-                    {/* header */}
-                    <div className="grid grid-cols-[1.1fr_1fr_1fr] border-b border-black/10">
-                        <div className="px-5 py-4 sm:px-7">
+                <div className="int-compare mt-16 overflow-hidden border border-black/10 bg-white lg:mt-20">
+                    <div className="grid grid-cols-1 sm:grid-cols-[1.1fr_1fr_1fr]">
+                        <div className="hidden border-b border-black/10 px-5 py-4 sm:block sm:px-7">
                             <span className="text-[9px] font-bold uppercase tracking-[0.18em] text-black/30">
                                 Decision layer
                             </span>
                         </div>
-                        <div className="border-l border-black/10 px-5 py-4 sm:px-7">
+                        <div className="hidden border-b border-l border-black/10 px-5 py-4 sm:block sm:px-7">
                             <span className="text-[9px] font-bold uppercase tracking-[0.18em] text-black/30">
                                 Multi-vendor
                             </span>
                         </div>
-                        <div className="border-l border-black/10 bg-[#171717] px-5 py-4 sm:px-7">
+                        <div className="hidden border-b border-l border-black/10 bg-[#171717] px-5 py-4 sm:block sm:px-7">
                             <span className="text-[9px] font-bold uppercase tracking-[0.18em] text-[#f56616]">
                                 Krishna Infosys
                             </span>
@@ -209,23 +208,23 @@ export function SolutionsIntegrationSection() {
                     {comparison.map((row, index) => (
                         <div
                             key={row.label}
-                            className={`int-row grid grid-cols-[1.1fr_1fr_1fr] ${index < comparison.length - 1 ? "border-b border-black/10" : ""
+                            className={`int-row grid grid-cols-1 sm:grid-cols-[1.1fr_1fr_1fr] ${index < comparison.length - 1 ? "border-b border-black/10" : ""
                                 }`}
                         >
-                            <div className="flex items-center px-5 py-5 sm:px-7">
+                            <div className="flex items-center px-5 py-4 sm:px-7 sm:py-5">
                                 <span className="text-sm font-semibold tracking-[-0.02em]">
                                     {row.label}
                                 </span>
                             </div>
 
-                            <div className="flex items-center gap-2.5 border-l border-black/10 px-5 py-5 sm:px-7">
+                            <div className="flex items-center gap-2.5 border-black/10 px-5 py-3 sm:border-l sm:px-7 sm:py-5">
                                 <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-black/[0.06]">
                                     <X size={11} strokeWidth={2} className="text-black/35" />
                                 </span>
                                 <span className="text-sm text-black/45">{row.multi}</span>
                             </div>
 
-                            <div className="flex items-center gap-2.5 border-l border-black/10 bg-[#171717] px-5 py-5 sm:px-7">
+                            <div className="flex items-center gap-2.5 border-black/10 bg-[#171717] px-5 py-3 sm:border-l sm:px-7 sm:py-5">
                                 <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#f56616]/15">
                                     <Check size={11} strokeWidth={2.5} className="text-[#f56616]" />
                                 </span>
@@ -237,7 +236,6 @@ export function SolutionsIntegrationSection() {
                     ))}
                 </div>
 
-                {/* bottom note */}
                 <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                     <p className="max-w-[520px] text-sm leading-6 text-black/45">
                         Integration is not a slide — it is how drawings, BOQs, racks and

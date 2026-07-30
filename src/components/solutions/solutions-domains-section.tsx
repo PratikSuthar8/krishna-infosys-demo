@@ -33,7 +33,6 @@ const domains = [
             "Central monitoring / VMS",
         ],
         icon: Cctv,
-        href: "/solutions#security",
     },
     {
         id: "communication",
@@ -51,7 +50,6 @@ const domains = [
             "Paging & zones",
         ],
         icon: Radio,
-        href: "/solutions#communication",
     },
     {
         id: "av",
@@ -69,7 +67,6 @@ const domains = [
             "Presentation systems",
         ],
         icon: Sparkles,
-        href: "/solutions#av",
     },
     {
         id: "networking",
@@ -87,7 +84,6 @@ const domains = [
             "Network security basics",
         ],
         icon: Network,
-        href: "/solutions#networking",
     },
     {
         id: "automation",
@@ -105,409 +101,297 @@ const domains = [
             "Occupancy-driven control",
         ],
         icon: Cable,
-        href: "/solutions#automation",
     },
 ];
 
 export function SolutionsDomainsSection() {
     const sectionRef = useRef<HTMLElement>(null);
-    const journeyRef = useRef<HTMLDivElement>(null);
-    const panelRef = useRef<HTMLDivElement>(null);
-    const progressRef = useRef<HTMLDivElement>(null);
-    const copyRef = useRef<HTMLDivElement>(null);
-    const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
-
+    const chaptersWrapRef = useRef<HTMLDivElement>(null);
+    const railRef = useRef<HTMLDivElement>(null);
+    const chapterRefs = useRef<(HTMLElement | null)[]>([]);
     const [activeIndex, setActiveIndex] = useState(0);
-    const activeRef = useRef(0);
 
     useEffect(() => {
         const section = sectionRef.current;
-        const journey = journeyRef.current;
-        const panel = panelRef.current;
-        if (!section || !journey || !panel) return;
-
-        const mm = gsap.matchMedia();
-        const count = domains.length;
-
-        const layoutDeck = (progress: number) => {
-            const raw = progress * (count - 1);
-            const current = Math.max(0, Math.min(count - 1, Math.round(raw)));
-
-            if (current !== activeRef.current) {
-                activeRef.current = current;
-                setActiveIndex(current);
-            }
-
-            cardRefs.current.forEach((card, i) => {
-                if (!card) return;
-
-                const offset = i - raw;
-                const abs = Math.abs(offset);
-
-                gsap.set(card, {
-                    x: offset * 44,
-                    y: abs * 12,
-                    z: -abs * 70,
-                    rotate: offset * -5.5,
-                    scale: Math.max(0.74, 1 - abs * 0.09),
-                    opacity: abs > 2.1 ? 0 : Math.max(0.22, 1 - abs * 0.32),
-                    zIndex: Math.round(120 - abs * 12),
-                    transformPerspective: 1000,
-                    force3D: true,
-                });
-            });
-        };
+        const chaptersWrap = chaptersWrapRef.current;
+        const rail = railRef.current;
+        if (!section || !chaptersWrap) return;
 
         const ctx = gsap.context(() => {
-            gsap.from(".sol-dom-intro", {
+            gsap.from(".sol-chap-intro", {
                 y: 36,
                 opacity: 0,
                 duration: 0.85,
                 stagger: 0.09,
                 ease: "power3.out",
                 scrollTrigger: {
-                    trigger: ".sol-dom-intro-wrap",
+                    trigger: ".sol-chap-intro-wrap",
                     start: "top 80%",
                     once: true,
                 },
             });
 
-            layoutDeck(0);
+            // Pin the rail for the full height of chapters (desktop only)
+            const mm = gsap.matchMedia();
 
             mm.add("(min-width: 1024px)", () => {
-                const trigger = ScrollTrigger.create({
-                    trigger: journey,
+                if (!rail) return;
+
+                ScrollTrigger.create({
+                    trigger: chaptersWrap,
                     start: "top top+=110",
-                    end: `+=${count * 400}`,
-                    pin: panel,
-                    pinSpacing: true,
+                    end: "bottom bottom-=80",
+                    pin: rail,
+                    pinSpacing: false,
                     anticipatePin: 1,
-                    scrub: 0.7,
                     invalidateOnRefresh: true,
-                    onUpdate: (self) => {
-                        layoutDeck(self.progress);
-                        if (progressRef.current) {
-                            gsap.set(progressRef.current, {
-                                scaleX: self.progress,
-                                transformOrigin: "left center",
-                            });
-                        }
-                    },
+                });
+            });
+
+            // Spy each chapter
+            chapterRefs.current.forEach((el, i) => {
+                if (!el) return;
+
+                ScrollTrigger.create({
+                    trigger: el,
+                    start: "top 45%",
+                    end: "bottom 45%",
+                    onEnter: () => setActiveIndex(i),
+                    onEnterBack: () => setActiveIndex(i),
                 });
 
-                return () => trigger.kill();
+                gsap.from(el.querySelectorAll(".chap-reveal"), {
+                    y: 28,
+                    opacity: 0,
+                    duration: 0.7,
+                    stagger: 0.05,
+                    ease: "power3.out",
+                    scrollTrigger: {
+                        trigger: el,
+                        start: "top 80%",
+                        once: true,
+                    },
+                });
             });
 
-            mm.add("(max-width: 1023px)", () => {
-                gsap.utils
-                    .toArray<HTMLElement>(".sol-mobile-domain")
-                    .forEach((card) => {
-                        gsap.from(card, {
-                            y: 32,
-                            opacity: 0,
-                            duration: 0.7,
-                            ease: "power3.out",
-                            scrollTrigger: {
-                                trigger: card,
-                                start: "top 86%",
-                                once: true,
-                            },
-                        });
-                    });
-            });
+            // Refresh after layout (Lenis / fonts)
+            requestAnimationFrame(() => ScrollTrigger.refresh());
         }, section);
 
-        return () => {
-            mm.revert();
-            ctx.revert();
-        };
+        return () => ctx.revert();
     }, []);
 
-    useEffect(() => {
-        const copy = copyRef.current;
-        if (!copy || !copy.children.length) return;
-
-        const ctx = gsap.context(() => {
-            gsap.fromTo(
-                copy.children,
-                { y: 16, opacity: 0 },
-                {
-                    y: 0,
-                    opacity: 1,
-                    stagger: 0.045,
-                    duration: 0.45,
-                    ease: "power3.out",
-                }
-            );
-        });
-        return () => ctx.revert();
-    }, [activeIndex]);
-
-    const active = domains[activeIndex];
-    const ActiveIcon = active.icon;
+    const scrollToChapter = (index: number) => {
+        const el = chapterRefs.current[index];
+        if (!el) return;
+        el.scrollIntoView({ behavior: "smooth", block: "center" });
+    };
 
     return (
         <section
             id="domains"
             ref={sectionRef}
-            className="relative overflow-hidden bg-[#171717] text-white"
+            className="relative bg-[#171717] text-white"
         >
+            {/* grid — absolute, does NOT clip sticky/pin */}
             <div
                 aria-hidden="true"
-                className="pointer-events-none absolute inset-0 opacity-[0.14]"
+                className="pointer-events-none absolute inset-0 overflow-hidden opacity-[0.12]"
                 style={{
                     backgroundImage:
                         "linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px)",
                     backgroundSize: "72px 72px",
                     maskImage:
-                        "linear-gradient(to bottom, transparent, black 10%, black 92%, transparent)",
+                        "linear-gradient(to bottom, transparent, black 8%, black 94%, transparent)",
                 }}
             />
 
             {/* INTRO */}
-            <div className="sol-dom-intro-wrap relative mx-auto max-w-[1500px] px-5 pb-10 pt-20 sm:px-8 lg:px-12 lg:pb-14 lg:pt-24 xl:px-16">
+            <div className="sol-chap-intro-wrap relative mx-auto max-w-[1500px] px-5 pb-12 pt-20 sm:px-8 lg:px-12 lg:pb-16 lg:pt-24 xl:px-16">
                 <div className="grid gap-8 lg:grid-cols-[0.7fr_1.3fr] lg:gap-16">
-                    <div className="sol-dom-intro">
+                    <div className="sol-chap-intro">
                         <div className="flex items-center gap-3">
                             <span className="h-px w-8 bg-[#f56616]" />
                             <span className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[#f56616]">
-                                Domain explorer
+                                Domains
                             </span>
                         </div>
                     </div>
                     <div>
-                        <h2 className="sol-dom-intro max-w-[860px] text-[clamp(2.3rem,4.2vw,4.4rem)] font-medium leading-[0.94] tracking-[-0.055em]">
-                            Scroll the stack.
+                        <h2 className="sol-chap-intro max-w-[860px] text-[clamp(2.3rem,4.2vw,4.4rem)] font-medium leading-[0.94] tracking-[-0.055em]">
+                            Five domains.
                             <span className="block text-white/35">
-                                Pick the domain that matters.
+                                One integrated practice.
                             </span>
                         </h2>
-                        <p className="sol-dom-intro mt-5 max-w-[520px] text-base leading-7 text-white/45">
-                            Five practice areas — each designed to integrate with the others,
-                            not sit as a siloed product line.
+                        <p className="sol-chap-intro mt-5 max-w-[520px] text-base leading-7 text-white/45">
+                            Scroll the chapters — or jump from the rail. Each domain is built
+                            to connect with the others, not sit as a siloed product line.
                         </p>
                     </div>
                 </div>
             </div>
 
-            {/* DESKTOP PINNED */}
-            <div ref={journeyRef} className="relative hidden lg:block">
-                <div
-                    ref={panelRef}
-                    className="relative mx-auto h-[calc(100vh-110px)] min-h-[640px] max-h-[860px] max-w-[1500px] px-12 xl:px-16"
-                >
-                    <div className="flex h-full flex-col border-t border-white/[0.08]">
-                        {/* ticks + progress */}
-                        <div className="relative shrink-0 py-5">
-                            <div className="absolute left-0 right-0 top-[42px] h-px bg-white/10" />
-                            <div
-                                ref={progressRef}
-                                className="absolute left-0 right-0 top-[42px] h-px origin-left scale-x-0 bg-[#f56616]"
-                            />
-                            <div className="relative grid grid-cols-5">
+            {/* CHAPTERS + RAIL */}
+            <div className="relative mx-auto max-w-[1500px] px-5 pb-20 sm:px-8 lg:px-12 lg:pb-28 xl:px-16">
+                <div className="lg:grid lg:grid-cols-[220px_1fr] lg:gap-12 xl:grid-cols-[240px_1fr] xl:gap-16">
+                    {/* RAIL — pinned by GSAP on desktop */}
+                    {/* RAIL */}
+                    <div className="relative hidden lg:block">
+                        <div ref={railRef} className="w-[260px] xl:w-[280px]">
+                            <span className="text-[10px] font-bold uppercase tracking-[0.22em] text-white/35">
+                                Index
+                            </span>
+
+                            <nav className="mt-6 space-y-1.5 border-l border-white/10">
                                 {domains.map((d, i) => {
                                     const on = i === activeIndex;
-                                    const done = i < activeIndex;
                                     return (
-                                        <div key={d.id} className="flex items-center gap-2.5">
-                                            <div
-                                                className={`relative z-10 flex h-9 w-9 items-center justify-center rounded-full border text-[10px] font-bold transition-all duration-400 ${on
-                                                        ? "border-[#f56616] bg-[#f56616] text-white"
-                                                        : done
-                                                            ? "border-[#f56616]/45 bg-[#251b16] text-[#f56616]"
-                                                            : "border-white/15 bg-[#171717] text-white/30"
+                                        <button
+                                            key={d.id}
+                                            type="button"
+                                            onClick={() => scrollToChapter(i)}
+                                            className={`flex w-full items-center gap-3.5 border-l-2 py-3.5 pl-5 text-left transition-all duration-300 ${on
+                                                    ? "-ml-px border-[#f56616] text-white"
+                                                    : "border-transparent text-white/40 hover:text-white/75"
+                                                }`}
+                                        >
+                                            <span
+                                                className={`font-mono text-[12px] tracking-[0.14em] ${on ? "text-[#f56616]" : "text-white/30"
                                                     }`}
                                             >
                                                 {d.number}
-                                            </div>
+                                            </span>
                                             <span
-                                                className={`hidden text-[11px] font-semibold transition-colors duration-400 xl:block ${on ? "text-white" : "text-white/30"
+                                                className={`text-[15px] font-semibold tracking-[-0.02em] ${on ? "text-white" : ""
                                                     }`}
                                             >
                                                 {d.label}
                                             </span>
-                                        </div>
+                                        </button>
                                     );
                                 })}
-                            </div>
-                        </div>
+                            </nav>
 
-                        <div className="grid min-h-0 flex-1 grid-cols-[1fr_1fr] items-center gap-10 border-t border-white/[0.06]">
-                            {/* COPY */}
-                            <div
-                                key={`sol-copy-${activeIndex}`}
-                                ref={copyRef}
-                                className="max-w-[560px] py-8"
-                            >
-                                <div className="flex items-center gap-3">
-                                    <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[#f56616] text-white">
-                                        <ActiveIcon size={18} strokeWidth={1.5} />
-                                    </span>
-                                    <div>
-                                        <span className="block text-[9px] font-semibold uppercase tracking-[0.2em] text-[#f56616]">
-                                            {active.number} · {active.label}
-                                        </span>
-                                        <span className="mt-0.5 block text-[11px] text-white/35">
-                                            ELV domain
-                                        </span>
-                                    </div>
-                                </div>
-
-                                <h3 className="mt-8 text-[clamp(1.9rem,3vw,3.1rem)] font-medium leading-[1.02] tracking-[-0.045em]">
-                                    {active.title}
-                                </h3>
-
-                                <p className="mt-5 text-[15px] leading-7 text-white/48 sm:text-base sm:leading-8">
-                                    {active.summary}
-                                </p>
-
-                                <ul className="mt-7 grid grid-cols-2 gap-2">
-                                    {active.points.map((point) => (
-                                        <li
-                                            key={point}
-                                            className="flex items-center gap-2 border border-white/[0.08] bg-white/[0.03] px-3 py-2.5 text-[12px] font-medium text-white/55"
-                                        >
-                                            <Check
-                                                size={12}
-                                                strokeWidth={2}
-                                                className="shrink-0 text-[#f56616]"
-                                            />
-                                            {point}
-                                        </li>
-                                    ))}
-                                </ul>
-
-                                <div className="mt-8 flex items-center justify-between border-t border-white/10 pt-5">
-                                    <Link
-                                        href="/contact"
-                                        className="group inline-flex items-center gap-2 text-[13px] font-semibold text-white transition-colors hover:text-[#f56616]"
-                                    >
-                                        Discuss this domain
-                                        <ArrowUpRight
-                                            size={14}
-                                            className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
-                                        />
-                                    </Link>
-                                    <span className="font-mono text-[11px] text-white/30">
-                                        {String(activeIndex + 1).padStart(2, "0")}
-                                        <span className="mx-1.5 text-white/15">/</span>
-                                        05
-                                    </span>
-                                </div>
-                            </div>
-
-                            {/* DECK */}
-                            <div className="relative flex h-full min-h-[480px] items-center justify-center">
-                                <div
-                                    className="relative h-[380px] w-[340px]"
-                                    style={{ perspective: "1100px" }}
-                                >
-                                    {domains.map((domain, i) => {
-                                        const Icon = domain.icon;
-                                        const isActive = i === activeIndex;
-
-                                        return (
-                                            <div
-                                                key={domain.id}
-                                                ref={(el) => {
-                                                    cardRefs.current[i] = el;
-                                                }}
-                                                className="absolute left-1/2 top-1/2 w-[300px] -translate-x-1/2 -translate-y-1/2 will-change-transform"
-                                            >
-                                                <div
-                                                    className={`overflow-hidden border bg-[#1c1c1c] shadow-[0_28px_90px_rgba(0,0,0,0.45)] transition-colors duration-500 ${isActive
-                                                            ? "border-[#f56616]/45"
-                                                            : "border-white/10"
-                                                        }`}
-                                                >
-                                                    <div className="flex items-center justify-between border-b border-white/[0.06] px-5 py-4">
-                                                        <span className="font-mono text-[10px] font-semibold tracking-[0.16em] text-[#f56616]">
-                                                            {domain.number}
-                                                        </span>
-                                                        <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-white/30">
-                                                            {domain.label}
-                                                        </span>
-                                                    </div>
-
-                                                    <div className="px-5 py-8">
-                                                        <div
-                                                            className={`flex h-14 w-14 items-center justify-center rounded-full border transition-colors duration-500 ${isActive
-                                                                    ? "border-[#f56616] bg-[#f56616] text-white"
-                                                                    : "border-white/10 bg-white/[0.04] text-white/40"
-                                                                }`}
-                                                        >
-                                                            <Icon size={22} strokeWidth={1.4} />
-                                                        </div>
-                                                        <h4 className="mt-6 text-xl font-semibold tracking-[-0.03em]">
-                                                            {domain.title}
-                                                        </h4>
-                                                        <p className="mt-3 line-clamp-3 text-[13px] leading-6 text-white/40">
-                                                            {domain.summary}
-                                                        </p>
-                                                    </div>
-
-                                                    <div className="flex items-center justify-between border-t border-white/[0.06] px-5 py-3.5">
-                                                        <span className="text-[9px] font-bold uppercase tracking-[0.14em] text-white/25">
-                                                            Capability card
-                                                        </span>
-                                                        <ArrowUpRight
-                                                            size={13}
-                                                            className={
-                                                                isActive ? "text-[#f56616]" : "text-white/20"
-                                                            }
-                                                        />
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        );
-                                    })}
-                                </div>
+                            <div className="mt-10 border-t border-white/10 pt-6">
+                                <span className="font-mono text-[13px] text-white/40">
+                                    {String(activeIndex + 1).padStart(2, "0")}
+                                    <span className="mx-2 text-white/20">/</span>
+                                    05
+                                </span>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
 
-            {/* MOBILE */}
-            <div className="relative mx-auto max-w-[1500px] px-5 pb-16 sm:px-8 lg:hidden">
-                {domains.map((domain) => {
-                    const Icon = domain.icon;
-                    return (
-                        <article
-                            key={domain.id}
-                            id={domain.id}
-                            className="sol-mobile-domain border-b border-white/10 py-10 first:border-t"
-                        >
-                            <div className="flex items-center gap-4">
-                                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#f56616] text-white">
-                                    <Icon size={18} strokeWidth={1.5} />
-                                </div>
-                                <div>
-                                    <span className="text-[9px] font-semibold uppercase tracking-[0.2em] text-[#f56616]">
-                                        {domain.number} · {domain.label}
-                                    </span>
-                                    <h3 className="mt-1 text-xl font-semibold tracking-[-0.03em]">
-                                        {domain.title}
-                                    </h3>
-                                </div>
-                            </div>
-                            <p className="mt-5 text-sm leading-7 text-white/50">
-                                {domain.summary}
-                            </p>
-                            <ul className="mt-5 grid grid-cols-1 gap-2 sm:grid-cols-2">
-                                {domain.points.map((p) => (
-                                    <li
-                                        key={p}
-                                        className="flex items-center gap-2 border border-white/10 bg-white/[0.03] px-3 py-2.5 text-[12px] text-white/55"
+                    {/* CHAPTER LIST */}
+                    <div ref={chaptersWrapRef}>
+                        {domains.map((domain, i) => {
+                            const Icon = domain.icon;
+                            const isActive = i === activeIndex;
+
+                            return (
+                                <article
+                                    key={domain.id}
+                                    id={domain.id}
+                                    ref={(el) => {
+                                        chapterRefs.current[i] = el;
+                                    }}
+                                    className={`relative border-t border-white/[0.08] py-14 lg:py-20 ${i === domains.length - 1 ? "border-b border-white/[0.08]" : ""
+                                        }`}
+                                >
+                                    <span
+                                        aria-hidden="true"
+                                        className="pointer-events-none absolute right-0 top-8 select-none text-[clamp(5rem,12vw,9rem)] font-semibold leading-none tracking-[-0.08em] text-white/[0.03]"
                                     >
-                                        <Check size={12} className="text-[#f56616]" />
-                                        {p}
-                                    </li>
-                                ))}
-                            </ul>
-                        </article>
-                    );
-                })}
+                                        {domain.number}
+                                    </span>
+
+                                    <div className="relative grid gap-8 lg:grid-cols-[1fr_1.05fr] lg:gap-12">
+                                        <div>
+                                            <div className="chap-reveal flex items-center gap-3">
+                                                <span
+                                                    className={`flex h-12 w-12 items-center justify-center rounded-full border transition-colors duration-500 ${isActive
+                                                        ? "border-[#f56616] bg-[#f56616] text-white"
+                                                        : "border-white/15 bg-white/[0.03] text-white/50"
+                                                        }`}
+                                                >
+                                                    <Icon size={20} strokeWidth={1.45} />
+                                                </span>
+                                                <div>
+                                                    <span className="block text-[9px] font-semibold uppercase tracking-[0.2em] text-[#f56616]">
+                                                        {domain.number} · {domain.label}
+                                                    </span>
+                                                    <span className="mt-0.5 block text-[11px] text-white/35">
+                                                        ELV domain
+                                                    </span>
+                                                </div>
+                                            </div>
+
+                                            <h3 className="chap-reveal mt-8 text-[clamp(1.8rem,3vw,2.8rem)] font-medium leading-[1.05] tracking-[-0.045em]">
+                                                {domain.title}
+                                            </h3>
+
+                                            <p className="chap-reveal mt-5 max-w-[420px] text-[15px] leading-7 text-white/48">
+                                                {domain.summary}
+                                            </p>
+
+                                            <div className="chap-reveal mt-8">
+                                                <Link
+                                                    href="/contact"
+                                                    className="group inline-flex items-center gap-2 text-[13px] font-semibold text-white transition-colors hover:text-[#f56616]"
+                                                >
+                                                    Discuss this domain
+                                                    <ArrowUpRight
+                                                        size={14}
+                                                        className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                                                    />
+                                                </Link>
+                                            </div>
+                                        </div>
+
+                                        <div className="chap-reveal">
+                                            <span className="text-[9px] font-bold uppercase tracking-[0.18em] text-white/30">
+                                                Capabilities
+                                            </span>
+                                            <ul className="mt-4 grid gap-2 sm:grid-cols-2">
+                                                {domain.points.map((point) => (
+                                                    <li
+                                                        key={point}
+                                                        className="flex items-center gap-2.5 border border-white/[0.08] bg-white/[0.03] px-4 py-3.5 text-[13px] font-medium text-white/60 transition-colors duration-300 hover:border-[#f56616]/30 hover:text-white/80"
+                                                    >
+                                                        <Check
+                                                            size={13}
+                                                            strokeWidth={2}
+                                                            className="shrink-0 text-[#f56616]"
+                                                        />
+                                                        {point}
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </article>
+                            );
+                        })}
+                    </div>
+                </div>
+
+                {/* mobile chips */}
+                <div className="mt-8 flex gap-2 overflow-x-auto pb-2 lg:hidden">
+                    {domains.map((d, i) => (
+                        <button
+                            key={d.id}
+                            type="button"
+                            onClick={() => scrollToChapter(i)}
+                            className={`shrink-0 border px-3.5 py-2 text-[11px] font-semibold transition-colors ${i === activeIndex
+                                ? "border-[#f56616] bg-[#f56616] text-white"
+                                : "border-white/15 text-white/50"
+                                }`}
+                        >
+                            {d.number} {d.label}
+                        </button>
+                    ))}
+                </div>
             </div>
         </section>
     );
