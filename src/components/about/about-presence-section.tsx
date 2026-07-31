@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import Link from "next/link";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { motion } from "framer-motion";
 import {
     ArrowUpRight,
     MapPin,
@@ -227,28 +228,38 @@ export function AboutPresenceSection() {
                                 site.
                             </p>
 
-                            <div className="mt-9 flex flex-wrap items-center gap-4">
-                                <Link
-                                    href="/contact"
-                                    className="group inline-flex items-center gap-2.5 rounded-full bg-[#f56616] px-7 py-3.5 text-[13px] font-semibold text-white transition-colors duration-300 hover:bg-white hover:text-[#171717]"
-                                >
-                                    Request consultation
-                                    <ArrowUpRight
-                                        size={15}
-                                        className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
-                                    />
-                                </Link>
 
-                                <Link
-                                    href="/solutions"
-                                    className="group inline-flex items-center gap-2 text-[13px] font-semibold text-white/50 transition-colors hover:text-white"
+                            <div className="mt-9 flex flex-wrap items-center gap-4">
+                                <motion.div
+                                    whileHover={{ y: -2 }}
+                                    whileTap={{ scale: 0.98 }}
                                 >
-                                    View solutions
-                                    <ArrowUpRight
-                                        size={14}
-                                        className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
-                                    />
-                                </Link>
+                                    <Link
+                                        href="/contact"
+                                        className="group inline-flex items-center gap-2.5 rounded-full bg-[#f56616] px-7 py-3.5 text-[13px] font-semibold text-white transition-colors duration-300 hover:bg-white hover:text-[#171717]!"
+                                    >
+                                        Request consultation
+                                        <span className="flex h-7 w-7 items-center justify-center rounded-full bg-white/10 transition-transform duration-300 group-hover:rotate-45">
+                                            <ArrowUpRight size={15} />
+                                        </span>
+                                    </Link>
+                                </motion.div>
+
+                                <motion.div
+                                    whileHover={{ y: -2 }}
+                                    whileTap={{ scale: 0.98 }}
+                                >
+                                    <Link
+                                        href="/solutions"
+                                        className="group inline-flex items-center gap-2 text-[13px] font-semibold text-white/50 transition-colors hover:text-white"
+                                    >
+                                        View solutions
+                                        <ArrowUpRight
+                                            size={14}
+                                            className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                                        />
+                                    </Link>
+                                </motion.div>
                             </div>
                         </div>
 

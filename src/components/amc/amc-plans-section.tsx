@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import Link from "next/link";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { motion } from 'framer-motion'
 import {
     ArrowUpRight,
     Check,
@@ -150,8 +151,8 @@ export function AmcPlansSection() {
                         <article
                             key={plan.name}
                             className={`plan-card flex flex-col border p-6 sm:p-8 ${plan.highlighted
-                                    ? "border-[#f56616]/50 bg-[#1f1c19]"
-                                    : "border-white/[0.08] bg-white/[0.02]"
+                                ? "border-[#f56616]/50 bg-[#1f1c19]"
+                                : "border-white/[0.08] bg-white/[0.02]"
                                 }`}
                         >
                             <div className="flex items-center justify-between gap-3">
@@ -192,11 +193,11 @@ export function AmcPlansSection() {
                             <Link
                                 href="/contact"
                                 className={`group mt-8 inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 text-[13px] font-semibold transition-colors duration-300 ${plan.highlighted
-                                        ? "bg-[#f56616] text-white hover:bg-white hover:text-[#171717]"
-                                        : "bg-white text-[#171717] hover:bg-[#f56616] hover:text-white"
+                                    ? "bg-[#f56616] text-white hover:bg-white hover:text-[#171717]!"
+                                    : "bg-white text-[#171717]! hover:bg-[#f56616] hover:text-white!"
                                     }`}
                             >
-                                <span>Talk this plan</span>
+                                <span >Talk this plan</span>
                                 <ArrowUpRight size={14} />
                             </Link>
                         </article>
@@ -238,27 +239,35 @@ export function AmcPlansSection() {
                             </p>
 
                             <div className="mt-9 flex flex-wrap items-center gap-4">
-                                <Link
-                                    href="/contact"
-                                    className="group inline-flex items-center gap-2.5 rounded-full bg-[#171717] px-7 py-3.5 text-[13px] font-semibold text-white transition-colors duration-300 hover:bg-[#f56616]"
+                                <motion.div
+                                    whileHover={{ y: -2 }}
+                                    whileTap={{ scale: 0.98 }}
                                 >
-                                    <span>Request AMC proposal</span>
-                                    <ArrowUpRight
-                                        size={15}
-                                        className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
-                                    />
-                                </Link>
-
-                                <Link
-                                    href="/projects"
-                                    className="group inline-flex items-center gap-2 text-[13px] font-semibold text-black/50 transition-colors hover:text-[#f56616]"
+                                    <Link
+                                        href="/contact"
+                                        className="group inline-flex h-14 items-center justify-center gap-4 rounded-full border border-[#171717] !bg-[#171717] px-7 !text-sm !font-semibold !text-white transition-all duration-300 hover:!border-[#f56616] hover:!bg-[#f56616] hover:!text-white"                                >
+                                        <span>Request AMC proposal</span>
+                                        <ArrowUpRight
+                                            size={15}
+                                            className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                                        />
+                                    </Link>
+                                </motion.div>
+                                <motion.div
+                                    whileHover={{ y: -2 }}
+                                    whileTap={{ scale: 0.98 }}
                                 >
-                                    View project work
-                                    <ArrowUpRight
-                                        size={14}
-                                        className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
-                                    />
-                                </Link>
+                                    <Link
+                                        href="/projects"
+                                        className="group inline-flex items-center gap-2 text-[13px] font-semibold text-black/50 transition-colors hover:text-[#f56616]"
+                                    >
+                                        View project work
+                                        <ArrowUpRight
+                                            size={14}
+                                            className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                                        />
+                                    </Link>
+                                </motion.div>
                             </div>
                         </div>
 

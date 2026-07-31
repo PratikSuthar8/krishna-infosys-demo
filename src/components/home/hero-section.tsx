@@ -291,11 +291,10 @@ export function HeroSection() {
             {stats.map((stat, index) => (
               <div
                 key={stat.label}
-                className={`hero-stat ${
-                  index !== 0
+                className={`hero-stat ${index !== 0
                     ? "border-l border-black/[0.08] pl-4 sm:pl-7"
                     : ""
-                }`}
+                  }`}
               >
                 <div className="text-2xl font-semibold tracking-[-0.04em] text-[#171717] sm:text-3xl">
                   {stat.value}

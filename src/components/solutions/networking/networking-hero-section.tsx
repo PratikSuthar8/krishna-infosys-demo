@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import Link from "next/link";
+import { motion } from 'framer-motion'
 import gsap from "gsap";
 import {
     ArrowUpRight,
@@ -89,27 +90,34 @@ export function NetworkingHeroSection() {
                     </p>
 
                     <div className="net-hero-action mt-9 flex flex-wrap items-center gap-4">
-                        <Link
-                            href="/contact"
-                            className="group inline-flex items-center gap-2.5 rounded-full bg-[#171717] px-7 py-3.5 text-[13px] font-semibold text-white transition-colors duration-300 hover:bg-[#f56616]"
+                        <motion.div
+                            whileHover={{ y: -2 }}
+                            whileTap={{ scale: 0.98 }}
                         >
-                            <span>Scope network infrastructure</span>
-                            <ArrowUpRight
-                                size={15}
-                                className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
-                            />
-                        </Link>
-
-                        <a
-                            href="#capabilities"
-                            className="group inline-flex items-center gap-2 text-[13px] font-semibold text-black/55 transition-colors hover:text-[#f56616]"
+                            <Link
+                                href="/contact"
+                                className="group inline-flex h-14 items-center justify-center gap-4 rounded-full border border-[#171717] !bg-[#171717] px-7 !text-sm !font-semibold !text-white transition-all duration-300 hover:!border-[#f56616] hover:!bg-[#f56616] hover:!text-white"                            >
+                                <span>Scope network infrastructure</span>
+                                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-white/10 transition-transform duration-300 group-hover:rotate-45">
+                                    <ArrowUpRight size={15} />
+                                </span>
+                            </Link>
+                        </motion.div>
+                        <motion.div
+                            whileHover={{ y: -2 }}
+                            whileTap={{ scale: 0.98 }}
                         >
-                            View capabilities
-                            <ArrowUpRight
-                                size={14}
-                                className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
-                            />
-                        </a>
+                            <a
+                                href="#capabilities"
+                                className="group inline-flex items-center gap-2 text-[13px] font-semibold text-black/55 transition-colors hover:text-[#f56616]"
+                            >
+                                View capabilities
+                                <ArrowUpRight
+                                    size={14}
+                                    className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                                />
+                            </a>
+                        </motion.div>
                     </div>
                 </div>
 

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import Link from "next/link";
+import { motion } from "framer-motion"
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ArrowUpRight, Mail, Phone, Radio } from "lucide-react";
@@ -88,27 +89,35 @@ export function CommunicationCtaSection() {
                             </p>
 
                             <div className="mt-9 flex flex-wrap items-center gap-4">
-                                <Link
-                                    href="/contact"
-                                    className="group inline-flex items-center gap-2.5 rounded-full bg-[#171717] px-7 py-3.5 text-[13px] font-semibold text-white transition-colors duration-300 hover:bg-[#f56616]"
+                                <motion.div
+                                    whileHover={{ y: -2 }}
+                                    whileTap={{ scale: 0.98 }}
                                 >
-                                    <span>Request consultation</span>
-                                    <ArrowUpRight
-                                        size={15}
-                                        className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
-                                    />
-                                </Link>
-
-                                <Link
-                                    href="/solutions"
-                                    className="group inline-flex items-center gap-2 text-[13px] font-semibold text-black/50 transition-colors hover:text-[#f56616]"
+                                    <Link
+                                        href="/contact"
+                                        className="group inline-flex h-14 items-center justify-center gap-4 rounded-full border border-[#171717] !bg-[#171717] px-7 !text-sm !font-semibold !text-white transition-all duration-300 hover:!border-[#f56616] hover:!bg-[#f56616] hover:!text-white"                                >
+                                        <span>Request consultation</span>
+                                        <ArrowUpRight
+                                            size={15}
+                                            className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                                        />
+                                    </Link>
+                                </motion.div>
+                                <motion.div
+                                    whileHover={{ y: -2 }}
+                                    whileTap={{ scale: 0.98 }}
                                 >
-                                    All solutions
-                                    <ArrowUpRight
-                                        size={14}
-                                        className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
-                                    />
-                                </Link>
+                                    <Link
+                                        href="/solutions"
+                                        className="group inline-flex items-center gap-2 text-[13px] font-semibold text-black/50 transition-colors hover:text-[#f56616]"
+                                    >
+                                        All solutions
+                                        <ArrowUpRight
+                                            size={14}
+                                            className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                                        />
+                                    </Link>
+                                </motion.div>
                             </div>
                         </div>
 

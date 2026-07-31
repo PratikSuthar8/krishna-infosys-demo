@@ -142,26 +142,35 @@ export function SolutionsHeroSection() {
                         </p>
 
                         <div className="sol-hero-action mt-8 flex flex-wrap items-center gap-4">
-                            <Link
-                                href="/contact"
-                                className="group inline-flex h-14 items-center justify-center gap-4 rounded-full border border-[#171717] !bg-[#171717] px-7 !text-sm !font-semibold !text-white transition-all duration-300 hover:!border-[#f56616] hover:!bg-[#f56616] hover:!text-white"
+                            <motion.div
+                                whileHover={{ y: -2 }}
+                                whileTap={{ scale: 0.98 }}
                             >
-                                <span>Scope a project</span>
-                                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-white/10 transition-transform duration-300 group-hover:rotate-45">
-                                    <ArrowUpRight size={15} />
-                                </span>
-                            </Link>
-
-                            <a
-                                href="#domains"
-                                className="group inline-flex h-14 items-center justify-center gap-3 rounded-full border border-black/10 !bg-white/70 px-7 !text-sm !font-semibold !text-[#171717] backdrop-blur transition-all duration-300 hover:!border-[#f56616]/30 hover:!bg-[#f56616]/[0.06] hover:!text-[#f56616]"
+                                <Link
+                                    href="/contact"
+                                    className="group inline-flex h-14 items-center justify-center gap-4 rounded-full border border-[#171717] !bg-[#171717] px-7 !text-sm !font-semibold !text-white transition-all duration-300 hover:!border-[#f56616] hover:!bg-[#f56616] hover:!text-white"
+                                >
+                                    <span>Scope a project</span>
+                                    <span className="flex h-7 w-7 items-center justify-center rounded-full bg-white/10 transition-transform duration-300 group-hover:rotate-45">
+                                        <ArrowUpRight size={15} />
+                                    </span>
+                                </Link>
+                            </motion.div>
+                            <motion.div
+                                whileHover={{ y: -2 }}
+                                whileTap={{ scale: 0.98 }}
                             >
-                                Explore domains
-                                <ArrowUpRight
-                                    size={14}
-                                    className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
-                                />
-                            </a>
+                                <a
+                                    href="#domains"
+                                    className="group inline-flex h-14 items-center justify-center gap-3 rounded-full border border-black/10 !bg-white/70 px-7 !text-sm !font-semibold !text-[#171717] backdrop-blur transition-all duration-300 hover:!border-[#f56616]/30 hover:!bg-[#f56616]/[0.06] hover:!text-[#f56616]"
+                                >
+                                    Explore domains
+                                    <ArrowUpRight
+                                        size={14}
+                                        className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                                    />
+                                </a>
+                            </motion.div>
                         </div>
                     </div>
 

@@ -128,27 +128,34 @@ export function IndustriesHeroSection() {
                         </p>
 
                         <div className="ind-hero-action mt-8 flex flex-wrap items-center gap-4">
-                            <Link
-                                href="/contact"
-                                className="group inline-flex items-center gap-2.5 rounded-full bg-[#171717] px-7 py-3.5 text-[13px] font-semibold text-white transition-colors duration-300 hover:bg-[#f56616]"
+                            <motion.div
+                                whileHover={{ y: -2 }}
+                                whileTap={{ scale: 0.98 }}
                             >
-                                <span>Talk sector requirements</span>
-                                <ArrowUpRight
-                                    size={15}
-                                    className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
-                                />
-                            </Link>
-
-                            <a
-                                href="#mosaic"
-                                className="group inline-flex items-center gap-2 text-[13px] font-semibold text-black/55 transition-colors hover:text-[#f56616]"
+                                <Link
+                                    href="/contact"
+                                    className="group inline-flex h-14 items-center justify-center gap-4 rounded-full border border-[#171717] !bg-[#171717] px-7 !text-sm !font-semibold !text-white transition-all duration-300 hover:!border-[#f56616] hover:!bg-[#f56616] hover:!text-white"                            >
+                                    <span>Talk sector requirements</span>
+                                    <span className="flex h-7 w-7 items-center justify-center rounded-full bg-white/10 transition-transform duration-300 group-hover:rotate-45">
+                                        <ArrowUpRight size={15} />
+                                    </span>
+                                </Link>
+                            </motion.div>
+                            <motion.div
+                                whileHover={{ y: -2 }}
+                                whileTap={{ scale: 0.98 }}
                             >
-                                Browse verticals
-                                <ArrowUpRight
-                                    size={14}
-                                    className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
-                                />
-                            </a>
+                                <a
+                                    href="#mosaic"
+                                    className="group inline-flex items-center gap-2 text-[13px] font-semibold text-black/55 transition-colors hover:text-[#f56616]"
+                                >
+                                    Browse verticals
+                                    <ArrowUpRight
+                                        size={14}
+                                        className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                                    />
+                                </a>
+                            </motion.div>
                         </div>
                     </div>
 
@@ -211,8 +218,8 @@ export function IndustriesHeroSection() {
                                     >
                                         <span
                                             className={`flex h-14 w-14 items-center justify-center rounded-full border transition-all duration-500 sm:h-16 sm:w-16 ${on
-                                                    ? "border-[#f56616] bg-[#f56616] text-white shadow-[0_0_32px_rgba(245,102,22,0.4)]"
-                                                    : "border-black/10 bg-white text-black/45 hover:border-[#f56616]/40 hover:text-[#f56616]"
+                                                ? "border-[#f56616] bg-[#f56616] text-white shadow-[0_0_32px_rgba(245,102,22,0.4)]"
+                                                : "border-black/10 bg-white text-black/45 hover:border-[#f56616]/40 hover:text-[#f56616]"
                                                 }`}
                                         >
                                             <Icon size={22} strokeWidth={1.45} />
@@ -264,8 +271,8 @@ export function IndustriesHeroSection() {
                                         aria-label={item.label}
                                         onClick={() => setActive(i)}
                                         className={`h-1 rounded-full transition-all duration-400 ${i === active
-                                                ? "w-5 bg-[#f56616]"
-                                                : "w-1.5 bg-black/15 hover:bg-black/30"
+                                            ? "w-5 bg-[#f56616]"
+                                            : "w-1.5 bg-black/15 hover:bg-black/30"
                                             }`}
                                     />
                                 ))}
