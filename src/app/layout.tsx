@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
 import { SmoothScrollProvider } from "@/components/providers/smooth-scroll-provider";
+import { CookieBanner } from "@/components/cookies/cookie-banner";
 
 import type { Metadata, Viewport } from "next";
 import { siteConfig } from "@/lib/seo";
@@ -104,6 +105,7 @@ export default function RootLayout({
           {children}
           <Footer />
         </SmoothScrollProvider>
+        <CookieBanner />
       </body>
     </html>
   );

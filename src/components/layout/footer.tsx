@@ -1,10 +1,8 @@
+"use client";
 import Image from "next/image";
 import Link from "next/link";
-import {
-  ArrowUpRight,
-  Mail,
-  Phone,
-} from "lucide-react";
+import { contact } from "@/lib/contact";
+import { ArrowUpRight, Mail, Phone } from "lucide-react";
 
 const navigation = [
   { label: "About", href: "/about" },
@@ -23,7 +21,18 @@ const solutions = [
   { label: "Automation & Safety", href: "/solutions/automation-safety" },
 ];
 
+const legal = [
+  { label: "Terms & Conditions", href: "/terms" },
+  { label: "Privacy Policy", href: "/privacy" },
+  { label: "Cookie Policy", href: "/cookies" },
+];
+
 export function Footer() {
+  const scrollToTop = () => {
+    if (typeof window === "undefined") return;
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   return (
     <footer className="bg-[#111111] text-white">
       <div className="mx-auto max-w-[1500px] px-5 sm:px-8 lg:px-12 xl:px-16">
@@ -52,7 +61,6 @@ export function Footer() {
 
             <div className="mt-7 flex items-center gap-3">
               <span className="h-px w-8 bg-[#f56616]" />
-
               <span className="text-[8px] font-bold uppercase tracking-[0.2em] text-white/30">
                 Design · Consult · Execute
               </span>
@@ -73,7 +81,6 @@ export function Footer() {
                   className="group flex items-center gap-2 text-sm font-medium text-white/52 transition-colors hover:text-white"
                 >
                   {item.label}
-
                   <ArrowUpRight
                     size={11}
                     className="text-[#f56616] opacity-0 transition-all duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:opacity-100"
@@ -116,12 +123,10 @@ export function Footer() {
                 <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-white/10 text-[#f56616] transition-colors group-hover:border-[#f56616]/40">
                   <Phone size={13} strokeWidth={1.6} />
                 </span>
-
                 <span>
                   <span className="block text-[8px] font-bold uppercase tracking-[0.16em] text-white/22">
                     Call
                   </span>
-
                   <span className="mt-1 block text-sm font-medium text-white/62 transition-colors group-hover:text-white">
                     +91 79 4030 4848
                   </span>
@@ -135,12 +140,10 @@ export function Footer() {
                 <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-white/10 text-[#f56616] transition-colors group-hover:border-[#f56616]/40">
                   <Mail size={13} strokeWidth={1.6} />
                 </span>
-
                 <span className="min-w-0">
                   <span className="block text-[8px] font-bold uppercase tracking-[0.16em] text-white/22">
                     Email
                   </span>
-
                   <span className="mt-1 block break-all text-sm font-medium text-white/62 transition-colors group-hover:text-white">
                     info@krishnainfosys.com
                   </span>
@@ -153,7 +156,6 @@ export function Footer() {
               className="group mt-7 inline-flex items-center gap-3 text-[9px] font-bold uppercase tracking-[0.16em] text-white/70 transition-colors hover:text-white"
             >
               Contact Krishna Infosys
-
               <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#f56616] text-white">
                 <ArrowUpRight
                   size={13}
@@ -165,12 +167,24 @@ export function Footer() {
         </div>
 
         {/* BOTTOM BAR */}
-        <div className="flex flex-col gap-4 border-t border-white/10 py-5 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-col gap-4 border-t border-white/10 py-5 lg:flex-row lg:items-center lg:justify-between">
           <p className="text-[9px] font-medium tracking-[0.03em] text-white/25">
             © {new Date().getFullYear()} Krishna Infosys. All rights reserved.
           </p>
 
-          <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
+            {legal.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="text-[9px] font-medium text-white/35 transition-colors hover:text-[#f56616]"
+              >
+                {item.label}
+              </Link>
+            ))}
+
+            <span className="hidden h-3 w-px bg-white/10 sm:block" />
+
             <span className="text-[8px] font-semibold uppercase tracking-[0.16em] text-white/20">
               Ahmedabad · Gujarat · India
             </span>
@@ -182,8 +196,9 @@ export function Footer() {
               www.krishnainfosys.com
             </a>
 
-            <a
-              href="#"
+            <button
+              type="button"
+              onClick={scrollToTop}
               className="group flex items-center gap-2 text-[8px] font-bold uppercase tracking-[0.16em] text-white/30 transition-colors hover:text-white"
               aria-label="Back to top"
             >
@@ -192,7 +207,7 @@ export function Footer() {
                 size={12}
                 className="rotate-[-45deg] text-[#f56616] transition-transform group-hover:-translate-y-0.5"
               />
-            </a>
+            </button>
           </div>
         </div>
       </div>

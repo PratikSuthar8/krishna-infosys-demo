@@ -14,6 +14,9 @@ const routes = [
 	"/projects",
 	"/amc-support",
 	"/contact",
+	"/terms",
+	"/privacy",
+	"/cookies",
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {
