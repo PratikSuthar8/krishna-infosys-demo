@@ -7,7 +7,7 @@ export const siteConfig = {
 	url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.krishnainfosys.com",
 	ogImage: "/og-default.png",
 	locale: "en_IN",
-	phone: "+917940309999",
+	phone: "+917940304848",
 	email: "info@krishnainfosys.com",
 	address: {
 		city: "Ahmedabad",

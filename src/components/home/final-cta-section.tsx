@@ -169,7 +169,7 @@ export function FinalCtaSection() {
             <div className="final-cta-reveal mt-8">
               <Link
                 href="/contact"
-                className="group inline-flex min-h-14 items-center gap-5 rounded-full bg-[#f56616] py-2 pl-7 pr-2 text-sm font-semibold text-white transition-all duration-300 hover:bg-white hover:text-[#171717]"
+                className="group inline-flex min-h-14 items-center gap-5 rounded-full bg-[#f56616] py-2 pl-7 pr-2 text-sm font-semibold text-white transition-all duration-300 hover:bg-white hover:text-[#171717]!"
               >
                 Discuss your requirement
 
@@ -197,38 +197,33 @@ export function FinalCtaSection() {
                     onClick={() => setActive(index)}
                     onMouseEnter={() => setActive(index)}
                     onFocus={() => setActive(index)}
-                    className={`final-cta-intent group relative min-h-[105px] border-b border-white/10 px-1 py-5 text-left transition-colors duration-300 sm:px-5 ${
-                      index % 2 === 0 ? "sm:border-r" : ""
-                    } ${
-                      isActive
+                    className={`final-cta-intent group relative min-h-[105px] border-b border-white/10 px-1 py-5 text-left transition-colors duration-300 sm:px-5 ${index % 2 === 0 ? "sm:border-r" : ""
+                      } ${isActive
                         ? "bg-white/[0.055]"
                         : "hover:bg-white/[0.025]"
-                    }`}
+                      }`}
                   >
                     <div className="flex items-center gap-4">
                       <span
-                        className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full border transition-all duration-300 ${
-                          isActive
+                        className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full border transition-all duration-300 ${isActive
                             ? "border-[#f56616]/50 bg-[#f56616] text-white"
                             : "border-white/10 text-white/35 group-hover:border-white/20 group-hover:text-white/65"
-                        }`}
+                          }`}
                       >
                         <Icon size={15} strokeWidth={1.5} />
                       </span>
 
                       <div className="min-w-0">
                         <span
-                          className={`block font-mono text-[7px] font-bold uppercase tracking-[0.18em] ${
-                            isActive ? "text-[#f56616]" : "text-white/20"
-                          }`}
+                          className={`block font-mono text-[7px] font-bold uppercase tracking-[0.18em] ${isActive ? "text-[#f56616]" : "text-white/20"
+                            }`}
                         >
                           {intent.number} / {intent.short}
                         </span>
 
                         <span
-                          className={`mt-1.5 block text-sm font-semibold tracking-[-0.02em] transition-colors ${
-                            isActive ? "text-white" : "text-white/55"
-                          }`}
+                          className={`mt-1.5 block text-sm font-semibold tracking-[-0.02em] transition-colors ${isActive ? "text-white" : "text-white/55"
+                            }`}
                         >
                           {intent.label}
                         </span>
@@ -236,9 +231,8 @@ export function FinalCtaSection() {
                     </div>
 
                     <span
-                      className={`absolute bottom-0 left-0 h-[2px] bg-[#f56616] transition-all duration-300 ${
-                        isActive ? "w-full" : "w-0"
-                      }`}
+                      className={`absolute bottom-0 left-0 h-[2px] bg-[#f56616] transition-all duration-300 ${isActive ? "w-full" : "w-0"
+                        }`}
                     />
                   </button>
                 );

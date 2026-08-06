@@ -1,5 +1,7 @@
 "use client";
 
+import { contact } from "@/lib/contact";
+
 import { useEffect, useRef, useState, FormEvent } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -85,7 +87,7 @@ export function ContactFormSection() {
                                 </p>
                                 <p className="mt-2 text-sm leading-6 text-white/55">
                                     Thank you — the team will review your enquiry and respond
-                                    shortly. For urgent matters, call +91 79 4030 9999.
+                                    shortly. For urgent matters, call {contact.phone.display}.
                                 </p>
                             </div>
                         ) : (
@@ -202,12 +204,12 @@ export function ContactFormSection() {
 
                             <div className="mt-6 space-y-5">
                                 <a
-                                    href="tel:+917940309999"
+                                    href={contact.phone.href}
                                     className="flex items-start gap-3 text-sm transition-colors hover:text-[#f56616]"
                                 >
                                     <Phone size={16} className="mt-0.5 text-[#f56616]" />
                                     <div>
-                                        <div className="font-semibold">+91 79 4030 9999</div>
+                                        <div className="font-semibold">{contact.phone.display}</div>
                                         <div className="mt-0.5 text-[12px] text-black/40">
                                             Primary business line
                                         </div>

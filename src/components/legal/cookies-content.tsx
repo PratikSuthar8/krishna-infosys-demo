@@ -1,5 +1,7 @@
 "use client";
 
+import { contact } from "@/lib/contact";
+
 import { useEffect, useRef } from "react";
 import Link from "next/link";
 import gsap from "gsap";
@@ -65,7 +67,7 @@ const sections = [
         id: "contact",
         title: "8. Contact",
         body: [
-            "Questions about cookies: info@krishnainfosys.com · +91 79 4030 4848",
+            "Questions about cookies: info@krishnainfosys.com · {contact.phone.display}",
             "Grievance Officer: Prakash Patel · ceo@krishnainfosys.com",
         ],
     },

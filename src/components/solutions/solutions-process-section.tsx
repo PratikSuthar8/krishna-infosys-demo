@@ -1,5 +1,7 @@
 "use client";
 
+import { contact } from "@/lib/contact";
+
 import { useEffect, useRef } from "react";
 import Link from "next/link";
 import gsap from "gsap";
@@ -243,11 +245,11 @@ export function SolutionsProcessSection() {
 
                             <div className="mt-5 space-y-4">
                                 <a
-                                    href="tel:+917940309999"
+                                    href={contact.phone.href}
                                     className="flex items-center gap-3 text-sm text-black/55 transition-colors hover:text-[#171717]"
                                 >
                                     <Phone size={15} strokeWidth={1.5} className="text-[#f56616]" />
-                                    +91 79 4030 9999
+                                    {contact.phone.display}
                                 </a>
 
                                 <a

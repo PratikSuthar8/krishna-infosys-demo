@@ -252,8 +252,8 @@ export function SolutionsDomainsSection() {
                                             type="button"
                                             onClick={() => scrollToChapter(i)}
                                             className={`flex w-full items-center gap-3.5 border-l-2 py-3.5 pl-5 text-left transition-all duration-300 ${on
-                                                    ? "-ml-px border-[#f56616] text-white"
-                                                    : "border-transparent text-white/40 hover:text-white/75"
+                                                ? "-ml-px border-[#f56616] text-white"
+                                                : "border-transparent text-white/40 hover:text-white/75"
                                                 }`}
                                         >
                                             <span
@@ -384,7 +384,7 @@ export function SolutionsDomainsSection() {
                             type="button"
                             onClick={() => scrollToChapter(i)}
                             className={`shrink-0 border px-3.5 py-2 text-[11px] font-semibold transition-colors ${i === activeIndex
-                                ? "border-[#f56616] bg-[#f56616] text-white"
+                                ? "border-[#f56616] bg-[#f56616] text-white!"
                                 : "border-white/15 text-white/50"
                                 }`}
                         >

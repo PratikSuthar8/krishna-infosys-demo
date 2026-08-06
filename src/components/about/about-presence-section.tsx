@@ -1,5 +1,7 @@
 "use client";
 
+import { contact } from "@/lib/contact";
+
 import { useEffect, useRef } from "react";
 import Link from "next/link";
 import gsap from "gsap";
@@ -19,7 +21,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 const metrics = [
     { value: "24+", label: "Years of excellence", note: "Since 2001" },
-    { value: "825+", label: "Satisfied clients", note: "Across verticals" },
+    { value: "850+", label: "Satisfied clients", note: "Across verticals" },
     { value: "2,100+", label: "Projects delivered", note: "Pan-India" },
     { value: "<1.5%", label: "Complaint ratio", note: "Service discipline" },
 ];
@@ -271,11 +273,11 @@ export function AboutPresenceSection() {
 
                             <div className="mt-5 space-y-4">
                                 <a
-                                    href="tel:+917940309999"
+                                    href={contact.phone.href}
                                     className="group flex items-center gap-3 text-sm text-white/60 transition-colors hover:text-white"
                                 >
                                     <Phone size={15} strokeWidth={1.5} className="text-[#f56616]" />
-                                    <span>+91 79 4030 9999</span>
+                                    <span>{contact.phone.display}</span>
                                 </a>
 
                                 <a

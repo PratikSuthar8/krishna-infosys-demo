@@ -117,7 +117,7 @@ export function Footer() {
 
             <div className="mt-5 space-y-4">
               <a
-                href="tel:+917940304848"
+                href={contact.phone.href}
                 className="group flex items-start gap-3"
               >
                 <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-white/10 text-[#f56616] transition-colors group-hover:border-[#f56616]/40">
@@ -128,7 +128,7 @@ export function Footer() {
                     Call
                   </span>
                   <span className="mt-1 block text-sm font-medium text-white/62 transition-colors group-hover:text-white">
-                    +91 79 4030 4848
+                    {contact.phone.display}
                   </span>
                 </span>
               </a>

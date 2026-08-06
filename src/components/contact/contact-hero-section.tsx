@@ -1,5 +1,7 @@
 "use client";
 
+import { contact } from "@/lib/contact";
+
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { Mail, MapPin, Phone } from "lucide-react";
@@ -76,11 +78,11 @@ export function ContactHeroSection() {
 
                 <div className="mt-12 flex flex-wrap gap-3">
                     <a
-                        href="tel:+917940309999"
+                        href={contact.phone.href}
                         className="con-hero-chip inline-flex items-center gap-2.5 border border-black/[0.08] bg-white/85 px-4 py-3 text-[13px] font-semibold text-black/70 transition-colors hover:border-[#f56616]/40"
                     >
                         <Phone size={15} className="text-[#f56616]" />
-                        +91 79 4030 9999
+                        {contact.phone.display}
                     </a>
                     <a
                         href="mailto:info@krishnainfosys.com"

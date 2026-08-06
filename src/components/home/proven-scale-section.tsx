@@ -17,7 +17,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 const metrics = [
   {
-    value: 825,
+    value: 850,
     suffix: "+",
     label: "Clients",
     note: "Relationships built across sectors and operating environments.",
@@ -60,7 +60,7 @@ const journey = [
   {
     year: "Today",
     title: "Built at scale",
-    description: "825+ Clients · 2,100+ Projects",
+    description: "850+ Clients · 2,100+ Projects",
   },
 ];
 

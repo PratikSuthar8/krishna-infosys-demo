@@ -1,5 +1,7 @@
 "use client";
 
+import { contact } from "@/lib/contact";
+
 import { useEffect, useRef } from "react";
 import Link from "next/link";
 import gsap from "gsap";
@@ -115,7 +117,7 @@ const sections = [
             "Grievances relating to processing of information may be addressed in writing to:",
             "Grievance Officer: Prakash Patel (CEO)",
             "Email: ceo@krishnainfosys.com (also info@krishnainfosys.com)",
-            "Phone: +91 79 4030 4848",
+            "Phone: {contact.phone.display}",
             "Postal: 15 & 16, 1st Floor, Swastik House, Near Stadium Circle, Opp. Muktjivan Colour Lab, Near Income Tax Underpass, Navrangpura, Ahmedabad – 380009, Gujarat, India",
             "We aim to acknowledge grievances promptly and redress them as expeditiously as practicable.",
         ],
@@ -125,7 +127,7 @@ const sections = [
         title: "15. Contact",
         body: [
             "Questions about this Privacy Policy:",
-            "Email: info@krishnainfosys.com · Phone: +91 79 4030 4848",
+            "Email: info@krishnainfosys.com · Phone: {contact.phone.display}",
             "Website: www.krishnainfosys.com",
             "Operational office: 15 & 16, 1st Floor, Swastik House, Navrangpura, Ahmedabad – 380009",
             "Registered office: A-61, Jogeshwari Society, CTM Cross Road, Amaraiwadi, Ahmedabad – 380026",
@@ -209,7 +211,7 @@ export function PrivacyContent() {
                     <p className="mt-2">
                         GSTIN: 24BNGPP7256R1Z5 · UDYAM-GJ-01-0323748 · ISO 9001:2015
                     </p>
-                    <p className="mt-1">Phone: +91 79 4030 4848 · info@krishnainfosys.com</p>
+                    <p className="mt-1">Phone: {contact.phone.display} · info@krishnainfosys.com</p>
                 </div>
 
                 <div className="legal-reveal mt-10 flex flex-wrap items-center gap-4">

@@ -73,8 +73,8 @@ const milestones = [
         title: "Integrated partner",
         headline: "2,100+ projects. One accountable model.",
         description:
-            "825+ clients and 2,100+ projects later — design-led ELV systems with genuine OEM sourcing, traceability and lifecycle support under ISO 9001:2015.",
-        detail: "24+ years · <1.5% complaint ratio · ISO 9001:2015",
+            "850+ clients and 2,100+ projects later — design-led ELV systems with genuine OEM sourcing, traceability and lifecycle support under ISO 9001:2015.",
+        detail: "25+ years · <1.5% complaint ratio · ISO 9001:2015",
         icon: Building2,
     },
 ];
@@ -475,7 +475,7 @@ export function AboutStorySection() {
             <div className="relative mx-auto max-w-[1500px] px-5 pb-10 sm:px-8 lg:hidden">
                 <div className="mb-7 flex items-center justify-between border-y border-white/[0.08] py-4">
                     <span className="text-[9px] font-semibold uppercase tracking-[0.23em] text-[#f56616]">
-                        24+ years of excellence
+                        25+ years of excellence
                     </span>
                     <span className="font-mono text-[10px] text-white/30">01 — 06</span>
                 </div>
@@ -539,7 +539,7 @@ export function AboutStorySection() {
                 <div className="mx-auto grid max-w-[1500px] gap-6 px-5 py-12 sm:grid-cols-2 sm:px-8 lg:grid-cols-4 lg:px-12 lg:py-14 xl:px-16">
                     {[
                         { value: "2,100+", label: "Projects delivered" },
-                        { value: "825+", label: "Happy clients" },
+                        { value: "850+", label: "Happy clients" },
                         { value: "24+", label: "Years experience" },
                         { value: "<1.5%", label: "Complaint ratio" },
                     ].map((item) => (

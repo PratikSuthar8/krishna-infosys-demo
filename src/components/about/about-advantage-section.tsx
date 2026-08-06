@@ -65,7 +65,7 @@ const advantages = [
         stats: [
             { value: "2,100+", label: "Projects" },
             { value: "<1.5%", label: "Complaint ratio" },
-            { value: "825+", label: "Clients" },
+            { value: "850+", label: "Clients" },
         ],
     },
     {

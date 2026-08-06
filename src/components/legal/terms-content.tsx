@@ -1,5 +1,7 @@
 "use client";
 
+import { contact } from "@/lib/contact";
+
 import { useEffect, useRef } from "react";
 import Link from "next/link";
 import gsap from "gsap";
@@ -133,7 +135,7 @@ const sections = [
         body: [
             "In accordance with the Information Technology Act, 2000 and applicable rules, grievances regarding these Terms, the Website, or personal data may be addressed to:",
             "Grievance Officer: Prakash Patel (CEO)",
-            "Email: ceo@krishnainfosys.com | Phone: +91 79 4030 4848",
+            "Email: ceo@krishnainfosys.com | Phone: {contact.phone.display}",
             "Address: 15 & 16, 1st Floor, Swastik House, Near Stadium Circle, Navrangpura, Ahmedabad – 380009",
             "Grievances shall be acknowledged within 24 hours and addressed within 15 working days where practicable.",
             "General enquiries: info@krishnainfosys.com · www.krishnainfosys.com",
