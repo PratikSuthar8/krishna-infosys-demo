@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -11,7 +11,16 @@ gsap.registerPlugin(ScrollTrigger);
 
 export function BlogListSection() {
   const sectionRef = useRef<HTMLElement>(null);
-  const posts = getBlogPosts();
+  const [posts, setPosts] = useState(getBlogPosts());
+
+  useEffect(() => {
+    fetch("/api/blog")
+      .then((r) => r.json())
+      .then((d) => {
+        if (d.ok && Array.isArray(d.posts)) setPosts(d.posts);
+      })
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     const ctx = gsap.context(() => {

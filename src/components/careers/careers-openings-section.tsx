@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -12,7 +12,16 @@ gsap.registerPlugin(ScrollTrigger);
 
 export function CareersOpeningsSection() {
   const sectionRef = useRef<HTMLElement>(null);
-  const openings = getJobs();
+  const [openings, setOpenings] = useState(getJobs());
+
+  useEffect(() => {
+    fetch("/api/jobs")
+      .then((r) => r.json())
+      .then((d) => {
+        if (d.ok && Array.isArray(d.jobs)) setOpenings(d.jobs);
+      })
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     const ctx = gsap.context(() => {

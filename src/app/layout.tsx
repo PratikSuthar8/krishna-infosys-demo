@@ -4,7 +4,7 @@ import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
 import { SmoothScrollProvider } from "@/components/providers/smooth-scroll-provider";
 import { CookieBanner } from "@/components/cookies/cookie-banner";
-
+import { SiteChrome } from "@/components/layout/site-chrome";
 import type { Metadata, Viewport } from "next";
 import { siteConfig } from "@/lib/seo";
 import { OrganizationJsonLd } from "@/components/seo/organization-json-ld";
@@ -101,9 +101,7 @@ export default function RootLayout({
       <body>
         <OrganizationJsonLd />
         <SmoothScrollProvider>
-          <Navbar />
-          {children}
-          <Footer />
+          <SiteChrome>{children}</SiteChrome>
         </SmoothScrollProvider>
         <CookieBanner />
       </body>
