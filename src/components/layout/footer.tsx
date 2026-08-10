@@ -1,4 +1,5 @@
 "use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import { contact } from "@/lib/contact";
@@ -11,6 +12,9 @@ const navigation = [
   { label: "Projects", href: "/projects" },
   { label: "AMC & Support", href: "/amc-support" },
   { label: "Contact", href: "/contact" },
+];
+
+const company = [
   { label: "Careers", href: "/careers" },
   { label: "Blog", href: "/blog" },
 ];
@@ -38,9 +42,9 @@ export function Footer() {
   return (
     <footer className="bg-[#111111] text-white">
       <div className="mx-auto max-w-[1500px] px-5 sm:px-8 lg:px-12 xl:px-16">
-        <div className="grid gap-12 border-t border-white/10 py-12 lg:grid-cols-[1.35fr_0.65fr_0.8fr_1fr] lg:gap-10 lg:py-14">
+        <div className="grid gap-12 border-t border-white/10 py-12 sm:grid-cols-2 lg:grid-cols-[1.2fr_0.55fr_0.7fr_0.55fr_0.95fr] lg:gap-8 lg:py-14">
           {/* BRAND */}
-          <div>
+          <div className="sm:col-span-2 lg:col-span-1">
             <Link
               href="/"
               aria-label="Krishna Infosys home"
@@ -69,12 +73,11 @@ export function Footer() {
             </div>
           </div>
 
-          {/* NAVIGATION */}
+          {/* NAVIGATE */}
           <div>
             <span className="text-[8px] font-bold uppercase tracking-[0.2em] text-white/25">
               Navigate
             </span>
-
             <nav className="mt-5 flex flex-col items-start gap-3.5">
               {navigation.map((item) => (
                 <Link
@@ -97,7 +100,6 @@ export function Footer() {
             <span className="text-[8px] font-bold uppercase tracking-[0.2em] text-white/25">
               Solutions
             </span>
-
             <nav className="mt-5 flex flex-col items-start gap-3.5">
               {solutions.map((item) => (
                 <Link
@@ -106,6 +108,28 @@ export function Footer() {
                   className="text-sm font-medium text-white/52 transition-colors hover:text-white"
                 >
                   {item.label}
+                </Link>
+              ))}
+            </nav>
+          </div>
+
+          {/* COMPANY */}
+          <div>
+            <span className="text-[8px] font-bold uppercase tracking-[0.2em] text-white/25">
+              Company
+            </span>
+            <nav className="mt-5 flex flex-col items-start gap-3.5">
+              {company.map((item) => (
+                <Link
+                  key={item.label}
+                  href={item.href}
+                  className="group flex items-center gap-2 text-sm font-medium text-white/52 transition-colors hover:text-white"
+                >
+                  {item.label}
+                  <ArrowUpRight
+                    size={11}
+                    className="text-[#f56616] opacity-0 transition-all duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:opacity-100"
+                  />
                 </Link>
               ))}
             </nav>
@@ -136,7 +160,7 @@ export function Footer() {
               </a>
 
               <a
-                href="mailto:info@krishnainfosys.com"
+                href={`mailto:${contact.email.general}`}
                 className="group flex items-start gap-3"
               >
                 <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-white/10 text-[#f56616] transition-colors group-hover:border-[#f56616]/40">
@@ -147,7 +171,7 @@ export function Footer() {
                     Email
                   </span>
                   <span className="mt-1 block break-all text-sm font-medium text-white/62 transition-colors group-hover:text-white">
-                    info@krishnainfosys.com
+                    {contact.email.general}
                   </span>
                 </span>
               </a>
@@ -192,10 +216,10 @@ export function Footer() {
             </span>
 
             <a
-              href="https://www.krishnainfosys.com"
+              href={contact.web.href}
               className="text-[9px] font-medium text-white/35 transition-colors hover:text-[#f56616]"
             >
-              www.krishnainfosys.com
+              {contact.web.display}
             </a>
 
             <button
