@@ -1,0 +1,162 @@
+{
+  "company": {
+    "name": "Krishna Infosys",
+    "tagline": "Excellence through Expertise",
+    "legalStatus": "Proprietary Firm (Est. 2001)",
+    "hq": "Ahmedabad, Gujarat, India",
+    "operationalAddress": "15 & 16, 1st Floor, Swastik House, Near Stadium Circle, Navrangpura, Ahmedabad \u2013 380009",
+    "website": "https://www.krishnainfosys.com",
+    "about": [
+      "Krishna Infosys is an ELV turnkey consulting and systems integration firm delivering security, communication, AV, networking and automation programmes pan-India.",
+      "We combine design, supply, installation, commissioning and AMC support under ISO 9001:2015-aligned processes, with 2,100+ projects and 850+ clients delivered since 2001."
+    ],
+    "highlights": [
+      "25+ years of ELV delivery",
+      "2,100+ projects executed",
+      "850+ clients served",
+      "ISO 9001:2015 certified processes"
+    ]
+  },
+  "jobs": [
+    {
+      "slug": "project-manager",
+      "role": "Project Manager",
+      "department": "Projects",
+      "experience": "5+ years",
+      "location": "Ahmedabad \u00b7 Site travel",
+      "type": "Full-time",
+      "summary": "Own ELV programme delivery \u2014 schedules, coordination, quality gates and client communication from kick-off to handover.",
+      "description": [
+        "You will lead end-to-end delivery of Extra Low Voltage programmes across security, communication, AV, networking and related systems.",
+        "The role sits between clients, site teams and internal engineering \u2014 keeping scope, time and quality aligned from survey through commissioning.",
+        "You should be comfortable on live sites, reading drawings/BOQs, and driving vendors and technicians to a clean handover."
+      ],
+      "responsibilities": [
+        "Plan and track project milestones, resources and site logistics",
+        "Coordinate design, procurement, installation and commissioning stages",
+        "Run client meetings, progress reporting and issue escalation",
+        "Enforce quality checks, documentation and as-built discipline",
+        "Support handover, training and AMC transition where required"
+      ],
+      "requirements": [
+        "5+ years in ELV, security, electrical or related project delivery",
+        "Strong site coordination and stakeholder communication skills",
+        "Familiarity with CCTV, access control, fire alarm or structured cabling projects",
+        "Willingness to travel across project locations in India",
+        "Diploma/degree in engineering or equivalent practical experience"
+      ]
+    },
+    {
+      "slug": "sales-executive",
+      "role": "Sales Executive",
+      "department": "Sales",
+      "experience": "3+ years",
+      "location": "Ahmedabad \u00b7 Field",
+      "type": "Full-time",
+      "summary": "Develop opportunities across security, communication, AV and networking. Convert surveys into clear proposals with the engineering team.",
+      "description": [
+        "You will build and convert a pipeline of ELV opportunities across corporate, industrial, healthcare and other verticals.",
+        "Success means structured discovery, accurate scoping with engineering, and proposals that clients can approve without ambiguity.",
+        "Field presence in Ahmedabad and surrounding markets is expected."
+      ],
+      "responsibilities": [
+        "Identify and qualify leads across target verticals",
+        "Conduct site visits and requirement discovery with clients",
+        "Work with pre-sales/engineering on BOQ and proposal inputs",
+        "Own follow-ups, negotiations and order closure",
+        "Maintain CRM hygiene and weekly pipeline reporting"
+      ],
+      "requirements": [
+        "3+ years B2B sales experience, preferably in ELV, IT, electrical or security",
+        "Confident communicator with decision-makers on site and in offices",
+        "Basic technical curiosity for CCTV, access, networking and related systems",
+        "Self-driven field routine and disciplined follow-up habits",
+        "Valid driving licence preferred"
+      ]
+    },
+    {
+      "slug": "senior-engineer",
+      "role": "Senior Engineer",
+      "department": "Technical",
+      "experience": "4+ years",
+      "location": "Ahmedabad \u00b7 Sites",
+      "type": "Full-time",
+      "summary": "Lead design reviews, BOQs and commissioning for CCTV, access, fire, PA and structured cabling programmes.",
+      "description": [
+        "You will be a senior technical owner for ELV designs and commissioning quality.",
+        "The role mixes desk design (architecture, BOQ, reviews) with on-site validation and troubleshooting.",
+        "You will mentor technicians and protect engineering standards across live projects."
+      ],
+      "responsibilities": [
+        "Produce and review system architectures, schedules and BOQs",
+        "Validate installation quality and lead commissioning tests",
+        "Resolve technical issues across CCTV, access, fire, PA and cabling",
+        "Support pre-sales with feasible designs and risk notes",
+        "Document configurations, test results and handover packs"
+      ],
+      "requirements": [
+        "4+ years hands-on ELV or low-voltage systems experience",
+        "Strong practical knowledge in at least two of: CCTV, access, fire alarm, PA, structured cabling",
+        "Ability to read drawings and produce clear technical notes",
+        "Calm problem-solving under site pressure",
+        "Diploma/degree in electronics, electrical, instrumentation or related field"
+      ]
+    },
+    {
+      "slug": "technician",
+      "role": "Technician",
+      "department": "Technical",
+      "experience": "2+ years",
+      "location": "Ahmedabad \u00b7 Sites",
+      "type": "Full-time",
+      "summary": "Install, terminate, test and service ELV systems with clean documentation and professional site discipline.",
+      "description": [
+        "You will execute installation and service work for ELV systems under engineer/project guidance.",
+        "Clean terminations, honest testing and tidy documentation matter as much as speed.",
+        "Most work is on client sites across Ahmedabad and project locations."
+      ],
+      "responsibilities": [
+        "Install devices, lay/terminate cables and dress racks to standard",
+        "Perform basic configuration, testing and fault finding",
+        "Follow site safety and client access rules",
+        "Update job sheets, photos and material consumption records",
+        "Support AMC visits and corrective maintenance when assigned"
+      ],
+      "requirements": [
+        "2+ years experience in CCTV, access, fire, PA or structured cabling installation",
+        "Comfortable with hand tools, testers and height/site work",
+        "Basic understanding of IP networking is an advantage",
+        "Reliable, punctual and neat workmanship",
+        "ITI/diploma preferred; strong practical skill considered"
+      ]
+    },
+    {
+      "slug": "accounts-executive",
+      "role": "Accounts Executive",
+      "department": "Finance",
+      "experience": "3+ years",
+      "location": "Ahmedabad",
+      "type": "Full-time",
+      "summary": "Support billing, collections, vendor accounts and project commercial tracking with accuracy and speed.",
+      "description": [
+        "You will keep project and company accounts moving \u2014 invoices, follow-ups, vendor bills and basic reconciliations.",
+        "Accuracy and turnaround time directly affect project cash flow and vendor trust.",
+        "This is an office-based role in Ahmedabad with cross-team coordination."
+      ],
+      "responsibilities": [
+        "Prepare and track client invoices and collections",
+        "Process vendor bills and maintain payable records",
+        "Support project cost tracking and basic MIS",
+        "Coordinate with banks for routine payment operations",
+        "Maintain organised digital and physical account files"
+      ],
+      "requirements": [
+        "3+ years accounts experience in a services or trading environment",
+        "Working knowledge of Tally or similar accounting software",
+        "Strong Excel hygiene and attention to detail",
+        "Clear communication for client/vendor follow-ups",
+        "Commerce graduate preferred"
+      ]
+    }
+  ]
+}

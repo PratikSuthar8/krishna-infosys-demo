@@ -16,30 +16,12 @@ import {
   AudioLines,
   Network,
   HousePlug,
-  Briefcase,
-  Newspaper,
 } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
-
-const companyLinks = [
-  {
-    label: "Careers",
-    href: "/careers",
-    description: "Open roles across projects, sales, engineering and operations.",
-    icon: Briefcase,
-  },
-  {
-    label: "Blog",
-    href: "/blog",
-    description: "Field notes on ELV design, infrastructure and support.",
-    icon: Newspaper,
-  },
-];
 
 const navigation = [
   { label: "Home", href: "/" },
   { label: "About", href: "/about" },
-  { label: "Company", href: "/careers", companyMenu: true },
   { label: "Solutions", href: "/solutions", megaMenu: true },
   { label: "Industries", href: "/industries" },
   { label: "Projects", href: "/projects" },
@@ -114,10 +96,8 @@ export function Navbar() {
 
   const [scrolled, setScrolled] = useState(false);
   const [solutionsOpen, setSolutionsOpen] = useState(false);
-  const [companyOpen, setCompanyOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mobileSolutionsOpen, setMobileSolutionsOpen] = useState(false);
-  const [mobileCompanyOpen, setMobileCompanyOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -146,7 +126,6 @@ export function Navbar() {
   const closeMobileMenu = () => {
     setMobileOpen(false);
     setMobileSolutionsOpen(false);
-    setMobileCompanyOpen(false);
   };
 
   const isActive = (href: string) => {
@@ -206,99 +185,6 @@ export function Navbar() {
             >
               {navigation.map((item) => {
                 const active = isActive(item.href);
-
-                
-                if ((item as { companyMenu?: boolean }).companyMenu) {
-                  const companyActive =
-                    pathname.startsWith("/careers") || pathname.startsWith("/blog");
-                  return (
-                    <div
-                      key={item.label}
-                      className="relative"
-                      onMouseEnter={() => setCompanyOpen(true)}
-                      onMouseLeave={() => setCompanyOpen(false)}
-                    >
-                      <Link
-                        href={item.href}
-                        aria-expanded={companyOpen}
-                        aria-current={companyActive ? "page" : undefined}
-                        className={`group/nav relative flex items-center gap-1.5 px-4 py-3 text-[15.5px] font-medium tracking-[-0.015em] transition-colors duration-300 ${
-                          companyActive
-                            ? "text-brand"
-                            : "text-foreground/72 hover:text-foreground"
-                        }`}
-                      >
-                        <span className="relative">
-                          {item.label}
-                          <span
-                            className={`absolute -bottom-[9px] left-0 h-[2px] rounded-full bg-brand transition-all duration-300 ease-out ${
-                              companyActive
-                                ? "w-full"
-                                : "w-0 group-hover/nav:w-full"
-                            }`}
-                          />
-                        </span>
-                        <ChevronDown
-                          size={15}
-                          strokeWidth={2}
-                          className={`transition-all duration-300 ${
-                            companyOpen
-                              ? "rotate-180 text-brand"
-                              : "group-hover/nav:text-brand"
-                          }`}
-                        />
-                      </Link>
-
-                      <AnimatePresence>
-                        {companyOpen && (
-                          <motion.div
-                            initial={{ opacity: 0, y: 10, scale: 0.985 }}
-                            animate={{ opacity: 1, y: 0, scale: 1 }}
-                            exit={{ opacity: 0, y: 8, scale: 0.985 }}
-                            transition={{ duration: 0.2, ease: "easeOut" }}
-                            className="absolute left-1/2 top-full z-50 w-[min(420px,calc(100vw-32px))] -translate-x-1/2 pt-4"
-                          >
-                            <div className="overflow-hidden rounded-2xl border border-black/[0.08] bg-white shadow-[0_20px_50px_rgba(20,20,20,0.12)]">
-                              <div className="p-3">
-                                {companyLinks.map((link) => {
-                                  const Icon = link.icon;
-                                  const linkActive =
-                                    pathname === link.href ||
-                                    pathname.startsWith(link.href + "/");
-                                  return (
-                                    <Link
-                                      key={link.href}
-                                      href={link.href}
-                                      className={`flex gap-3 rounded-xl p-3.5 transition-colors ${
-                                        linkActive
-                                          ? "bg-brand-soft"
-                                          : "hover:bg-surface"
-                                      }`}
-                                    >
-                                      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-soft text-brand">
-                                        <Icon size={18} strokeWidth={1.5} />
-                                      </span>
-                                      <span className="min-w-0">
-                                        <span className="flex items-center gap-1.5 text-[14px] font-semibold tracking-[-0.02em] text-foreground">
-                                          {link.label}
-                                          <ArrowUpRight size={12} className="text-brand opacity-70" />
-                                        </span>
-                                        <span className="mt-0.5 block text-[12.5px] leading-5 text-foreground/50">
-                                          {link.description}
-                                        </span>
-                                      </span>
-                                    </Link>
-                                  );
-                                })}
-                              </div>
-                            </div>
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
-                    </div>
-                  );
-                }
-
 
                 if (item.megaMenu) {
                   return (
@@ -538,65 +424,7 @@ export function Navbar() {
                 {navigation.map((item, index) => {
                   const active = isActive(item.href);
 
-                  
-                  if ((item as { companyMenu?: boolean }).companyMenu) {
-                    const companyActive =
-                      pathname.startsWith("/careers") || pathname.startsWith("/blog");
-                    return (
-                      <div key={item.label} className="border-b border-border">
-                        <button
-                          type="button"
-                          onClick={() => setMobileCompanyOpen((v) => !v)}
-                          className={`group flex w-full appearance-none items-center justify-between border-0 bg-transparent py-[18px] text-left !text-[27px] !font-medium !leading-none tracking-[-0.035em] transition-colors sm:py-5 sm:!text-[31px] ${
-                            companyActive ? "text-brand" : "text-foreground"
-                          }`}
-                        >
-                          {item.label}
-                          <span
-                            className={`flex h-9 w-9 items-center justify-center rounded-full border transition-all duration-300 ${
-                              mobileCompanyOpen
-                                ? "border-brand bg-brand-soft text-brand"
-                                : "border-border text-foreground/50"
-                            }`}
-                          >
-                            <ChevronDown
-                              size={16}
-                              className={`transition-transform duration-300 ${
-                                mobileCompanyOpen ? "rotate-180" : ""
-                              }`}
-                            />
-                          </span>
-                        </button>
-                        {mobileCompanyOpen && (
-                          <div className="space-y-2 pb-5">
-                            {companyLinks.map((link) => {
-                              const Icon = link.icon;
-                              return (
-                                <Link
-                                  key={link.href}
-                                  href={link.href}
-                                  onClick={closeMobileMenu}
-                                  className="flex items-center gap-3 rounded-xl border border-border bg-surface/70 p-3.5 transition-all hover:border-brand/30"
-                                >
-                                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-brand-soft text-brand">
-                                    <Icon size={16} strokeWidth={1.5} />
-                                  </span>
-                                  <span>
-                                    <span className="block text-[15px] font-semibold">{link.label}</span>
-                                    <span className="mt-0.5 block text-[12px] text-foreground/50">
-                                      {link.description}
-                                    </span>
-                                  </span>
-                                </Link>
-                              );
-                            })}
-                          </div>
-                        )}
-                      </div>
-                    );
-                  }
-
-if (item.megaMenu) {
+                  if (item.megaMenu) {
                     return (
                       <motion.div
                         key={item.label}

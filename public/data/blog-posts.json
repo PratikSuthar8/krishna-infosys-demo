@@ -1,0 +1,46 @@
+{
+  "posts": [
+    {
+      "slug": "elv-design-before-devices",
+      "title": "Why ELV design should start before device selection",
+      "excerpt": "Cameras, readers and speakers only perform when pathways, power and use-cases are fixed first. A practical sequence for project teams.",
+      "category": "Engineering",
+      "date": "2026-07-18",
+      "readTime": "5 min",
+      "body": [
+        "Most ELV issues on site are not product failures \u2014 they are sequencing failures. Teams jump to brand and model before the building's risk zones, cable routes and operational habits are clear.",
+        "A reliable sequence is simple: map users and threats, define zones, size the backbone (power + data), then select devices that fit that architecture. Skipping the middle step is how projects inherit rework.",
+        "At Krishna Infosys we treat survey and architecture as part of delivery, not optional extras. That is how CCTV storage, access rules and PA zones stay coherent after handover.",
+        "If you are planning a campus or plant upgrade, insist on a written coverage and pathway plan before any PO for endpoints is released."
+      ]
+    },
+    {
+      "slug": "amc-that-actually-reduces-downtime",
+      "title": "What a useful ELV AMC actually includes",
+      "excerpt": "Preventive visits, response windows and documentation matter more than a logo on a certificate. How to read an AMC schedule.",
+      "category": "Support",
+      "date": "2026-06-02",
+      "readTime": "4 min",
+      "body": [
+        "An annual maintenance contract is only valuable if it changes outcomes: fewer outages, faster recovery, clearer accountability.",
+        "Look for defined preventive checklists, response SLAs, spare-part logic and a named escalation path \u2014 not just a quarterly visit promise.",
+        "For security and fire-linked systems, logs and test records are part of compliance readiness. Ask how those records are stored and shared.",
+        "Krishna Infosys structures AMC around the systems we install, so service history stays attached to the same engineering team that understands the site."
+      ]
+    },
+    {
+      "slug": "structured-cabling-for-mixed-elv-loads",
+      "title": "Structured cabling when cameras, voice and IT share the plant",
+      "excerpt": "PoE budgets, category choice and labelling decide whether the next expansion is a day of patching or a week of re-pulls.",
+      "category": "Networking",
+      "date": "2026-05-12",
+      "readTime": "6 min",
+      "body": [
+        "Modern sites rarely run pure IT cabling. Cameras, access panels, WAPs and sometimes AV endpoints share pathways and often share PoE budgets.",
+        "Design should start from concurrent load, not from a generic Cat6 count. Undersized power budgets surface later as random camera drops and angry helpdesks.",
+        "Labelling, test results and spare capacity in trays are the difference between a controlled expansion and a forensic exercise two years later.",
+        "When ELV and IT stakeholders share one pathway plan early, both teams avoid the classic blame loop when something fails at go-live."
+      ]
+    }
+  ]
+}

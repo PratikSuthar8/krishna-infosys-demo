@@ -222,7 +222,7 @@ export function HeroSection() {
         className="pointer-events-none absolute right-[-12rem] top-[5%] h-[38rem] w-[38rem] rounded-full bg-[#f56616]/[0.055] blur-[90px]"
       />
 
-      <div className="relative mx-auto grid min-h-[88svh] w-full max-w-[1500px] grid-cols-1 items-center gap-12 px-5 pb-16 pt-20 sm:px-8 sm:pt-24 lg:grid-cols-[1.12fr_0.88fr] lg:gap-10 lg:px-12 lg:pb-20 lg:pt-24 xl:px-16 xl:pt-28">
+      <div className="relative mx-auto grid min-h-[88svh] w-full max-w-[1500px] grid-cols-1 items-center gap-12 px-5 pb-16 pt-32 sm:px-8 sm:pt-36 lg:grid-cols-[1.12fr_0.88fr] lg:gap-10 lg:px-12 lg:pb-20 lg:pt-40 xl:px-16 xl:pt-44">
         {/* LEFT */}
         <div className="relative z-10 max-w-[830px]">
           <div className="hero-eyebrow mb-8 flex items-center gap-3">

@@ -11,6 +11,8 @@ const navigation = [
   { label: "Projects", href: "/projects" },
   { label: "AMC & Support", href: "/amc-support" },
   { label: "Contact", href: "/contact" },
+  { label: "Careers", href: "/careers" },
+  { label: "Blog", href: "/blog" },
 ];
 
 const solutions = [
