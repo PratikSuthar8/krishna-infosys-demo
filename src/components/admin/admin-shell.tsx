@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
+import { signOut } from "next-auth/react";
 import { ReactNode } from "react";
 
 const links = [
@@ -13,12 +14,8 @@ const links = [
 
 export function AdminShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
-  const router = useRouter();
-
   const logout = async () => {
-    await fetch("/api/admin/logout", { method: "POST" });
-    router.replace("/admin/login");
-    router.refresh();
+    await signOut({ callbackUrl: "/admin/login" });
   };
 
   if (pathname === "/admin/login") return <>{children}</>;
