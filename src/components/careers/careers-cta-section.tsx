@@ -39,7 +39,7 @@ export function CareersCtaSection() {
           <div className="mt-8 flex flex-wrap gap-4">
             <a
               href={mailTo("hr")}
-              className="group inline-flex items-center gap-2.5 rounded-full bg-[#171717] px-7 py-3.5 text-[13px] font-semibold text-white transition-colors hover:bg-[#f56616]"
+              className="group inline-flex items-center gap-2.5 rounded-full bg-[#171717] px-7 py-3.5 text-[13px] font-semibold text-white! transition-colors hover:bg-[#f56616]"
             >
               <Mail size={15} />
               {contact.email.hr}
