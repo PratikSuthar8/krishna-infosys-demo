@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
-import { writeFile, mkdir } from "fs/promises";
-import path from "path";
+import { Binary } from "mongodb";
 import { getCollection } from "@/lib/mongodb";
 
 export const runtime = "nodejs";
@@ -22,27 +21,23 @@ export async function POST(request: Request) {
     const name = String(form.get("name") || "").trim();
     const email = String(form.get("email") || "").trim();
     const phone = String(form.get("phone") || "").trim();
-    const message = String(form.get("message") || "").trim();
     const linkedin = String(form.get("linkedin") || "").trim();
+    const message = String(form.get("message") || "").trim();
     const resume = form.get("resume");
 
-    if (!jobSlug || !name || !email || !phone) {
+    if (!name || !email || !phone || !jobSlug) {
       return NextResponse.json(
         { ok: false, error: "Name, email, phone and job are required." },
-        { status: 400 }
+        { status: 400 },
       );
     }
     if (!emailOk(email)) {
-      return NextResponse.json(
-        { ok: false, error: "Please enter a valid email address." },
-        { status: 400 }
-      );
+      return NextResponse.json({ ok: false, error: "Invalid email." }, { status: 400 });
     }
-
     if (!resume || typeof resume !== "object" || !("arrayBuffer" in resume)) {
       return NextResponse.json(
         { ok: false, error: "Resume is required (PDF or Word, max 5MB)." },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -50,62 +45,56 @@ export async function POST(request: Request) {
     if (!file.size) {
       return NextResponse.json(
         { ok: false, error: "Resume is required (PDF or Word, max 5MB)." },
-        { status: 400 }
+        { status: 400 },
       );
     }
     if (file.size > MAX_BYTES) {
-      return NextResponse.json(
-        { ok: false, error: "Resume must be under 5MB." },
-        { status: 400 }
-      );
+      return NextResponse.json({ ok: false, error: "Resume must be under 5MB." }, { status: 400 });
     }
     const mime = file.type || "application/octet-stream";
-    if (!ALLOWED.has(mime)) {
+    if (mime && !ALLOWED.has(mime) && !/\.(pdf|doc|docx)$/i.test(file.name)) {
       return NextResponse.json(
-        { ok: false, error: "Resume must be PDF or Word (.pdf, .doc, .docx)." },
-        { status: 400 }
+        { ok: false, error: "Only PDF or Word resumes are accepted." },
+        { status: 400 },
       );
     }
-    const ext =
-      mime === "application/pdf"
-        ? ".pdf"
-        : mime === "application/msword"
-          ? ".doc"
-          : ".docx";
-    const safeSlug = jobSlug.replace(/[^a-z0-9-]/gi, "");
-    const storedName = `${Date.now()}-${safeSlug}${ext}`;
-    const dir = path.join(process.cwd(), "uploads", "resumes");
-    await mkdir(dir, { recursive: true });
-    const fullPath = path.join(dir, storedName);
+
     const buf = Buffer.from(await file.arrayBuffer());
-    await writeFile(fullPath, buf);
-    const resumeMeta = {
-      originalName: file.name,
+    const storedName = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9._-]/g, "_")}`;
+
+    const files = await getCollection("resume_files");
+    const fileDoc = await files.insertOne({
       storedName,
+      originalName: file.name,
       mimeType: mime,
       size: file.size,
-      path: `uploads/resumes/${storedName}`,
-    };
+      data: new Binary(buf),
+      createdAt: new Date(),
+    });
 
-    const col = await getCollection("applications");
-    const result = await col.insertOne({
+    const applications = await getCollection("applications");
+    const result = await applications.insertOne({
       jobSlug,
       jobRole,
       name,
       email,
       phone,
-      message,
-      linkedin,
-      resume: resumeMeta,
+      linkedin: linkedin || null,
+      message: message || null,
+      resume: {
+        originalName: file.name,
+        storedName,
+        mimeType: mime,
+        size: file.size,
+        fileId: fileDoc.insertedId,
+      },
       status: "new",
-      source: "website",
       createdAt: new Date(),
     });
 
-    return NextResponse.json({ ok: true, id: result.insertedId.toString() });
-  } catch (error) {
-    console.error(error);
-    const message = error instanceof Error ? error.message : "Error";
-    return NextResponse.json({ ok: false, error: message }, { status: 500 });
+    return NextResponse.json({ ok: true, id: String(result.insertedId) });
+  } catch (e) {
+    console.error("careers/apply", e);
+    return NextResponse.json({ ok: false, error: "Server error." }, { status: 500 });
   }
 }

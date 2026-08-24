@@ -12,7 +12,10 @@ function LoginInner() {
 
   const onLogin = async () => {
     setLoading(true);
-    await signIn("microsoft-entra-id", { callbackUrl: "/admin" });
+    await signIn("microsoft-entra-id", {
+      callbackUrl: "/admin",
+      prompt: "select_account",
+    });
   };
 
   return (

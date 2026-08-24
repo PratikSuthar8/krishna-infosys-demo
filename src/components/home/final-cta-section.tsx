@@ -166,21 +166,22 @@ export function FinalCtaSection() {
               start with the requirement.
             </p>
 
-            <div className="final-cta-reveal mt-8">
+            <motion.div
+              whileHover={{ y: -2 }}
+              whileTap={{ scale: 0.98 }}
+              className="mt-8"
+            >
               <Link
                 href="/contact"
-                className="group inline-flex min-h-14 items-center gap-5 rounded-full bg-[#f56616] py-2 pl-7 pr-2 text-sm font-semibold text-white transition-all duration-300 hover:bg-white hover:text-[#171717]!"
+                className="group inline-flex h-14 items-center justify-center gap-4 rounded-full border border-[#171717] bg-[#f56616]! px-7 text-sm! font-semibold! text-white! transition-all duration-300 hover:border-[white]! hover:bg-white! hover:text-[#171717]!"
               >
                 Discuss your requirement
 
-                <span className="flex h-10 w-10 items-center justify-center rounded-full bg-white/15 transition-all duration-300 group-hover:bg-[#171717] group-hover:text-white">
-                  <ArrowUpRight
-                    size={16}
-                    className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
-                  />
+                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-white/10!  transition-transform duration-300 group-hover:rotate-45">
+                  <ArrowUpRight size={15} />
                 </span>
               </Link>
-            </div>
+            </motion.div>
           </div>
 
           {/* INTENT WORKSPACE */}
@@ -206,8 +207,8 @@ export function FinalCtaSection() {
                     <div className="flex items-center gap-4">
                       <span
                         className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full border transition-all duration-300 ${isActive
-                            ? "border-[#f56616]/50 bg-[#f56616] text-white"
-                            : "border-white/10 text-white/35 group-hover:border-white/20 group-hover:text-white/65"
+                          ? "border-[#f56616]/50 bg-[#f56616] text-white"
+                          : "border-white/10 text-white/35 group-hover:border-white/20 group-hover:text-white/65"
                           }`}
                       >
                         <Icon size={15} strokeWidth={1.5} />
@@ -278,6 +279,6 @@ export function FinalCtaSection() {
           </div>
         </div>
       </div>
-    </section>
+    </section >
   );
 }

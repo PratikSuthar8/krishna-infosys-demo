@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { ObjectId } from "mongodb";
-import { isAdminAuthenticated } from "@/lib/admin-auth";
 import { getCollection } from "@/lib/mongodb";
+import { requireAdmin } from "@/lib/admin-auth";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -14,144 +14,110 @@ function slugify(input: string) {
     .replace(/^-|-$/g, "");
 }
 
+function normalizeList(v: unknown): string[] {
+  if (Array.isArray(v)) return v.map(String).map((s) => s.trim()).filter(Boolean);
+  if (typeof v === "string")
+    return v
+      .split("\n")
+      .map((s) => s.trim())
+      .filter(Boolean);
+  return [];
+}
+
 export async function GET() {
-  if (!(await isAdminAuthenticated())) {
+  try {
+    await requireAdmin();
+    const col = await getCollection("jobs");
+    const items = await col.find({}).sort({ role: 1 }).toArray();
+    return NextResponse.json({
+      ok: true,
+      items: items.map((i) => ({ ...i, _id: i._id.toString() })),
+    });
+  } catch {
     return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
   }
-  const col = await getCollection("jobs");
-  const items = await col.find({}).sort({ role: 1 }).toArray();
-  return NextResponse.json({
-    ok: true,
-    items: items.map((i) => ({ ...i, _id: i._id.toString() })),
-  });
 }
 
 export async function POST(request: Request) {
-  if (!(await isAdminAuthenticated())) {
+  try {
+    await requireAdmin();
+    const body = await request.json();
+    const role = String(body.role || "").trim();
+    if (!role) {
+      return NextResponse.json({ ok: false, error: "role required" }, { status: 400 });
+    }
+    const slug = String(body.slug || slugify(role)).trim() || slugify(role);
+    const doc = {
+      slug,
+      role,
+      department: String(body.department || "").trim(),
+      experience: String(body.experience || "").trim(),
+      location: String(body.location || "").trim(),
+      type: String(body.type || "Full-time").trim(),
+      summary: String(body.summary || "").trim(),
+      description: normalizeList(body.description),
+      responsibilities: normalizeList(body.responsibilities),
+      requirements: normalizeList(body.requirements),
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    const col = await getCollection("jobs");
+    const existing = await col.findOne({ slug });
+    if (existing) {
+      return NextResponse.json({ ok: false, error: "slug already exists" }, { status: 409 });
+    }
+    const result = await col.insertOne(doc);
+    return NextResponse.json({ ok: true, id: String(result.insertedId), slug });
+  } catch {
     return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
   }
-  const body = await request.json();
-  const role = String(body.role || "").trim();
-  if (!role) {
-    return NextResponse.json({ ok: false, error: "Role is required" }, { status: 400 });
-  }
-
-  const slug = String(body.slug || slugify(role)).trim() || slugify(role);
-  const col = await getCollection("jobs");
-  const exists = await col.findOne({ slug });
-  if (exists) {
-    return NextResponse.json({ ok: false, error: "Slug already exists" }, { status: 409 });
-  }
-
-  const doc = {
-    slug,
-    role,
-    department: String(body.department || "").trim(),
-    experience: String(body.experience || "").trim(),
-    location: String(body.location || "").trim(),
-    type: String(body.type || "Full-time").trim(),
-    summary: String(body.summary || "").trim(),
-    description: Array.isArray(body.description)
-      ? body.description.map(String)
-      : String(body.description || "")
-          .split("\n")
-          .map((s: string) => s.trim())
-          .filter(Boolean),
-    responsibilities: Array.isArray(body.responsibilities)
-      ? body.responsibilities.map(String)
-      : String(body.responsibilities || "")
-          .split("\n")
-          .map((s: string) => s.trim())
-          .filter(Boolean),
-    requirements: Array.isArray(body.requirements)
-      ? body.requirements.map(String)
-      : String(body.requirements || "")
-          .split("\n")
-          .map((s: string) => s.trim())
-          .filter(Boolean),
-    published: body.published !== false,
-    updatedAt: new Date(),
-    createdAt: new Date(),
-  };
-
-  const result = await col.insertOne(doc);
-  return NextResponse.json({ ok: true, id: result.insertedId.toString(), slug });
 }
 
 export async function PUT(request: Request) {
-  if (!(await isAdminAuthenticated())) {
+  try {
+    await requireAdmin();
+    const body = await request.json();
+    const id = String(body.id || body._id || "").trim();
+    if (!id) {
+      return NextResponse.json({ ok: false, error: "id required" }, { status: 400 });
+    }
+    const role = String(body.role || "").trim();
+    const slug = String(body.slug || slugify(role)).trim();
+    const $set: Record<string, unknown> = {
+      updatedAt: new Date(),
+    };
+    if (role) $set.role = role;
+    if (slug) $set.slug = slug;
+    if (body.department !== undefined) $set.department = String(body.department || "").trim();
+    if (body.experience !== undefined) $set.experience = String(body.experience || "").trim();
+    if (body.location !== undefined) $set.location = String(body.location || "").trim();
+    if (body.type !== undefined) $set.type = String(body.type || "").trim();
+    if (body.summary !== undefined) $set.summary = String(body.summary || "").trim();
+    if (body.description !== undefined) $set.description = normalizeList(body.description);
+    if (body.responsibilities !== undefined)
+      $set.responsibilities = normalizeList(body.responsibilities);
+    if (body.requirements !== undefined) $set.requirements = normalizeList(body.requirements);
+
+    const col = await getCollection("jobs");
+    await col.updateOne({ _id: new ObjectId(id) }, { $set });
+    return NextResponse.json({ ok: true });
+  } catch {
     return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
   }
-  const body = await request.json();
-  const id = String(body.id || "").trim();
-  if (!id) {
-    return NextResponse.json({ ok: false, error: "id required" }, { status: 400 });
-  }
-
-  const role = String(body.role || "").trim();
-  if (!role) {
-    return NextResponse.json({ ok: false, error: "Role is required" }, { status: 400 });
-  }
-
-  const slug = String(body.slug || slugify(role)).trim();
-  const col = await getCollection("jobs");
-
-  const conflict = await col.findOne({
-    slug,
-    _id: { $ne: new ObjectId(id) },
-  });
-  if (conflict) {
-    return NextResponse.json({ ok: false, error: "Slug already exists" }, { status: 409 });
-  }
-
-  await col.updateOne(
-    { _id: new ObjectId(id) },
-    {
-      $set: {
-        slug,
-        role,
-        department: String(body.department || "").trim(),
-        experience: String(body.experience || "").trim(),
-        location: String(body.location || "").trim(),
-        type: String(body.type || "Full-time").trim(),
-        summary: String(body.summary || "").trim(),
-        description: Array.isArray(body.description)
-          ? body.description.map(String)
-          : String(body.description || "")
-              .split("\n")
-              .map((s: string) => s.trim())
-              .filter(Boolean),
-        responsibilities: Array.isArray(body.responsibilities)
-          ? body.responsibilities.map(String)
-          : String(body.responsibilities || "")
-              .split("\n")
-              .map((s: string) => s.trim())
-              .filter(Boolean),
-        requirements: Array.isArray(body.requirements)
-          ? body.requirements.map(String)
-          : String(body.requirements || "")
-              .split("\n")
-              .map((s: string) => s.trim())
-              .filter(Boolean),
-        published: Boolean(body.published),
-        updatedAt: new Date(),
-      },
-    }
-  );
-
-  return NextResponse.json({ ok: true });
 }
 
 export async function DELETE(request: Request) {
-  if (!(await isAdminAuthenticated())) {
+  try {
+    await requireAdmin();
+    const body = await request.json().catch(() => ({}));
+    const id = String(body.id || body._id || "").trim();
+    if (!id) {
+      return NextResponse.json({ ok: false, error: "id required" }, { status: 400 });
+    }
+    const col = await getCollection("jobs");
+    await col.deleteOne({ _id: new ObjectId(id) });
+    return NextResponse.json({ ok: true });
+  } catch {
     return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
   }
-  const { searchParams } = new URL(request.url);
-  const id = searchParams.get("id");
-  if (!id) {
-    return NextResponse.json({ ok: false, error: "id required" }, { status: 400 });
-  }
-  const col = await getCollection("jobs");
-  await col.deleteOne({ _id: new ObjectId(id) });
-  return NextResponse.json({ ok: true });
 }

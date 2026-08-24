@@ -196,16 +196,14 @@ export function AboutDomainsSection() {
               return (
                 <div
                   key={item.index}
-                  className={`relative z-[1] flex items-center gap-2 rounded-full border px-2.5 py-1.5 transition-all duration-300 sm:gap-2.5 sm:px-3.5 sm:py-2 ${
-                    on
-                      ? "border-[#f56616] bg-[#f56616] text-white shadow-[0_10px_28px_-12px_rgba(245,102,22,0.7)]"
-                      : "border-black/10 bg-[#f3f1ec] text-black/40"
-                  }`}
+                  className={`relative z-[1] flex items-center gap-2 rounded-full border px-2.5 py-1.5 transition-all duration-300 sm:gap-2.5 sm:px-3.5 sm:py-2 ${on
+                    ? "border-[#f56616] bg-[#f56616] text-white shadow-[0_10px_28px_-12px_rgba(245,102,22,0.7)]"
+                    : "border-black/10 bg-[#f3f1ec] text-black/40"
+                    }`}
                 >
                   <span
-                    className={`flex h-5 w-5 items-center justify-center rounded-full text-[9px] font-bold sm:h-6 sm:w-6 sm:text-[10px] ${
-                      on ? "bg-white/20" : "bg-black/5"
-                    }`}
+                    className={`flex h-5 w-5 items-center justify-center rounded-full text-[9px] font-bold sm:h-6 sm:w-6 sm:text-[10px] ${on ? "bg-white/20" : "bg-black/5"
+                      }`}
                   >
                     {item.index}
                   </span>
@@ -294,13 +292,13 @@ export function AboutDomainsSection() {
                   {d.summary}
                 </p>
               </div>
-              <div className="flex items-center justify-between border-t border-black/[0.05] px-4 py-2.5">
+              <div className="flex items-center justify-between border-t border-black/5 px-4 py-2.5">
                 <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-black/30">
                   ELV domain
                 </span>
                 <Link
                   href={d.href}
-                  className="flex h-8 w-8 items-center justify-center rounded-full bg-[#171717] text-white transition-colors hover:bg-[#f56616]"
+                  className="flex h-8 w-8 items-center justify-center rounded-full bg-[#171717] text-white! transition-colors hover:bg-[#f56616]"
                   aria-label={`Open ${d.title}`}
                 >
                   <ArrowUpRight size={14} />

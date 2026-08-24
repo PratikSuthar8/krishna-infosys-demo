@@ -1,5 +1,7 @@
 "use client";
 
+import Image from "next/image";
+
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import gsap from "gsap";
@@ -126,16 +128,16 @@ const domains = [
 ];
 
 const oems = [
-  "CP Plus",
-  "PRAMA",
-  "Panasonic",
-  "i-PRO",
-  "Hikvision",
-  "Honeywell",
-  "Bosch",
-  "D-Link",
-  "Cisco",
-  "Panasonic",
+  { name: "CP Plus", src: "/brand/oems/cp-plus.jpg" },
+  { name: "Hikvision", src: "/brand/oems/hikvision.jpg" },
+  { name: "Dahua", src: "/brand/oems/dahua.jpg" },
+  { name: "Panasonic", src: "/brand/oems/panasonic.jpg", scale: 2.01 },
+  { name: "Honeywell", src: "/brand/oems/honeywell.gif", scale: 1.1 },
+  { name: "Bosch", src: "/brand/oems/bosch.jpg" },
+  { name: "Matrix", src: "/brand/oems/matrix.jpg" },
+  { name: "eSSL", src: "/brand/oems/essl.jpg" },
+  { name: "HID", src: "/brand/oems/hid.png" },
+  { name: "Pelco", src: "/brand/oems/pelco.jpg" },
 ];
 
 export function TechnologyEcosystemSection() {
@@ -443,13 +445,35 @@ export function TechnologyEcosystemSection() {
               </div>
 
               <div className="grid grid-cols-2 gap-2 p-4 lg:p-5">
-                {oems.map((oem, index) => (
+                {oems.map((oem) => (
                   <div
-                    key={`${oem}-${index}`}
-                    className="flex min-h-[74px] items-center justify-center border border-black/[0.09] bg-white px-3 text-center transition-colors hover:bg-[#f7f6f3]"
+                    key={oem.name}
+                    className="group flex min-h-[74px] items-center justify-center border border-black/10 bg-white px-3 transition-colors hover:border-black/20"
+                    title={oem.name}
                   >
-                    <span className="text-[13px] font-bold tracking-[-0.025em] text-black/68">
-                      {oem}
+                    <Image
+                      src={oem.src}
+                      alt={oem.name}
+                      width={140}
+                      height={48}
+                      className="h-9 w-auto max-w-[120px] object-contain opacity-80 grayscale transition duration-300 group-hover:opacity-100 group-hover:grayscale-0"
+                      style={
+                        oem.scale
+                          ? { transform: `scale(${oem.scale})` }
+                          : undefined
+                      }
+                      onError={(e) => {
+                        const el = e.currentTarget;
+                        el.style.display = "none";
+                        const fallback = el.parentElement?.querySelector("[data-fallback]");
+                        if (fallback) (fallback as HTMLElement).style.display = "block";
+                      }}
+                    />
+                    <span
+                      data-fallback
+                      className="hidden text-[12px] font-bold tracking-[-0.02em] text-black/60"
+                    >
+                      {oem.name}
                     </span>
                   </div>
                 ))}
