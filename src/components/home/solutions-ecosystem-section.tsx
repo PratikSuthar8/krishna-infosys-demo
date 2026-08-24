@@ -62,7 +62,7 @@ const solutions = [
     items: [
       "IT Network Solutions",
       "Fiber Solutions",
-      "Wi-Fi / RF",
+      "Wi-Fi / RF / P2P",
       "Structured Cabling",
     ],
     icon: Network,
@@ -483,11 +483,10 @@ export function SolutionsEcosystemSection() {
                   onClick={() => handleDesktopNodeClick(index)}
                   whileHover={{ y: -4, scale: 1.015 }}
                   whileTap={{ scale: 0.985 }}
-                  className={`absolute ${item.position} z-20 w-[205px] rounded-[20px] border p-3.5 text-left outline-none transition-[border-color,background-color,box-shadow] duration-300 focus-visible:ring-2 focus-visible:ring-[#f56616]/50 ${
-                    isActive
-                      ? "border-[#f56616]/50 bg-white shadow-[0_22px_55px_rgba(0,0,0,.11)]"
-                      : "border-black/[0.08] bg-white/80 shadow-[0_12px_32px_rgba(0,0,0,.045)] backdrop-blur-md hover:border-black/15 hover:bg-white"
-                  }`}
+                  className={`absolute ${item.position} z-20 w-[205px] rounded-[20px] border p-3.5 text-left outline-none transition-[border-color,background-color,box-shadow] duration-300 focus-visible:ring-2 focus-visible:ring-[#f56616]/50 ${isActive
+                    ? "border-[#f56616]/50 bg-white shadow-[0_22px_55px_rgba(0,0,0,.11)]"
+                    : "border-black/[0.08] bg-white/80 shadow-[0_12px_32px_rgba(0,0,0,.045)] backdrop-blur-md hover:border-black/15 hover:bg-white"
+                    }`}
                 >
                   <div className="flex items-center gap-3">
                     <motion.span
@@ -507,11 +506,10 @@ export function SolutionsEcosystemSection() {
 
                     <span className="min-w-0">
                       <span
-                        className={`block text-[8px] font-bold uppercase tracking-[0.2em] transition-colors ${
-                          isActive
-                            ? "text-[#f56616]"
-                            : "text-black/30"
-                        }`}
+                        className={`block text-[8px] font-bold uppercase tracking-[0.2em] transition-colors ${isActive
+                          ? "text-[#f56616]"
+                          : "text-black/30"
+                          }`}
                       >
                         {item.number} / {item.short}
                       </span>
@@ -547,11 +545,10 @@ export function SolutionsEcosystemSection() {
                   type="button"
                   aria-pressed={isActive}
                   onClick={() => setActive(index)}
-                  className={`flex shrink-0 items-center gap-2.5 rounded-full border px-4 py-3 text-sm font-semibold transition-all ${
-                    isActive
-                      ? "border-[#171717] bg-[#171717] text-white"
-                      : "border-black/10 bg-white/70 text-black/60"
-                  }`}
+                  className={`flex shrink-0 items-center gap-2.5 rounded-full border px-4 py-3 text-sm font-semibold transition-all ${isActive
+                    ? "border-[#171717] bg-[#171717] text-white"
+                    : "border-black/10 bg-white/70 text-black/60"
+                    }`}
                 >
                   <Icon
                     size={16}
