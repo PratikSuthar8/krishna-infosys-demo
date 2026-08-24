@@ -17,7 +17,7 @@ export default function AmcSupportPage() {
             <AmcHeroSection />
             <AmcCoverageSection />
             <AmcServiceSection />
-            <AmcPlansSection />
+            {/* <AmcPlansSection /> */}
         </main>
     );
 }
