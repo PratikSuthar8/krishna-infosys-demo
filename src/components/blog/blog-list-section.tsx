@@ -1,12 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ArrowUpRight, Newspaper } from "lucide-react";
-
-gsap.registerPlugin(ScrollTrigger);
 
 type Post = {
   slug: string;
@@ -18,118 +14,97 @@ type Post = {
 };
 
 export function BlogListSection() {
-  const sectionRef = useRef<HTMLElement>(null);
   const [posts, setPosts] = useState<Post[]>([]);
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    let cancelled = false;
     fetch("/api/blog")
       .then((r) => r.json())
       .then((d) => {
-        if (cancelled) return;
         if (d.ok && Array.isArray(d.posts)) setPosts(d.posts);
-        else setPosts([]);
       })
-      .catch(() => {
-        if (!cancelled) setPosts([]);
-      })
-      .finally(() => {
-        if (!cancelled) setLoaded(true);
-      });
-    return () => {
-      cancelled = true;
-    };
+      .catch(() => {})
+      .finally(() => setLoaded(true));
   }, []);
 
-  useEffect(() => {
-    if (!loaded) return;
-    const section = sectionRef.current;
-    if (!section) return;
-    const ctx = gsap.context(() => {
-      gsap.from(".blog-anim", {
-        y: 22,
-        opacity: 0,
-        duration: 0.65,
-        stagger: 0.06,
-        ease: "power3.out",
-        scrollTrigger: { trigger: section, start: "top 80%" },
-      });
-    }, section);
-    return () => ctx.revert();
-  }, [loaded, posts.length]);
-
   return (
-    <section ref={sectionRef} className="relative bg-[#f3f1ec] text-[#171717]">
-      <div className="mx-auto max-w-[1500px] px-5 py-16 sm:px-8 sm:py-20 lg:px-12 xl:px-16">
+    <section className="bg-[#f3f1ec] pb-24 pt-10 sm:pb-28">
+      <div className="mx-auto max-w-[1100px] px-5 sm:px-8 lg:px-10">
         {!loaded ? (
-          <div className="blog-anim py-16 text-center">
-            <div className="mx-auto h-8 w-8 animate-pulse rounded-full bg-black/10" />
-            <p className="mt-4 text-sm text-black/35">Loading articles…</p>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {[0, 1, 2].map((i) => (
+              <div
+                key={i}
+                className="h-48 animate-pulse rounded-2xl bg-black/[0.04]"
+              />
+            ))}
           </div>
         ) : posts.length === 0 ? (
-          <div className="blog-anim mx-auto max-w-lg py-16 text-center sm:py-20">
-            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl border border-black/10 bg-white shadow-sm">
-              <Newspaper size={26} strokeWidth={1.5} className="text-[#f56616]" />
-            </div>
-            <h3 className="mt-7 text-2xl font-medium tracking-[-0.03em]">
+          <div className="flex flex-col items-center rounded-2xl border border-black/[0.06] bg-white px-6 py-20 text-center">
+            <span className="flex h-12 w-12 items-center justify-center rounded-2xl border border-black/10 bg-[#faf9f7] text-[#f56616]">
+              <Newspaper size={22} />
+            </span>
+            <h2 className="mt-5 text-xl font-semibold tracking-[-0.03em]">
               No articles published yet
-            </h3>
-            <p className="mt-3 text-sm leading-7 text-black/50">
-              New field notes on ELV design, infrastructure and support will appear
-              here. Check back soon, or reach out if you want a topic covered.
+            </h2>
+            <p className="mt-2 max-w-md text-sm leading-6 text-black/45">
+              New field notes on ELV design, infrastructure and support will
+              appear here.
             </p>
-            <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+            <div className="mt-8 flex flex-wrap justify-center gap-3">
               <Link
                 href="/contact"
-                className="inline-flex items-center gap-2 rounded-full bg-[#171717] px-5 py-2.5 text-sm font-semibold text-white! transition-opacity hover:opacity-90 hover:bg-[#f56616]"
+                className="rounded-full bg-[#171717] px-5 py-2.5 text-[13px] font-semibold text-white"
               >
                 Contact us
-                <ArrowUpRight size={14} />
               </Link>
               <Link
                 href="/solutions"
-                className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white px-5 py-2.5 text-sm font-semibold text-[#171717] transition-colors hover:border-black/20"
+                className="rounded-full border border-black/10 bg-white px-5 py-2.5 text-[13px] font-semibold"
               >
                 Explore solutions
               </Link>
             </div>
           </div>
         ) : (
-          <ul className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {posts.map((post) => (
-              <li key={post.slug} className="blog-anim">
-                <Link
-                  href={`/blog/${post.slug}`}
-                  className="group flex h-full flex-col rounded-2xl border border-black/[0.06] bg-white p-6 shadow-[0_20px_50px_-40px_rgba(0,0,0,0.35)] transition-transform hover:-translate-y-0.5"
-                >
-                  <div className="flex items-center justify-between gap-3">
-                    <span className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#f56616]">
-                      {post.category || "Article"}
-                    </span>
-                    <span className="text-[11px] text-black/35">
-                      {post.readTime || ""}
-                    </span>
-                  </div>
-                  <h3 className="mt-4 text-lg font-semibold tracking-[-0.03em] transition-colors group-hover:text-[#f56616]">
-                    {post.title}
-                  </h3>
-                  {post.excerpt ? (
-                    <p className="mt-3 line-clamp-3 flex-1 text-sm leading-6 text-black/50">
-                      {post.excerpt}
-                    </p>
+              <Link
+                key={post.slug}
+                href={"/blog/" + post.slug}
+                className="group flex flex-col rounded-2xl border border-black/[0.06] bg-white p-5 shadow-[0_12px_40px_-28px_rgba(0,0,0,0.2)] transition-transform hover:-translate-y-0.5 sm:p-6"
+              >
+                <div className="flex items-center justify-between gap-3">
+                  <span className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#f56616]">
+                    {post.category || "Article"}
+                  </span>
+                  {post.readTime ? (
+                    <span className="text-[11px] text-black/35">{post.readTime}</span>
                   ) : null}
-                  <div className="mt-6 flex items-center justify-between border-t border-black/[0.05] pt-4">
-                    <span className="text-[11px] text-black/35">{post.date || ""}</span>
-                    <span className="inline-flex items-center gap-1 text-[12px] font-semibold text-black/55 group-hover:text-[#f56616]">
-                      Read
-                      <ArrowUpRight size={13} />
-                    </span>
-                  </div>
-                </Link>
-              </li>
+                </div>
+                <h2 className="mt-3 text-[17px] font-semibold leading-snug tracking-[-0.03em] text-[#171717] transition-colors group-hover:text-[#f56616]">
+                  {post.title}
+                </h2>
+                {post.excerpt ? (
+                  <p className="mt-2 line-clamp-3 flex-1 text-[13px] leading-6 text-black/45">
+                    {post.excerpt}
+                  </p>
+                ) : (
+                  <div className="flex-1" />
+                )}
+                <div className="mt-5 flex items-center justify-between border-t border-black/[0.06] pt-4">
+                  <span className="text-[12px] text-black/35">{post.date || ""}</span>
+                  <span className="inline-flex items-center gap-1 text-[12px] font-semibold text-black/50 transition-colors group-hover:text-[#f56616]">
+                    Read
+                    <ArrowUpRight
+                      size={13}
+                      className="transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                    />
+                  </span>
+                </div>
+              </Link>
             ))}
-          </ul>
+          </div>
         )}
       </div>
     </section>

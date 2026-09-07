@@ -6,7 +6,7 @@ import { BlogListSection } from "@/components/blog/blog-list-section";
 export const metadata: Metadata = buildMetadata({
   title: "Blog",
   description:
-    "Notes on ELV design, security, networking and maintenance from the Krishna Infosys engineering team.",
+    "Practical writing on ELV design sequencing, infrastructure and support.",
   path: "/blog",
 });
 

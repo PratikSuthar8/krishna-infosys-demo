@@ -7,8 +7,15 @@ export const dynamic = "force-dynamic";
 export async function GET() {
   try {
     const col = await getCollection("blog_posts");
+    // published: true OR field missing (legacy / Atlas manual inserts)
     const posts = await col
-      .find({ published: true })
+      .find({
+        $or: [
+          { published: true },
+          { published: { $exists: false } },
+          { published: null },
+        ],
+      })
       .project({ _id: 0 })
       .sort({ date: -1 })
       .toArray();
