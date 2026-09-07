@@ -1,42 +1,81 @@
 import type { MetadataRoute } from "next";
 import { siteConfig } from "@/lib/seo";
+import { getCollection } from "@/lib/mongodb";
 
-const routes = [
-	"/",
-	"/about",
-	"/solutions",
-	"/solutions/security-access",
-	"/solutions/communication",
-	"/solutions/audio-visual",
-	"/solutions/networking-data",
-	"/solutions/automation-safety",
-	"/industries",
-	"/projects",
-	"/amc-support",
-	"/contact",
-  "/blog",
-  "/blog/elv-design-before-devices",
-  "/blog/amc-that-actually-reduces-downtime",
-  "/blog/structured-cabling-for-mixed-elv-loads",
+export const dynamic = "force-dynamic";
+
+const staticRoutes = [
+  "",
+  "/about",
+  "/solutions",
+  "/solutions/security-access",
+  "/solutions/communication",
+  "/solutions/audio-visual",
+  "/solutions/networking-data",
+  "/solutions/automation-safety",
+  "/industries",
+  "/projects",
+  "/amc-support",
+  "/contact",
   "/careers",
-  "/careers/accounts-executive",
-  "/careers/technician",
-  "/careers/senior-engineer",
-  "/careers/sales-executive",
-  "/careers/project-manager",
-	"/terms",
-	"/privacy",
-	"/cookies",
+  "/blog",
+  "/terms",
+  "/privacy",
+  "/cookies",
 ];
 
-export default function sitemap(): MetadataRoute.Sitemap {
-	const base = siteConfig.url.replace(/\/$/, "");
-	const lastModified = new Date();
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const base = siteConfig.url.replace(/\/$/, "");
+  const now = new Date();
 
-	return routes.map((path) => ({
-		url: path === "/" ? base : `${base}${path}`,
-		lastModified,
-		changeFrequency: path === "/" ? "weekly" : "monthly",
-		priority: path === "/" ? 1 : path.split("/").length <= 2 ? 0.8 : 0.7,
-	}));
+  const entries: MetadataRoute.Sitemap = staticRoutes.map((path) => ({
+    url: `${base}${path || "/"}`,
+    lastModified: now,
+    changeFrequency: path === "" ? "weekly" : "monthly",
+    priority: path === "" ? 1 : path.split("/").length <= 2 ? 0.8 : 0.6,
+  }));
+
+  try {
+    const jobs = await getCollection("jobs");
+    const jobDocs = await jobs
+      .find({ $or: [{ published: true }, { published: { $exists: false } }] })
+      .project({ slug: 1, updatedAt: 1 })
+      .toArray();
+    for (const j of jobDocs) {
+      if (!j.slug) continue;
+      entries.push({
+        url: `${base}/careers/${j.slug}`,
+        lastModified: j.updatedAt ? new Date(j.updatedAt) : now,
+        changeFrequency: "weekly",
+        priority: 0.5,
+      });
+    }
+  } catch {
+    // DB unavailable — return static routes only
+  }
+
+  try {
+    const posts = await getCollection("blog_posts");
+    const postDocs = await posts
+      .find({})
+      .project({ slug: 1, date: 1, updatedAt: 1 })
+      .toArray();
+    for (const p of postDocs) {
+      if (!p.slug) continue;
+      entries.push({
+        url: `${base}/blog/${p.slug}`,
+        lastModified: p.updatedAt
+          ? new Date(p.updatedAt)
+          : p.date
+            ? new Date(p.date)
+            : now,
+        changeFrequency: "weekly",
+        priority: 0.5,
+      });
+    }
+  } catch {
+    // ignore
+  }
+
+  return entries;
 }

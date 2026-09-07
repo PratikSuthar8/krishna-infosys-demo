@@ -7,9 +7,6 @@ import { JobDetailView } from "@/components/careers/job-detail-view";
 
 type Props = { params: Promise<{ slug: string }> };
 
-export function generateStaticParams() {
-  return getJobs().map((j) => ({ slug: j.slug }));
-}
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
