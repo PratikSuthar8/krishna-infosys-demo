@@ -45,21 +45,40 @@ export async function POST(request: Request) {
     }
 
     const now = new Date();
-    const leads = await getCollection("leads");
-    const result = await leads.insertOne({
+    const col = await getCollection("enquiries");
+    const doc = {
       name,
+      organisation,
       email,
-      phone: phone || null,
-      company: organisation || null,
-      source: "website-contact",
-      interest: interest || null,
+      phone,
+      interest,
       message,
       status: "new",
-      value: null,
-      notes: [],
+      source: "website",
       createdAt: now,
-      updatedAt: now,
-    });
+    };
+    const result = await col.insertOne(doc);
+
+    try {
+      const leads = await getCollection("leads");
+      await leads.insertOne({
+        name,
+        email,
+        phone: phone || null,
+        company: organisation || null,
+        source: "website-contact",
+        interest: interest || null,
+        message,
+        status: "new",
+        value: null,
+        notes: [],
+        enquiryId: result.insertedId,
+        createdAt: now,
+        updatedAt: now,
+      });
+    } catch (e) {
+      console.error("lead create", e);
+    }
 
     return NextResponse.json({
       ok: true,

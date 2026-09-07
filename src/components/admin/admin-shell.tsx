@@ -7,7 +7,6 @@ import {
   LayoutDashboard,
   Briefcase,
   Newspaper,
-  MessageSquare,
   ContactRound,
   LogOut,
   Menu,
@@ -22,7 +21,6 @@ const nav = [
   { href: "/admin/jobs", label: "Jobs", icon: Briefcase },
   { href: "/admin/blog", label: "Blog", icon: Newspaper },
   { href: "/admin/leads", label: "Leads", icon: ContactRound },
-  { href: "/admin/enquiries", label: "Enquiries", icon: MessageSquare },
 ];
 
 function isActive(pathname: string, href: string, exact?: boolean) {

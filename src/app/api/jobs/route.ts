@@ -7,8 +7,15 @@ export const dynamic = "force-dynamic";
 export async function GET() {
   try {
     const col = await getCollection("jobs");
+    // published: true OR missing (seed / legacy docs)
     const jobs = await col
-      .find({ published: true })
+      .find({
+        $or: [
+          { published: true },
+          { published: { $exists: false } },
+          { published: null },
+        ],
+      })
       .project({ _id: 0 })
       .sort({ role: 1 })
       .toArray();

@@ -7,7 +7,7 @@ import { Briefcase, Newspaper, MessageSquare, ArrowUpRight } from "lucide-react"
 type Counts = {
   jobs: number;
   posts: number;
-  enquiries: number;
+  leads: number;
   applications: number;
 };
 
@@ -15,7 +15,7 @@ export default function AdminDashboardPage() {
   const [counts, setCounts] = useState<Counts>({
     jobs: 0,
     posts: 0,
-    enquiries: 0,
+    leads: 0,
     applications: 0,
   });
 
@@ -23,13 +23,13 @@ export default function AdminDashboardPage() {
     Promise.all([
       fetch("/api/admin/jobs").then((r) => r.json()).catch(() => null),
       fetch("/api/admin/blog").then((r) => r.json()).catch(() => null),
-      fetch("/api/admin/enquiries").then((r) => r.json()).catch(() => null),
+      fetch("/api/admin/leads").then((r) => r.json()).catch(() => null),
       fetch("/api/admin/applications").then((r) => r.json()).catch(() => null),
-    ]).then(([jobs, blog, enquiries, applications]) => {
+    ]).then(([jobs, blog, leads, applications]) => {
       setCounts({
         jobs: Array.isArray(jobs?.items) ? jobs.items.length : 0,
         posts: Array.isArray(blog?.items) ? blog.items.length : 0,
-        enquiries: Array.isArray(enquiries?.items) ? enquiries.items.length : 0,
+        leads: Array.isArray(leads?.items) ? leads.items.length : 0,
         applications: Array.isArray(applications?.items)
           ? applications.items.length
           : 0,
@@ -51,9 +51,9 @@ export default function AdminDashboardPage() {
       icon: Newspaper,
     },
     {
-      label: "Enquiries",
-      value: counts.enquiries,
-      href: "/admin/enquiries",
+      label: "Leads",
+      value: counts.leads,
+      href: "/admin/leads",
       icon: MessageSquare,
     },
     {
