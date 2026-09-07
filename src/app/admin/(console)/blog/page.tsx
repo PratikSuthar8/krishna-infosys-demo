@@ -129,21 +129,21 @@ export default function AdminBlogPage() {
   };
 
   const field =
-    "w-full border border-white/15 bg-black/30 px-3 py-2.5 text-sm text-white outline-none focus:border-[#f56616]/50";
+    "w-full border border-black/15 bg-black/30 px-3 py-2.5 text-sm text-[#171717] outline-none focus:border-[#f56616]/50";
 
   return (
     <div>
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h1 className="text-2xl font-semibold tracking-[-0.03em]">Blog</h1>
-          <p className="mt-2 text-sm text-white/40">
+          <p className="mt-2 text-sm text-black/40">
             Create and publish posts shown on /blog.
           </p>
         </div>
         <button
           type="button"
           onClick={openCreate}
-          className="inline-flex items-center gap-2 bg-[#f56616] px-4 py-2.5 text-[13px] font-semibold text-white"
+          className="inline-flex items-center gap-2 bg-[#f56616] px-4 py-2.5 text-[13px] font-semibold text-[#171717]"
         >
           <Plus size={15} />
           New post
@@ -153,14 +153,14 @@ export default function AdminBlogPage() {
       {showForm && (
         <form
           onSubmit={onSubmit}
-          className="mt-8 space-y-4 border border-white/10 bg-white/[0.03] p-5"
+          className="mt-8 space-y-4 border border-black/10 bg-white/[0.03] p-5"
         >
           <h2 className="text-lg font-semibold">
             {editingId ? "Edit post" : "New post"}
           </h2>
           <div className="grid gap-3 sm:grid-cols-2">
             <label className="block sm:col-span-2">
-              <span className="mb-1 block text-[11px] uppercase tracking-wide text-white/35">
+              <span className="mb-1 block text-[11px] uppercase tracking-wide text-black/35">
                 Title *
               </span>
               <input
@@ -171,7 +171,7 @@ export default function AdminBlogPage() {
               />
             </label>
             <label className="block">
-              <span className="mb-1 block text-[11px] uppercase tracking-wide text-white/35">
+              <span className="mb-1 block text-[11px] uppercase tracking-wide text-black/35">
                 Slug
               </span>
               <input
@@ -182,7 +182,7 @@ export default function AdminBlogPage() {
               />
             </label>
             <label className="block">
-              <span className="mb-1 block text-[11px] uppercase tracking-wide text-white/35">
+              <span className="mb-1 block text-[11px] uppercase tracking-wide text-black/35">
                 Category
               </span>
               <input
@@ -192,7 +192,7 @@ export default function AdminBlogPage() {
               />
             </label>
             <label className="block">
-              <span className="mb-1 block text-[11px] uppercase tracking-wide text-white/35">
+              <span className="mb-1 block text-[11px] uppercase tracking-wide text-black/35">
                 Date
               </span>
               <input
@@ -203,7 +203,7 @@ export default function AdminBlogPage() {
               />
             </label>
             <label className="block">
-              <span className="mb-1 block text-[11px] uppercase tracking-wide text-white/35">
+              <span className="mb-1 block text-[11px] uppercase tracking-wide text-black/35">
                 Read time
               </span>
               <input
@@ -213,7 +213,7 @@ export default function AdminBlogPage() {
               />
             </label>
             <label className="block sm:col-span-2">
-              <span className="mb-1 block text-[11px] uppercase tracking-wide text-white/35">
+              <span className="mb-1 block text-[11px] uppercase tracking-wide text-black/35">
                 Excerpt
               </span>
               <textarea
@@ -224,7 +224,7 @@ export default function AdminBlogPage() {
               />
             </label>
             <label className="block sm:col-span-2">
-              <span className="mb-1 block text-[11px] uppercase tracking-wide text-white/35">
+              <span className="mb-1 block text-[11px] uppercase tracking-wide text-black/35">
                 Body (blank line between paragraphs)
               </span>
               <textarea
@@ -234,7 +234,7 @@ export default function AdminBlogPage() {
                 onChange={(e) => setForm((f) => ({ ...f, bodyText: e.target.value }))}
               />
             </label>
-            <label className="flex items-center gap-2 text-sm text-white/70">
+            <label className="flex items-center gap-2 text-sm text-black/70">
               <input
                 type="checkbox"
                 checked={!!form.published}
@@ -252,7 +252,7 @@ export default function AdminBlogPage() {
             <button
               type="submit"
               disabled={saving}
-              className="inline-flex items-center gap-2 bg-[#f56616] px-5 py-2.5 text-[13px] font-semibold text-white disabled:opacity-60"
+              className="inline-flex items-center gap-2 bg-[#f56616] px-5 py-2.5 text-[13px] font-semibold text-[#171717] disabled:opacity-60"
             >
               {saving ? <Loader2 size={14} className="animate-spin" /> : null}
               {editingId ? "Save changes" : "Create post"}
@@ -260,7 +260,7 @@ export default function AdminBlogPage() {
             <button
               type="button"
               onClick={() => setShowForm(false)}
-              className="px-4 py-2.5 text-[13px] text-white/50 hover:text-white"
+              className="px-4 py-2.5 text-[13px] text-black/50 hover:text-[#171717]"
             >
               Cancel
             </button>
@@ -269,15 +269,15 @@ export default function AdminBlogPage() {
       )}
 
       {loading ? (
-        <p className="mt-8 text-sm text-white/40">Loading…</p>
+        <p className="mt-8 text-sm text-black/40">Loading…</p>
       ) : items.length === 0 ? (
-        <p className="mt-8 text-sm text-white/40">No posts yet.</p>
+        <p className="mt-8 text-sm text-black/40">No posts yet.</p>
       ) : (
         <div className="mt-8 space-y-3">
           {items.map((post) => (
             <article
               key={post._id}
-              className="flex flex-wrap items-start justify-between gap-4 border border-white/10 bg-white/[0.03] p-5"
+              className="flex flex-wrap items-start justify-between gap-4 border border-black/10 bg-white/[0.03] p-5"
             >
               <div>
                 <div className="flex flex-wrap items-center gap-2">
@@ -286,30 +286,30 @@ export default function AdminBlogPage() {
                     className={`rounded-full px-2 py-0.5 text-[10px] uppercase tracking-wide ${
                       post.published !== false
                         ? "bg-[#f56616]/15 text-[#f56616]"
-                        : "bg-white/10 text-white/40"
+                        : "bg-black/[0.05] text-black/40"
                     }`}
                   >
                     {post.published !== false ? "Published" : "Draft"}
                   </span>
                 </div>
-                <p className="mt-1 text-[13px] text-white/45">
+                <p className="mt-1 text-[13px] text-black/45">
                   {post.category} · {post.date} · {post.readTime}
                 </p>
-                <p className="mt-2 max-w-[640px] text-sm text-white/55">{post.excerpt}</p>
+                <p className="mt-2 max-w-[640px] text-sm text-black/55">{post.excerpt}</p>
                 <p className="mt-2 text-[12px] text-white/30">/{post.slug}</p>
               </div>
               <div className="flex items-center gap-2">
                 <Link
                   href={`/blog/${post.slug}`}
                   target="_blank"
-                  className="inline-flex items-center gap-1 rounded-full border border-white/15 px-3 py-1.5 text-[12px] text-white/50 hover:text-white"
+                  className="inline-flex items-center gap-1 rounded-full border border-black/15 px-3 py-1.5 text-[12px] text-black/50 hover:text-[#171717]"
                 >
                   View <ExternalLink size={12} />
                 </Link>
                 <button
                   type="button"
                   onClick={() => openEdit(post)}
-                  className="inline-flex items-center gap-1 rounded-full border border-white/15 px-3 py-1.5 text-[12px] text-white/50 hover:text-white"
+                  className="inline-flex items-center gap-1 rounded-full border border-black/15 px-3 py-1.5 text-[12px] text-black/50 hover:text-[#171717]"
                 >
                   <Pencil size={12} /> Edit
                 </button>

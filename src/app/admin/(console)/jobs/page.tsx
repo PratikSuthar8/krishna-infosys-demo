@@ -198,10 +198,10 @@ export default function AdminJobsPage() {
   };
 
   const field =
-    "w-full border border-white/15 bg-black/30 px-3 py-2.5 text-sm text-white outline-none focus:border-[#f56616]/50";
+    "w-full border border-black/15 bg-black/30 px-3 py-2.5 text-sm text-[#171717] outline-none focus:border-[#f56616]/50";
 
   if (loading && items.length === 0) {
-    return <p className="text-sm text-white/40">Loading…</p>;
+    return <p className="text-sm text-black/40">Loading…</p>;
   }
 
   // LIST
@@ -211,14 +211,14 @@ export default function AdminJobsPage() {
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <h1 className="text-2xl font-semibold tracking-[-0.03em]">Jobs</h1>
-            <p className="mt-2 text-sm text-white/40">
+            <p className="mt-2 text-sm text-black/40">
               Manage openings and review applicants in one place.
             </p>
           </div>
           <button
             type="button"
             onClick={openCreate}
-            className="inline-flex items-center gap-2 bg-[#f56616] px-4 py-2.5 text-[13px] font-semibold text-white"
+            className="inline-flex items-center gap-2 bg-[#f56616] px-4 py-2.5 text-[13px] font-semibold text-[#171717]"
           >
             <Plus size={15} />
             New job
@@ -231,7 +231,7 @@ export default function AdminJobsPage() {
             return (
               <article
                 key={job._id}
-                className="flex flex-wrap items-start justify-between gap-4 border border-white/10 bg-white/[0.03] p-5"
+                className="flex flex-wrap items-start justify-between gap-4 border border-black/10 bg-white/[0.03] p-5"
               >
                 <div>
                   <div className="flex flex-wrap items-center gap-2">
@@ -240,16 +240,16 @@ export default function AdminJobsPage() {
                       className={`rounded-full px-2 py-0.5 text-[10px] uppercase tracking-wide ${
                         job.published !== false
                           ? "bg-[#f56616]/15 text-[#f56616]"
-                          : "bg-white/10 text-white/40"
+                          : "bg-black/[0.05] text-black/40"
                       }`}
                     >
                       {job.published !== false ? "Published" : "Draft"}
                     </span>
-                    <span className="rounded-full border border-white/15 px-2 py-0.5 text-[10px] text-white/40">
+                    <span className="rounded-full border border-black/15 px-2 py-0.5 text-[10px] text-black/40">
                       {count} applicant{count === 1 ? "" : "s"}
                     </span>
                   </div>
-                  <p className="mt-1 text-[13px] text-white/45">
+                  <p className="mt-1 text-[13px] text-black/45">
                     {job.department} · {job.location} · {job.experience}
                   </p>
                 </div>
@@ -257,14 +257,14 @@ export default function AdminJobsPage() {
                   <button
                     type="button"
                     onClick={() => openView(job)}
-                    className="inline-flex items-center gap-1 rounded-full border border-white/15 px-3 py-1.5 text-[12px] text-white/50 hover:text-white"
+                    className="inline-flex items-center gap-1 rounded-full border border-black/15 px-3 py-1.5 text-[12px] text-black/50 hover:text-[#171717]"
                   >
                     <Eye size={12} /> Open
                   </button>
                   <button
                     type="button"
                     onClick={() => openEdit(job)}
-                    className="inline-flex items-center gap-1 rounded-full border border-white/15 px-3 py-1.5 text-[12px] text-white/50 hover:text-white"
+                    className="inline-flex items-center gap-1 rounded-full border border-black/15 px-3 py-1.5 text-[12px] text-black/50 hover:text-[#171717]"
                   >
                     <Pencil size={12} /> Edit
                   </button>
@@ -284,7 +284,7 @@ export default function AdminJobsPage() {
         <button
           type="button"
           onClick={() => (activeId ? setMode("view") : setMode("list"))}
-          className="inline-flex items-center gap-2 text-[13px] text-white/50 hover:text-white"
+          className="inline-flex items-center gap-2 text-[13px] text-black/50 hover:text-[#171717]"
         >
           <ArrowLeft size={14} /> Back
         </button>
@@ -294,7 +294,7 @@ export default function AdminJobsPage() {
         <form onSubmit={onSubmit} className="mt-6 max-w-3xl space-y-4">
           <div className="grid gap-3 sm:grid-cols-2">
             <label className="block sm:col-span-2">
-              <span className="mb-1 block text-[11px] uppercase tracking-wide text-white/35">
+              <span className="mb-1 block text-[11px] uppercase tracking-wide text-black/35">
                 Role *
               </span>
               <input
@@ -305,7 +305,7 @@ export default function AdminJobsPage() {
               />
             </label>
             <label className="block">
-              <span className="mb-1 block text-[11px] uppercase tracking-wide text-white/35">
+              <span className="mb-1 block text-[11px] uppercase tracking-wide text-black/35">
                 Slug
               </span>
               <input
@@ -315,7 +315,7 @@ export default function AdminJobsPage() {
               />
             </label>
             <label className="block">
-              <span className="mb-1 block text-[11px] uppercase tracking-wide text-white/35">
+              <span className="mb-1 block text-[11px] uppercase tracking-wide text-black/35">
                 Department
               </span>
               <input
@@ -325,7 +325,7 @@ export default function AdminJobsPage() {
               />
             </label>
             <label className="block">
-              <span className="mb-1 block text-[11px] uppercase tracking-wide text-white/35">
+              <span className="mb-1 block text-[11px] uppercase tracking-wide text-black/35">
                 Experience
               </span>
               <input
@@ -335,7 +335,7 @@ export default function AdminJobsPage() {
               />
             </label>
             <label className="block">
-              <span className="mb-1 block text-[11px] uppercase tracking-wide text-white/35">
+              <span className="mb-1 block text-[11px] uppercase tracking-wide text-black/35">
                 Location
               </span>
               <input
@@ -345,7 +345,7 @@ export default function AdminJobsPage() {
               />
             </label>
             <label className="block">
-              <span className="mb-1 block text-[11px] uppercase tracking-wide text-white/35">
+              <span className="mb-1 block text-[11px] uppercase tracking-wide text-black/35">
                 Type
               </span>
               <input
@@ -355,7 +355,7 @@ export default function AdminJobsPage() {
               />
             </label>
             <label className="block sm:col-span-2">
-              <span className="mb-1 block text-[11px] uppercase tracking-wide text-white/35">
+              <span className="mb-1 block text-[11px] uppercase tracking-wide text-black/35">
                 Summary
               </span>
               <textarea
@@ -366,7 +366,7 @@ export default function AdminJobsPage() {
               />
             </label>
             <label className="block sm:col-span-2">
-              <span className="mb-1 block text-[11px] uppercase tracking-wide text-white/35">
+              <span className="mb-1 block text-[11px] uppercase tracking-wide text-black/35">
                 Description (one paragraph per line)
               </span>
               <textarea
@@ -379,7 +379,7 @@ export default function AdminJobsPage() {
               />
             </label>
             <label className="block sm:col-span-2">
-              <span className="mb-1 block text-[11px] uppercase tracking-wide text-white/35">
+              <span className="mb-1 block text-[11px] uppercase tracking-wide text-black/35">
                 Responsibilities (one per line)
               </span>
               <textarea
@@ -392,7 +392,7 @@ export default function AdminJobsPage() {
               />
             </label>
             <label className="block sm:col-span-2">
-              <span className="mb-1 block text-[11px] uppercase tracking-wide text-white/35">
+              <span className="mb-1 block text-[11px] uppercase tracking-wide text-black/35">
                 Requirements (one per line)
               </span>
               <textarea
@@ -404,7 +404,7 @@ export default function AdminJobsPage() {
                 }
               />
             </label>
-            <label className="flex items-center gap-2 text-sm text-white/70">
+            <label className="flex items-center gap-2 text-sm text-black/70">
               <input
                 type="checkbox"
                 checked={!!form.published}
@@ -420,7 +420,7 @@ export default function AdminJobsPage() {
             <button
               type="submit"
               disabled={saving}
-              className="inline-flex items-center gap-2 bg-[#f56616] px-5 py-2.5 text-[13px] font-semibold text-white disabled:opacity-60"
+              className="inline-flex items-center gap-2 bg-[#f56616] px-5 py-2.5 text-[13px] font-semibold text-[#171717] disabled:opacity-60"
             >
               {saving ? <Loader2 size={14} className="animate-spin" /> : null}
               Save
@@ -428,7 +428,7 @@ export default function AdminJobsPage() {
             <button
               type="button"
               onClick={() => (activeId ? setMode("view") : setMode("list"))}
-              className="text-[13px] text-white/50"
+              className="text-[13px] text-black/50"
             >
               Cancel
             </button>
@@ -441,7 +441,7 @@ export default function AdminJobsPage() {
   // VIEW + APPLICANTS
   if (!active) {
     return (
-      <button type="button" onClick={() => setMode("list")} className="text-white/50">
+      <button type="button" onClick={() => setMode("list")} className="text-black/50">
         Back to list
       </button>
     );
@@ -452,7 +452,7 @@ export default function AdminJobsPage() {
       <button
         type="button"
         onClick={() => setMode("list")}
-        className="inline-flex items-center gap-2 text-[13px] text-white/50 hover:text-white"
+        className="inline-flex items-center gap-2 text-[13px] text-black/50 hover:text-[#171717]"
       >
         <ArrowLeft size={14} /> All jobs
       </button>
@@ -465,13 +465,13 @@ export default function AdminJobsPage() {
               className={`rounded-full px-2 py-0.5 text-[10px] uppercase tracking-wide ${
                 active.published !== false
                   ? "bg-[#f56616]/15 text-[#f56616]"
-                  : "bg-white/10 text-white/40"
+                  : "bg-black/[0.05] text-black/40"
               }`}
             >
               {active.published !== false ? "Published" : "Draft"}
             </span>
           </div>
-          <p className="mt-2 text-sm text-white/45">
+          <p className="mt-2 text-sm text-black/45">
             {active.department} · {active.experience} · {active.location} · {active.type}
           </p>
         </div>
@@ -479,7 +479,7 @@ export default function AdminJobsPage() {
           <button
             type="button"
             onClick={() => openEdit(active)}
-            className="inline-flex items-center gap-1 border border-white/15 px-3 py-2 text-[12px] text-white/60 hover:text-white"
+            className="inline-flex items-center gap-1 border border-black/15 px-3 py-2 text-[12px] text-black/60 hover:text-[#171717]"
           >
             <Pencil size={12} /> Edit
           </button>
@@ -494,44 +494,44 @@ export default function AdminJobsPage() {
       </div>
 
       <div className="mt-8 grid gap-8 lg:grid-cols-[1.1fr_0.9fr]">
-        <div className="space-y-6 border border-white/10 bg-white/[0.03] p-5">
+        <div className="space-y-6 border border-black/10 bg-white/[0.03] p-5">
           <div>
-            <h2 className="text-[11px] font-bold uppercase tracking-[0.16em] text-white/35">
+            <h2 className="text-[11px] font-bold uppercase tracking-[0.16em] text-black/35">
               Summary
             </h2>
             <p className="mt-2 text-sm leading-6 text-white/65">{active.summary}</p>
           </div>
           <div>
-            <h2 className="text-[11px] font-bold uppercase tracking-[0.16em] text-white/35">
+            <h2 className="text-[11px] font-bold uppercase tracking-[0.16em] text-black/35">
               Description
             </h2>
             <div className="mt-2 space-y-2">
               {(active.description || []).map((p) => (
-                <p key={p.slice(0, 24)} className="text-sm leading-6 text-white/60">
+                <p key={p.slice(0, 24)} className="text-sm leading-6 text-black/60">
                   {p}
                 </p>
               ))}
             </div>
           </div>
           <div>
-            <h2 className="text-[11px] font-bold uppercase tracking-[0.16em] text-white/35">
+            <h2 className="text-[11px] font-bold uppercase tracking-[0.16em] text-black/35">
               Responsibilities
             </h2>
             <ul className="mt-2 space-y-1.5">
               {(active.responsibilities || []).map((r) => (
-                <li key={r} className="text-sm text-white/60">
+                <li key={r} className="text-sm text-black/60">
                   · {r}
                 </li>
               ))}
             </ul>
           </div>
           <div>
-            <h2 className="text-[11px] font-bold uppercase tracking-[0.16em] text-white/35">
+            <h2 className="text-[11px] font-bold uppercase tracking-[0.16em] text-black/35">
               Requirements
             </h2>
             <ul className="mt-2 space-y-1.5">
               {(active.requirements || []).map((r) => (
-                <li key={r} className="text-sm text-white/60">
+                <li key={r} className="text-sm text-black/60">
                   · {r}
                 </li>
               ))}
@@ -544,27 +544,27 @@ export default function AdminJobsPage() {
             Applicants ({jobApps.length})
           </h2>
           {jobApps.length === 0 ? (
-            <p className="mt-4 text-sm text-white/40">No applications for this role yet.</p>
+            <p className="mt-4 text-sm text-black/40">No applications for this role yet.</p>
           ) : (
             <div className="mt-4 space-y-3">
               {jobApps.map((app) => (
                 <article
                   key={app._id}
-                  className="border border-white/10 bg-white/[0.03] p-4"
+                  className="border border-black/10 bg-white/[0.03] p-4"
                 >
                   <div className="flex flex-wrap items-start justify-between gap-2">
                     <div>
                       <p className="font-semibold">{app.name}</p>
-                      <p className="mt-1 text-[12px] text-white/45">
+                      <p className="mt-1 text-[12px] text-black/45">
                         {app.email} · {app.phone}
                       </p>
                     </div>
-                    <span className="rounded-full border border-white/15 px-2 py-0.5 text-[10px] uppercase text-white/40">
+                    <span className="rounded-full border border-black/15 px-2 py-0.5 text-[10px] uppercase text-black/40">
                       {app.status}
                     </span>
                   </div>
                   {app.message ? (
-                    <p className="mt-2 text-[13px] leading-5 text-white/55">{app.message}</p>
+                    <p className="mt-2 text-[13px] leading-5 text-black/55">{app.message}</p>
                   ) : null}
                   <div className="mt-3 flex flex-wrap gap-2">
                     {app.resume?.storedName ? (
@@ -583,7 +583,7 @@ export default function AdminJobsPage() {
                         href={app.linkedin}
                         target="_blank"
                         rel="noreferrer"
-                        className="text-[12px] text-white/40 hover:text-white"
+                        className="text-[12px] text-black/40 hover:text-[#171717]"
                       >
                         LinkedIn
                       </a>
@@ -602,7 +602,7 @@ export default function AdminJobsPage() {
                     <button
                       type="button"
                       onClick={() => setAppStatus(app._id, "closed")}
-                      className="text-[11px] font-semibold text-white/35 hover:text-white"
+                      className="text-[11px] font-semibold text-black/35 hover:text-[#171717]"
                     >
                       Close
                     </button>
