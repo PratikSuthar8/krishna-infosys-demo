@@ -28,22 +28,23 @@ export async function POST(request: Request) {
     if (!name || !email || !phone || !interest || !message) {
       return NextResponse.json(
         { ok: false, error: "Please fill all required fields." },
-        { status: 400 }
+        { status: 400 },
       );
     }
     if (!emailOk(email)) {
       return NextResponse.json(
         { ok: false, error: "Please enter a valid email address." },
-        { status: 400 }
+        { status: 400 },
       );
     }
     if (message.length > 5000) {
       return NextResponse.json(
         { ok: false, error: "Message is too long." },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
+    const now = new Date();
     const col = await getCollection("enquiries");
     const doc = {
       name,
@@ -54,9 +55,30 @@ export async function POST(request: Request) {
       message,
       status: "new",
       source: "website",
-      createdAt: new Date(),
+      createdAt: now,
     };
     const result = await col.insertOne(doc);
+
+    try {
+      const leads = await getCollection("leads");
+      await leads.insertOne({
+        name,
+        email,
+        phone: phone || null,
+        company: organisation || null,
+        source: "website-contact",
+        interest: interest || null,
+        message,
+        status: "new",
+        value: null,
+        notes: [],
+        enquiryId: result.insertedId,
+        createdAt: now,
+        updatedAt: now,
+      });
+    } catch (e) {
+      console.error("lead create", e);
+    }
 
     return NextResponse.json({
       ok: true,

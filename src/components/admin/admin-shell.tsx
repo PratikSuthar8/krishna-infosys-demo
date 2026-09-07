@@ -8,6 +8,7 @@ import {
   Briefcase,
   Newspaper,
   MessageSquare,
+  ContactRound,
   LogOut,
   Menu,
   X,
@@ -20,6 +21,7 @@ const nav = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
   { href: "/admin/jobs", label: "Jobs", icon: Briefcase },
   { href: "/admin/blog", label: "Blog", icon: Newspaper },
+  { href: "/admin/leads", label: "Leads", icon: ContactRound },
   { href: "/admin/enquiries", label: "Enquiries", icon: MessageSquare },
 ];
 
@@ -237,8 +239,10 @@ export function AdminShell({
           </div>
         </aside>
 
-        <div className="min-w-0 flex-1">
-          <div className="px-4 py-6 sm:px-6 lg:px-10 lg:py-8">{children}</div>
+        <div className="flex min-h-0 min-w-0 flex-1 flex-col">
+          <div className="flex min-h-0 flex-1 flex-col px-3 py-3 sm:px-4 lg:px-5 lg:py-4">
+            {children}
+          </div>
         </div>
       </div>
     </div>
