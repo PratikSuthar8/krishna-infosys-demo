@@ -15,7 +15,7 @@ type Post = {
   category?: string;
   date?: string;
   readTime?: string;
-  body?: string[];
+  body?: string[] | string;
 };
 
 function isHeading(block: string) {
@@ -70,7 +70,7 @@ export default async function BlogPostPage({ params }: Props) {
   const post = await getPost(slug);
   if (!post) notFound();
 
-  const paragraphs = Array.isArray(post.body) ? post.body : [];
+  const paragraphs = Array.isArray(post.body) ? post.body : typeof post.body === "string" && !post.body.trim().startsWith("<") ? post.body.split("\n").filter(Boolean) : [];
 
   return (
     <main className="bg-[#f3f1ec] text-[#171717]">
@@ -113,31 +113,42 @@ export default async function BlogPostPage({ params }: Props) {
       </div>
 
       <article className="mx-auto max-w-[720px] px-5 py-12 sm:px-8 sm:py-16">
-        <div className="space-y-6">
-          {paragraphs.length === 0 ? (
-            <p className="text-[15px] leading-7 text-black/45">
-              No content for this article yet.
-            </p>
-          ) : (
-            paragraphs.map((block, i) =>
-              isHeading(block) ? (
-                <h2
-                  key={i}
-                  className="pt-4 text-[1.15rem] font-semibold tracking-[-0.03em] text-[#171717] sm:text-[1.25rem]"
-                >
-                  {block}
-                </h2>
-              ) : (
-                <p
-                  key={i}
-                  className="whitespace-pre-line text-[15px] leading-8 text-[#3a3a3a] sm:text-[16px] sm:leading-8"
-                >
-                  {block}
-                </p>
-              ),
-            )
-          )}
-        </div>
+        {typeof post.body === "string" && post.body.trim().startsWith("<") ? (
+          <div
+            className="prose prose-neutral max-w-none text-[15px] leading-8 text-[#3a3a3a] sm:text-[16px]
+              prose-headings:tracking-[-0.03em] prose-headings:text-[#171717]
+              prose-a:text-[#f56616] prose-table:w-full
+              prose-th:border prose-th:border-black/15 prose-th:bg-black/[0.03] prose-th:px-3 prose-th:py-2
+              prose-td:border prose-td:border-black/15 prose-td:px-3 prose-td:py-2"
+            dangerouslySetInnerHTML={{ __html: post.body }}
+          />
+        ) : (
+          <div className="space-y-6">
+            {paragraphs.length === 0 ? (
+              <p className="text-[15px] leading-7 text-black/45">
+                No content for this article yet.
+              </p>
+            ) : (
+              paragraphs.map((block, i) =>
+                isHeading(block) ? (
+                  <h2
+                    key={i}
+                    className="pt-4 text-[1.15rem] font-semibold tracking-[-0.03em] text-[#171717] sm:text-[1.25rem]"
+                  >
+                    {block}
+                  </h2>
+                ) : (
+                  <p
+                    key={i}
+                    className="whitespace-pre-line text-[15px] leading-8 text-[#3a3a3a] sm:text-[16px] sm:leading-8"
+                  >
+                    {block}
+                  </p>
+                ),
+              )
+            )}
+          </div>
+        )}
 
         <div className="mt-14 flex flex-wrap items-center justify-between gap-4 border-t border-black/[0.08] pt-8">
           <Link

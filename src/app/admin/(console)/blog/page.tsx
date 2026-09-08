@@ -1,6 +1,8 @@
 "use client";
 
+import { BlogRichEditor } from "@/components/admin/blog-rich-editor";
 import { FormEvent, useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import { Loader2, Plus, Pencil, Trash2, ExternalLink } from "lucide-react";
 
@@ -12,20 +14,54 @@ type Post = {
   category: string;
   date: string;
   readTime: string;
-  body: string[];
+  body: string[] | string;
   published?: boolean;
 };
 
-const empty = {
+type FormState = {
+  slug: string;
+  title: string;
+  excerpt: string;
+  category: string;
+  date: string;
+  readTime: string;
+  bodyHtml: string;
+  published: boolean;
+};
+
+function bodyToEditorHtml(body: unknown): string {
+  if (typeof body === "string") {
+    const s = body.trim();
+    if (!s) return "";
+    if (s.startsWith("<")) return s;
+    return s
+      .split(/\n+/)
+      .map((x) => x.trim())
+      .filter(Boolean)
+      .map((x) => "<p>" + x + "</p>")
+      .join("");
+  }
+  if (Array.isArray(body)) {
+    return body
+      .map(String)
+      .map((s) => s.trim())
+      .filter(Boolean)
+      .map((s) => (s.startsWith("<") ? s : "<p>" + s + "</p>"))
+      .join("");
+  }
+  return "";
+}
+
+const empty = (): FormState => ({
   slug: "",
   title: "",
   excerpt: "",
   category: "Engineering",
   date: new Date().toISOString().slice(0, 10),
   readTime: "5 min",
-  bodyText: "",
+  bodyHtml: "",
   published: true,
-};
+});
 
 export default function AdminBlogPage() {
   const [items, setItems] = useState<Post[]>([]);
@@ -33,8 +69,13 @@ export default function AdminBlogPage() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [form, setForm] = useState(empty);
+  const [form, setForm] = useState<FormState>(empty);
   const [showForm, setShowForm] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const load = () => {
     setLoading(true);
@@ -50,12 +91,24 @@ export default function AdminBlogPage() {
     load();
   }, []);
 
+  // Escape + lock body scroll while modal is open
+  useEffect(() => {
+    if (!showForm) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setShowForm(false);
+    };
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = prev;
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [showForm]);
+
   const openCreate = () => {
     setEditingId(null);
-    setForm({
-      ...empty,
-      date: new Date().toISOString().slice(0, 10),
-    });
+    setForm(empty());
     setShowForm(true);
     setError("");
   };
@@ -69,30 +122,19 @@ export default function AdminBlogPage() {
       category: post.category || "Engineering",
       date: post.date || new Date().toISOString().slice(0, 10),
       readTime: post.readTime || "5 min",
-      bodyText: (post.body || []).join("\n\n"),
+      bodyHtml: bodyToEditorHtml(post.body),
       published: post.published !== false,
     });
     setShowForm(true);
     setError("");
   };
 
+  const closeForm = () => setShowForm(false);
+
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setSaving(true);
     setError("");
-    const body = form.bodyText
-      .split(/\n\s*\n/)
-      .map((s) => s.trim())
-      .filter(Boolean);
-    // also allow single newlines as paragraphs if no double breaks
-    const paragraphs =
-      body.length > 0
-        ? body
-        : form.bodyText
-            .split("\n")
-            .map((s) => s.trim())
-            .filter(Boolean);
-
     const payload = {
       id: editingId || undefined,
       slug: form.slug,
@@ -101,10 +143,9 @@ export default function AdminBlogPage() {
       category: form.category,
       date: form.date,
       readTime: form.readTime,
-      body: paragraphs,
+      body: form.bodyHtml || "",
       published: form.published,
     };
-
     try {
       const res = await fetch("/api/admin/blog", {
         method: editingId ? "PUT" : "POST",
@@ -113,7 +154,7 @@ export default function AdminBlogPage() {
       });
       const data = await res.json();
       if (!res.ok || !data.ok) throw new Error(data.error || "Save failed");
-      setShowForm(false);
+      closeForm();
       load();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Save failed");
@@ -123,13 +164,190 @@ export default function AdminBlogPage() {
   };
 
   const onDelete = async (id: string, title: string) => {
-    if (!confirm(`Delete post “${title}”?`)) return;
-    await fetch(`/api/admin/blog?id=${encodeURIComponent(id)}`, { method: "DELETE" });
+    if (!confirm('Delete post "' + title + '"?')) return;
+    await fetch("/api/admin/blog?id=" + encodeURIComponent(id), {
+      method: "DELETE",
+    });
     load();
   };
 
   const field =
-    "w-full border border-black/15 bg-black/30 px-3 py-2.5 text-sm text-[#171717] outline-none focus:border-[#f56616]/50";
+    "w-full rounded-xl border border-black/10 bg-white px-3 py-2.5 text-sm text-[#171717] outline-none focus:border-[#f56616]";
+
+  const modal =
+    showForm && mounted
+      ? createPortal(
+          <div className="fixed inset-0 z-[200] flex items-start justify-center p-4 sm:p-8">
+            {/* Backdrop â€” click outside closes */}
+            <button
+              type="button"
+              aria-label="Close dialog"
+              className="absolute inset-0 bg-black/40"
+              onClick={closeForm}
+            />
+
+            {/* Dialog panel is the ONLY scroll container */}
+            <div
+              id="blog-post-dialog"
+              role="dialog"
+              aria-modal="true"
+              className="relative z-10 mt-2 flex max-h-[min(92vh,920px)] w-full max-w-3xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl"
+            >
+              <div className="flex shrink-0 items-center justify-between gap-3 border-b border-black/[0.06] px-5 py-4 sm:px-6">
+                <h2 className="text-lg font-semibold tracking-[-0.03em]">
+                  {editingId ? "Edit post" : "New post"}
+                </h2>
+                <button
+                  type="button"
+                  onClick={closeForm}
+                  className="text-sm font-semibold text-black/40 hover:text-black"
+                >
+                  Close
+                </button>
+              </div>
+
+              <div
+                className="blog-dialog-scroll min-h-0 flex-1 overflow-y-auto px-5 py-4 sm:px-6"
+                style={{ WebkitOverflowScrolling: "touch" }}
+                onWheel={(e) => {
+                  // Force scroll this panel even if a global listener tries to take the wheel
+                  const el = e.currentTarget;
+                  el.scrollTop += e.deltaY;
+                }}
+              >
+                <form id="blog-post-form" onSubmit={onSubmit} className="space-y-3 pb-4">
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    <div>
+                      <label className="text-[11px] font-semibold text-black/40">
+                        Title *
+                      </label>
+                      <input
+                        required
+                        value={form.title}
+                        onChange={(e) =>
+                          setForm((f) => ({ ...f, title: e.target.value }))
+                        }
+                        className={field}
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[11px] font-semibold text-black/40">
+                        Slug *
+                      </label>
+                      <input
+                        required
+                        value={form.slug}
+                        onChange={(e) =>
+                          setForm((f) => ({ ...f, slug: e.target.value }))
+                        }
+                        className={field}
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="text-[11px] font-semibold text-black/40">
+                      Excerpt
+                    </label>
+                    <textarea
+                      rows={2}
+                      value={form.excerpt}
+                      onChange={(e) =>
+                        setForm((f) => ({ ...f, excerpt: e.target.value }))
+                      }
+                      className={field}
+                    />
+                  </div>
+
+                  <div className="grid gap-3 sm:grid-cols-3">
+                    <div>
+                      <label className="text-[11px] font-semibold text-black/40">
+                        Category
+                      </label>
+                      <input
+                        value={form.category}
+                        onChange={(e) =>
+                          setForm((f) => ({ ...f, category: e.target.value }))
+                        }
+                        className={field}
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[11px] font-semibold text-black/40">
+                        Date
+                      </label>
+                      <input
+                        type="date"
+                        value={form.date}
+                        onChange={(e) =>
+                          setForm((f) => ({ ...f, date: e.target.value }))
+                        }
+                        className={field}
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[11px] font-semibold text-black/40">
+                        Read time
+                      </label>
+                      <input
+                        value={form.readTime}
+                        onChange={(e) =>
+                          setForm((f) => ({ ...f, readTime: e.target.value }))
+                        }
+                        className={field}
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="mb-1.5 block text-[11px] font-semibold text-black/40">
+                      Body
+                    </label>
+                    <BlogRichEditor
+                      value={form.bodyHtml}
+                      onChange={(html) =>
+                        setForm((f) => ({ ...f, bodyHtml: html }))
+                      }
+                    />
+                  </div>
+
+                  <label className="flex items-center gap-2 text-sm text-black/70">
+                    <input
+                      type="checkbox"
+                      checked={form.published}
+                      onChange={(e) =>
+                        setForm((f) => ({ ...f, published: e.target.checked }))
+                      }
+                    />
+                    Published (visible on /blog)
+                  </label>
+
+                  {error ? <p className="text-sm text-red-600">{error}</p> : null}
+                </form>
+              </div>
+
+              <div className="flex shrink-0 flex-wrap gap-2 border-t border-black/[0.06] px-5 py-3 sm:px-6">
+                <button
+                  type="submit"
+                  form="blog-post-form"
+                  disabled={saving}
+                  className="rounded-full bg-[#171717] px-5 py-2.5 text-sm font-semibold text-white disabled:opacity-60"
+                >
+                  {saving ? "Saving..." : editingId ? "Update" : "Create"}
+                </button>
+                <button
+                  type="button"
+                  onClick={closeForm}
+                  className="rounded-full border border-black/10 px-5 py-2.5 text-sm font-semibold"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>,
+          document.body,
+        )
+      : null;
 
   return (
     <div>
@@ -143,188 +361,79 @@ export default function AdminBlogPage() {
         <button
           type="button"
           onClick={openCreate}
-          className="inline-flex items-center gap-2 bg-[#f56616] px-4 py-2.5 text-[13px] font-semibold text-[#171717]"
+          className="inline-flex items-center gap-2 rounded-full bg-[#171717] px-4 py-2.5 text-sm font-semibold text-white"
         >
-          <Plus size={15} />
+          <Plus size={16} />
           New post
         </button>
       </div>
 
-      {showForm && (
-        <form
-          onSubmit={onSubmit}
-          className="mt-8 space-y-4 border border-black/10 bg-white/[0.03] p-5"
-        >
-          <h2 className="text-lg font-semibold">
-            {editingId ? "Edit post" : "New post"}
-          </h2>
-          <div className="grid gap-3 sm:grid-cols-2">
-            <label className="block sm:col-span-2">
-              <span className="mb-1 block text-[11px] uppercase tracking-wide text-black/35">
-                Title *
-              </span>
-              <input
-                required
-                className={field}
-                value={form.title}
-                onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
-              />
-            </label>
-            <label className="block">
-              <span className="mb-1 block text-[11px] uppercase tracking-wide text-black/35">
-                Slug
-              </span>
-              <input
-                className={field}
-                placeholder="auto from title if empty"
-                value={form.slug}
-                onChange={(e) => setForm((f) => ({ ...f, slug: e.target.value }))}
-              />
-            </label>
-            <label className="block">
-              <span className="mb-1 block text-[11px] uppercase tracking-wide text-black/35">
-                Category
-              </span>
-              <input
-                className={field}
-                value={form.category}
-                onChange={(e) => setForm((f) => ({ ...f, category: e.target.value }))}
-              />
-            </label>
-            <label className="block">
-              <span className="mb-1 block text-[11px] uppercase tracking-wide text-black/35">
-                Date
-              </span>
-              <input
-                type="date"
-                className={field}
-                value={form.date}
-                onChange={(e) => setForm((f) => ({ ...f, date: e.target.value }))}
-              />
-            </label>
-            <label className="block">
-              <span className="mb-1 block text-[11px] uppercase tracking-wide text-black/35">
-                Read time
-              </span>
-              <input
-                className={field}
-                value={form.readTime}
-                onChange={(e) => setForm((f) => ({ ...f, readTime: e.target.value }))}
-              />
-            </label>
-            <label className="block sm:col-span-2">
-              <span className="mb-1 block text-[11px] uppercase tracking-wide text-black/35">
-                Excerpt
-              </span>
-              <textarea
-                rows={2}
-                className={field}
-                value={form.excerpt}
-                onChange={(e) => setForm((f) => ({ ...f, excerpt: e.target.value }))}
-              />
-            </label>
-            <label className="block sm:col-span-2">
-              <span className="mb-1 block text-[11px] uppercase tracking-wide text-black/35">
-                Body (blank line between paragraphs)
-              </span>
-              <textarea
-                rows={10}
-                className={field}
-                value={form.bodyText}
-                onChange={(e) => setForm((f) => ({ ...f, bodyText: e.target.value }))}
-              />
-            </label>
-            <label className="flex items-center gap-2 text-sm text-black/70">
-              <input
-                type="checkbox"
-                checked={!!form.published}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, published: e.target.checked }))
-                }
-              />
-              Published on website
-            </label>
-          </div>
-
-          {error && <p className="text-sm text-red-400">{error}</p>}
-
-          <div className="flex flex-wrap gap-3">
-            <button
-              type="submit"
-              disabled={saving}
-              className="inline-flex items-center gap-2 bg-[#f56616] px-5 py-2.5 text-[13px] font-semibold text-[#171717] disabled:opacity-60"
-            >
-              {saving ? <Loader2 size={14} className="animate-spin" /> : null}
-              {editingId ? "Save changes" : "Create post"}
-            </button>
-            <button
-              type="button"
-              onClick={() => setShowForm(false)}
-              className="px-4 py-2.5 text-[13px] text-black/50 hover:text-[#171717]"
-            >
-              Cancel
-            </button>
-          </div>
-        </form>
-      )}
-
       {loading ? (
-        <p className="mt-8 text-sm text-black/40">Loading…</p>
-      ) : items.length === 0 ? (
-        <p className="mt-8 text-sm text-black/40">No posts yet.</p>
+        <div className="flex justify-center py-20">
+          <Loader2 className="animate-spin text-black/30" />
+        </div>
       ) : (
-        <div className="mt-8 space-y-3">
-          {items.map((post) => (
-            <article
-              key={post._id}
-              className="flex flex-wrap items-start justify-between gap-4 border border-black/10 bg-white/[0.03] p-5"
-            >
-              <div>
-                <div className="flex flex-wrap items-center gap-2">
-                  <h2 className="text-base font-semibold">{post.title}</h2>
-                  <span
-                    className={`rounded-full px-2 py-0.5 text-[10px] uppercase tracking-wide ${
-                      post.published !== false
-                        ? "bg-[#f56616]/15 text-[#f56616]"
-                        : "bg-black/[0.05] text-black/40"
-                    }`}
-                  >
-                    {post.published !== false ? "Published" : "Draft"}
-                  </span>
-                </div>
-                <p className="mt-1 text-[13px] text-black/45">
-                  {post.category} · {post.date} · {post.readTime}
-                </p>
-                <p className="mt-2 max-w-[640px] text-sm text-black/55">{post.excerpt}</p>
-                <p className="mt-2 text-[12px] text-white/30">/{post.slug}</p>
-              </div>
-              <div className="flex items-center gap-2">
-                <Link
-                  href={`/blog/${post.slug}`}
-                  target="_blank"
-                  className="inline-flex items-center gap-1 rounded-full border border-black/15 px-3 py-1.5 text-[12px] text-black/50 hover:text-[#171717]"
+        <div className="mt-6 overflow-hidden rounded-2xl border border-black/[0.06] bg-white">
+          {items.length === 0 ? (
+            <p className="px-5 py-14 text-center text-sm text-black/40">
+              No posts yet.
+            </p>
+          ) : (
+            <ul className="divide-y divide-black/[0.06]">
+              {items.map((post) => (
+                <li
+                  key={post._id}
+                  className="flex flex-wrap items-center gap-3 px-4 py-3.5 sm:px-5"
                 >
-                  View <ExternalLink size={12} />
-                </Link>
-                <button
-                  type="button"
-                  onClick={() => openEdit(post)}
-                  className="inline-flex items-center gap-1 rounded-full border border-black/15 px-3 py-1.5 text-[12px] text-black/50 hover:text-[#171717]"
-                >
-                  <Pencil size={12} /> Edit
-                </button>
-                <button
-                  type="button"
-                  onClick={() => onDelete(post._id, post.title)}
-                  className="inline-flex items-center gap-1 rounded-full border border-red-500/30 px-3 py-1.5 text-[12px] text-red-400 hover:bg-red-500/10"
-                >
-                  <Trash2 size={12} /> Delete
-                </button>
-              </div>
-            </article>
-          ))}
+                  <div className="min-w-0 flex-1">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <p className="truncate text-sm font-semibold">{post.title}</p>
+                      <span
+                        className={
+                          "rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase " +
+                          (post.published !== false
+                            ? "bg-emerald-50 text-emerald-700"
+                            : "bg-black/5 text-black/45")
+                        }
+                      >
+                        {post.published !== false ? "Published" : "Draft"}
+                      </span>
+                    </div>
+                    <p className="mt-0.5 text-[12px] text-black/40">
+                      {post.category} Â· {post.date} Â· /blog/{post.slug}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <Link
+                      href={"/blog/" + post.slug}
+                      target="_blank"
+                      className="rounded-lg p-2 text-black/35 hover:bg-black/[0.04] hover:text-black"
+                    >
+                      <ExternalLink size={16} />
+                    </Link>
+                    <button
+                      type="button"
+                      onClick={() => openEdit(post)}
+                      className="rounded-lg p-2 text-black/35 hover:bg-black/[0.04] hover:text-black"
+                    >
+                      <Pencil size={16} />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => onDelete(post._id, post.title)}
+                      className="rounded-lg p-2 text-black/35 hover:bg-red-50 hover:text-red-600"
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       )}
+
+      {modal}
     </div>
   );
 }

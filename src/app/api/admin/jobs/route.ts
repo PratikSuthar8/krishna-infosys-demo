@@ -24,6 +24,12 @@ function normalizeList(v: unknown): string[] {
   return [];
 }
 
+function errResponse(error: unknown) {
+  const message = error instanceof Error ? error.message : "Error";
+  const status = message === "Unauthorized" ? 401 : 500;
+  return NextResponse.json({ ok: false, error: message }, { status });
+}
+
 export async function GET() {
   try {
     await requireAdmin();
@@ -33,8 +39,8 @@ export async function GET() {
       ok: true,
       items: items.map((i) => ({ ...i, _id: i._id.toString() })),
     });
-  } catch {
-    return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
+  } catch (error) {
+    return errResponse(error);
   }
 }
 
@@ -58,6 +64,7 @@ export async function POST(request: Request) {
       description: normalizeList(body.description),
       responsibilities: normalizeList(body.responsibilities),
       requirements: normalizeList(body.requirements),
+      published: body.published !== false,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
@@ -68,8 +75,8 @@ export async function POST(request: Request) {
     }
     const result = await col.insertOne(doc);
     return NextResponse.json({ ok: true, id: String(result.insertedId), slug });
-  } catch {
-    return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
+  } catch (error) {
+    return errResponse(error);
   }
 }
 
@@ -82,10 +89,8 @@ export async function PUT(request: Request) {
       return NextResponse.json({ ok: false, error: "id required" }, { status: 400 });
     }
     const role = String(body.role || "").trim();
-    const slug = String(body.slug || slugify(role)).trim();
-    const $set: Record<string, unknown> = {
-      updatedAt: new Date(),
-    };
+    const slug = String(body.slug || (role ? slugify(role) : "")).trim();
+    const $set: Record<string, unknown> = { updatedAt: new Date() };
     if (role) $set.role = role;
     if (slug) $set.slug = slug;
     if (body.department !== undefined) $set.department = String(body.department || "").trim();
@@ -97,27 +102,32 @@ export async function PUT(request: Request) {
     if (body.responsibilities !== undefined)
       $set.responsibilities = normalizeList(body.responsibilities);
     if (body.requirements !== undefined) $set.requirements = normalizeList(body.requirements);
+    if (body.published !== undefined) $set.published = body.published !== false;
 
     const col = await getCollection("jobs");
     await col.updateOne({ _id: new ObjectId(id) }, { $set });
     return NextResponse.json({ ok: true });
-  } catch {
-    return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
+  } catch (error) {
+    return errResponse(error);
   }
 }
 
 export async function DELETE(request: Request) {
   try {
     await requireAdmin();
-    const body = await request.json().catch(() => ({}));
-    const id = String(body.id || body._id || "").trim();
+    const url = new URL(request.url);
+    let id = url.searchParams.get("id") || "";
+    if (!id) {
+      const body = await request.json().catch(() => ({}));
+      id = String(body.id || body._id || "").trim();
+    }
     if (!id) {
       return NextResponse.json({ ok: false, error: "id required" }, { status: 400 });
     }
     const col = await getCollection("jobs");
     await col.deleteOne({ _id: new ObjectId(id) });
     return NextResponse.json({ ok: true });
-  } catch {
-    return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
+  } catch (error) {
+    return errResponse(error);
   }
 }
