@@ -69,7 +69,7 @@ function Btn({
         "inline-flex h-8 w-8 items-center justify-center rounded-md text-[13px] transition " +
         (active
           ? "bg-[#171717] text-white"
-          : "text-black/55 hover:bg-black/[0.06] hover:text-black")
+          : "text-black/55 hover:bg-black/6 hover:text-black")
       }
     >
       {children}
@@ -161,7 +161,7 @@ export function BlogRichEditor({ value, onChange, className }: Props) {
         (className || "")
       }
     >
-      <div className="flex flex-wrap items-center gap-0.5 border-b border-black/[0.06] bg-[#faf9f7] px-2 py-1.5">
+      <div className="flex flex-wrap items-center gap-0.5 border-b border-black/6 bg-[#faf9f7] px-2 py-1.5">
         <Btn title="Undo" onClick={() => editor.chain().focus().undo().run()}>
           <Undo2 size={14} />
         </Btn>
@@ -198,7 +198,7 @@ export function BlogRichEditor({ value, onChange, className }: Props) {
         </select>
 
         <select
-          className="h-8 max-w-[120px] rounded-md border-0 bg-transparent px-1 text-[12px] text-black/70 outline-none"
+          className="h-8 max-w-30 rounded-md border-0 bg-transparent px-1 text-[12px] text-black/70 outline-none"
           defaultValue=""
           onChange={(e) => {
             const v = e.target.value;
