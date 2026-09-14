@@ -37,6 +37,19 @@ type Props = {
   className?: string;
 };
 
+const EDITOR_CSS = `
+.blog-tiptap h1 { font-size: 1.75rem; font-weight: 700; line-height: 1.25; margin: 0.75rem 0 0.4rem; letter-spacing: -0.03em; }
+.blog-tiptap h2 { font-size: 1.35rem; font-weight: 650; line-height: 1.3; margin: 0.65rem 0 0.35rem; letter-spacing: -0.025em; }
+.blog-tiptap h3 { font-size: 1.15rem; font-weight: 600; line-height: 1.35; margin: 0.55rem 0 0.3rem; }
+.blog-tiptap p { margin: 0.35rem 0; }
+.blog-tiptap ul { list-style: disc; padding-left: 1.25rem; margin: 0.4rem 0; }
+.blog-tiptap ol { list-style: decimal; padding-left: 1.25rem; margin: 0.4rem 0; }
+.blog-tiptap blockquote { border-left: 3px solid #f56616; padding-left: 0.75rem; color: #555; margin: 0.5rem 0; }
+.blog-tiptap table { width: 100%; border-collapse: collapse; margin: 0.5rem 0; }
+.blog-tiptap td, .blog-tiptap th { border: 1px solid rgba(0,0,0,0.15); padding: 0.4rem 0.65rem; }
+.blog-tiptap th { background: rgba(0,0,0,0.04); text-align: left; font-weight: 600; }
+`;
+
 function bodyToHtml(value: string): string {
   const v = (value || "").trim();
   if (!v) return "";
@@ -64,12 +77,13 @@ function Btn({
     <button
       type="button"
       title={title}
+      onMouseDown={(e) => e.preventDefault()}
       onClick={onClick}
       className={
         "inline-flex h-8 w-8 items-center justify-center rounded-md text-[13px] transition " +
         (active
           ? "bg-[#171717] text-white"
-          : "text-black/55 hover:bg-black/6 hover:text-black")
+          : "text-black/55 hover:bg-black/[0.06] hover:text-black")
       }
     >
       {children}
@@ -117,9 +131,7 @@ export function BlogRichEditor({ value, onChange, className }: Props) {
       },
       attributes: {
         class:
-          "prose prose-neutral max-w-none min-h-[280px] overflow-visible px-4 py-3 text-[15px] leading-7 text-[#171717] focus:outline-none " +
-          "[&_table]:w-full [&_table]:border-collapse [&_td]:border [&_td]:border-black/15 [&_td]:px-3 [&_td]:py-2 " +
-          "[&_th]:border [&_th]:border-black/15 [&_th]:bg-black/[0.04] [&_th]:px-3 [&_th]:py-2 [&_th]:text-left",
+          "blog-tiptap max-w-none min-h-[280px] overflow-visible px-4 py-3 text-[15px] leading-7 text-[#171717] focus:outline-none",
       },
     },
     onUpdate: ({ editor: ed }) => {
@@ -154,6 +166,14 @@ export function BlogRichEditor({ value, onChange, className }: Props) {
       .run();
   };
 
+  const setBlock = (kind: "p" | "h1" | "h2" | "h3") => {
+    const chain = editor.chain().focus();
+    if (kind === "p") chain.setParagraph().run();
+    else if (kind === "h1") chain.setHeading({ level: 1 }).run();
+    else if (kind === "h2") chain.setHeading({ level: 2 }).run();
+    else if (kind === "h3") chain.setHeading({ level: 3 }).run();
+  };
+
   return (
     <div
       className={
@@ -161,7 +181,9 @@ export function BlogRichEditor({ value, onChange, className }: Props) {
         (className || "")
       }
     >
-      <div className="flex flex-wrap items-center gap-0.5 border-b border-black/6 bg-[#faf9f7] px-2 py-1.5">
+      <style dangerouslySetInnerHTML={{ __html: EDITOR_CSS }} />
+
+      <div className="flex flex-wrap items-center gap-0.5 border-b border-black/[0.06] bg-[#faf9f7] px-2 py-1.5">
         <Btn title="Undo" onClick={() => editor.chain().focus().undo().run()}>
           <Undo2 size={14} />
         </Btn>
@@ -182,14 +204,8 @@ export function BlogRichEditor({ value, onChange, className }: Props) {
                   ? "h3"
                   : "p"
           }
-          onChange={(e) => {
-            const v = e.target.value;
-            const chain = editor.chain().focus();
-            if (v === "p") chain.setParagraph().run();
-            else if (v === "h1") chain.toggleHeading({ level: 1 }).run();
-            else if (v === "h2") chain.toggleHeading({ level: 2 }).run();
-            else if (v === "h3") chain.toggleHeading({ level: 3 }).run();
-          }}
+          onMouseDown={(e) => e.preventDefault()}
+          onChange={(e) => setBlock(e.target.value as "p" | "h1" | "h2" | "h3")}
         >
           <option value="p">Paragraph</option>
           <option value="h1">Heading 1</option>
@@ -198,8 +214,9 @@ export function BlogRichEditor({ value, onChange, className }: Props) {
         </select>
 
         <select
-          className="h-8 max-w-30 rounded-md border-0 bg-transparent px-1 text-[12px] text-black/70 outline-none"
+          className="h-8 max-w-[120px] rounded-md border-0 bg-transparent px-1 text-[12px] text-black/70 outline-none"
           defaultValue=""
+          onMouseDown={(e) => e.preventDefault()}
           onChange={(e) => {
             const v = e.target.value;
             if (!v) editor.chain().focus().unsetFontFamily().run();
@@ -218,6 +235,7 @@ export function BlogRichEditor({ value, onChange, className }: Props) {
           type="color"
           title="Text color"
           className="h-7 w-7 cursor-pointer rounded border-0 bg-transparent p-0"
+          onMouseDown={(e) => e.preventDefault()}
           onChange={(e) =>
             editor.chain().focus().setColor(e.target.value).run()
           }
@@ -259,27 +277,21 @@ export function BlogRichEditor({ value, onChange, className }: Props) {
         <Btn
           title="H1"
           active={editor.isActive("heading", { level: 1 })}
-          onClick={() =>
-            editor.chain().focus().toggleHeading({ level: 1 }).run()
-          }
+          onClick={() => setBlock("h1")}
         >
           <Heading1 size={14} />
         </Btn>
         <Btn
           title="H2"
           active={editor.isActive("heading", { level: 2 })}
-          onClick={() =>
-            editor.chain().focus().toggleHeading({ level: 2 }).run()
-          }
+          onClick={() => setBlock("h2")}
         >
           <Heading2 size={14} />
         </Btn>
         <Btn
           title="H3"
           active={editor.isActive("heading", { level: 3 })}
-          onClick={() =>
-            editor.chain().focus().toggleHeading({ level: 3 }).run()
-          }
+          onClick={() => setBlock("h3")}
         >
           <Heading3 size={14} />
         </Btn>
