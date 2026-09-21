@@ -667,14 +667,14 @@ gsap.registerPlugin(ScrollTrigger);
 
 const metrics = [
   {
-    value: 825,
+    value: 950,
     suffix: "+",
     label: "Clients",
     note: "Relationships built across sectors and operating environments.",
     icon: Building2,
   },
   {
-    value: 2100,
+    value: 2200,
     suffix: "+",
     label: "Projects completed",
     note: "ELV projects delivered across diverse infrastructure requirements.",

@@ -180,7 +180,7 @@ export function AboutHeroSection() {
                             },
                             {
                                 label: "Clients",
-                                value: "850+",
+                                value: "950+",
                                 note: "Satisfied",
                                 icon: null,
                             },

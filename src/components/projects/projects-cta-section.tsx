@@ -19,12 +19,12 @@ gsap.registerPlugin(ScrollTrigger);
 
 const outcomes = [
     {
-        value: "2,100+",
+        value: "2,200+",
         label: "Projects delivered",
         note: "Across verticals and site types",
     },
     {
-        value: "850+",
+        value: "950+",
         label: "Clients",
         note: "Repeat and long-term relationships",
     },

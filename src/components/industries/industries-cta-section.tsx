@@ -19,8 +19,8 @@ gsap.registerPlugin(ScrollTrigger);
 
 const metrics = [
     { value: "8+", label: "Priority verticals" },
-    { value: "2,100+", label: "Projects delivered" },
-    { value: "850+", label: "Clients served" },
+    { value: "2,200+", label: "Projects delivered" },
+    { value: "950+", label: "Clients served" },
     { value: "<1.5%", label: "Complaint ratio" },
 ];
 

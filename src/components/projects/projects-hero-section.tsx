@@ -7,8 +7,8 @@ import { ArrowUpRight, Layers, MapPin, ShieldCheck } from "lucide-react";
 import { motion } from 'framer-motion'
 
 const stats = [
-    { value: "2,100+", label: "Projects", icon: Layers },
-    { value: "850+", label: "Clients", icon: ShieldCheck },
+    { value: "2,200+", label: "Projects", icon: Layers },
+    { value: "950+", label: "Clients", icon: ShieldCheck },
     { value: "Pan-India", label: "Delivery", icon: MapPin },
 ];
 

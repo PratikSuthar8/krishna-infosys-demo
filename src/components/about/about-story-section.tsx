@@ -71,9 +71,9 @@ const milestones = [
         year: "Today",
         phase: "Present",
         title: "Integrated partner",
-        headline: "2,100+ projects. One accountable model.",
+        headline: "2,200+ projects. One accountable model.",
         description:
-            "850+ clients and 2,100+ projects later — design-led ELV systems with genuine OEM sourcing, traceability and lifecycle support under ISO 9001:2015.",
+            "950+ clients and 2,200+ projects later — design-led ELV systems with genuine OEM sourcing, traceability and lifecycle support under ISO 9001:2015.",
         detail: "25+ years · <1.5% complaint ratio · ISO 9001:2015",
         icon: Building2,
     },
@@ -342,10 +342,10 @@ export function AboutStorySection() {
                                         >
                                             <div
                                                 className={`relative z-10 flex h-11 w-11 items-center justify-center rounded-full border transition-all duration-500 ${current
-                                                        ? "border-[#f56616] bg-[#f56616] text-white shadow-[0_0_35px_rgba(245,102,22,0.18)]"
-                                                        : completed
-                                                            ? "border-[#f56616]/50 bg-[#251b16] text-[#f56616]"
-                                                            : "border-white/15 bg-[#171717] text-white/30"
+                                                    ? "border-[#f56616] bg-[#f56616] text-white shadow-[0_0_35px_rgba(245,102,22,0.18)]"
+                                                    : completed
+                                                        ? "border-[#f56616]/50 bg-[#251b16] text-[#f56616]"
+                                                        : "border-white/15 bg-[#171717] text-white/30"
                                                     }`}
                                             >
                                                 <Icon size={15} strokeWidth={1.6} />
@@ -354,18 +354,18 @@ export function AboutStorySection() {
                                             <div className="hidden xl:block">
                                                 <span
                                                     className={`block text-[9px] font-semibold uppercase tracking-[0.18em] transition-colors duration-500 ${current || completed
-                                                            ? "text-[#f56616]"
-                                                            : "text-white/25"
+                                                        ? "text-[#f56616]"
+                                                        : "text-white/25"
                                                         }`}
                                                 >
                                                     {stage.year}
                                                 </span>
                                                 <span
                                                     className={`mt-0.5 block text-[12px] font-semibold transition-colors duration-500 ${current
-                                                            ? "text-white"
-                                                            : completed
-                                                                ? "text-white/60"
-                                                                : "text-white/28"
+                                                        ? "text-white"
+                                                        : completed
+                                                            ? "text-white/60"
+                                                            : "text-white/28"
                                                         }`}
                                                 >
                                                     {stage.title}
@@ -538,8 +538,8 @@ export function AboutStorySection() {
             <div className="relative border-t border-white/[0.08]">
                 <div className="mx-auto grid max-w-[1500px] gap-6 px-5 py-12 sm:grid-cols-2 sm:px-8 lg:grid-cols-4 lg:px-12 lg:py-14 xl:px-16">
                     {[
-                        { value: "2,100+", label: "Projects delivered" },
-                        { value: "850+", label: "Happy clients" },
+                        { value: "2,200+", label: "Projects delivered" },
+                        { value: "950+", label: "Happy clients" },
                         { value: "24+", label: "Years experience" },
                         { value: "<1.5%", label: "Complaint ratio" },
                     ].map((item) => (

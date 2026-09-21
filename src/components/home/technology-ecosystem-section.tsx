@@ -456,7 +456,7 @@ export function TechnologyEcosystemSection() {
                       alt={oem.name}
                       width={140}
                       height={48}
-                      className="h-9 w-auto max-w-[120px] object-contain opacity-80 grayscale transition duration-300 group-hover:opacity-100 group-hover:grayscale-0"
+                      className="h-9 w-auto max-w-[120px] hover:cursor-pointer object-contain opacity-80 grayscale transition duration-300 group-hover:opacity-100 group-hover:grayscale-0"
                       style={
                         oem.scale
                           ? { transform: `scale(${oem.scale})` }

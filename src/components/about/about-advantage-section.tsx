@@ -63,9 +63,9 @@ const advantages = [
         icon: ShieldCheck,
         span: "featured",
         stats: [
-            { value: "2,100+", label: "Projects" },
+            { value: "2,200+", label: "Projects" },
             { value: "<1.5%", label: "Complaint ratio" },
-            { value: "850+", label: "Clients" },
+            { value: "950+", label: "Clients" },
         ],
     },
     {
@@ -226,8 +226,8 @@ export function AboutAdvantageSection() {
                                 whileHover={{ y: -4 }}
                                 transition={{ type: "spring", stiffness: 280, damping: 22 }}
                                 className={`adv-card group relative overflow-hidden border border-white/[0.08] transition-colors duration-300 hover:border-[#f56616]/35 ${featured
-                                        ? "bg-[#1f1c19] sm:col-span-2 lg:col-span-1 lg:row-span-2"
-                                        : "bg-white/[0.02]"
+                                    ? "bg-[#1f1c19] sm:col-span-2 lg:col-span-1 lg:row-span-2"
+                                    : "bg-white/[0.02]"
                                     }`}
                             >
                                 {/* top accent on hover */}
@@ -255,8 +255,8 @@ export function AboutAdvantageSection() {
 
                                     <h3
                                         className={`mt-8 font-semibold tracking-[-0.03em] ${featured
-                                                ? "text-[clamp(1.5rem,2.2vw,2rem)]"
-                                                : "text-lg sm:text-xl"
+                                            ? "text-[clamp(1.5rem,2.2vw,2rem)]"
+                                            : "text-lg sm:text-xl"
                                             }`}
                                     >
                                         {item.title}

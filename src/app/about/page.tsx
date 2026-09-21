@@ -10,7 +10,7 @@ import { buildMetadata } from "@/lib/seo";
 export const metadata: Metadata = buildMetadata({
     title: "About",
     description:
-        "25+ years of ELV engineering. Vision, mission, values and the delivery model behind 2,100+ projects and 850+ clients.",
+        "25+ years of ELV engineering. Vision, mission, values and the delivery model behind 2,100+ projects and 950+ clients.",
     path: "/about",
 });
 export default function AboutPage() {

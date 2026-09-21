@@ -237,11 +237,10 @@ export default function AdminJobsPage() {
                   <div className="flex flex-wrap items-center gap-2">
                     <h2 className="text-base font-semibold">{job.role}</h2>
                     <span
-                      className={`rounded-full px-2 py-0.5 text-[10px] uppercase tracking-wide ${
-                        job.published !== false
-                          ? "bg-[#f56616]/15 text-[#f56616]"
-                          : "bg-black/[0.05] text-black/40"
-                      }`}
+                      className={`rounded-full px-2 py-0.5 text-[10px] uppercase tracking-wide ${job.published !== false
+                        ? "bg-[#f56616]/15 text-[#f56616]"
+                        : "bg-black/[0.05] text-black/40"
+                        }`}
                     >
                       {job.published !== false ? "Published" : "Draft"}
                     </span>
@@ -462,11 +461,10 @@ export default function AdminJobsPage() {
           <div className="flex flex-wrap items-center gap-2">
             <h1 className="text-2xl font-semibold tracking-[-0.03em]">{active.role}</h1>
             <span
-              className={`rounded-full px-2 py-0.5 text-[10px] uppercase tracking-wide ${
-                active.published !== false
-                  ? "bg-[#f56616]/15 text-[#f56616]"
-                  : "bg-black/[0.05] text-black/40"
-              }`}
+              className={`rounded-full px-2 py-0.5 text-[10px] uppercase tracking-wide ${active.published !== false
+                ? "bg-[#f56616]/15 text-[#f56616]"
+                : "bg-black/[0.05] text-black/40"
+                }`}
             >
               {active.published !== false ? "Published" : "Draft"}
             </span>
@@ -499,7 +497,7 @@ export default function AdminJobsPage() {
             <h2 className="text-[11px] font-bold uppercase tracking-[0.16em] text-black/35">
               Summary
             </h2>
-            <p className="mt-2 text-sm leading-6 text-white/65">{active.summary}</p>
+            <p className="mt-2 text-sm leading-6 text-black/60 font-bold">{active.summary}</p>
           </div>
           <div>
             <h2 className="text-[11px] font-bold uppercase tracking-[0.16em] text-black/35">

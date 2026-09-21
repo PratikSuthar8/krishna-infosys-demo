@@ -137,14 +137,19 @@ export function ClientSuccessSection() {
                     Featured client
                   </span>
 
-                  <h3 className="mt-4 text-[clamp(2.5rem,3.8vw,4.3rem)] font-medium leading-[0.88] tracking-[-0.06em]">
-                    Ramdev
-                    <span className="block text-[#f56616]">
-                      Namkeen.
+                  <h3 className="mt-4 text-[clamp(1.55rem,2.4vw,2.35rem)]  font-medium leading-[1.05] tracking-[-0.045em]">
+                    Ramdev Food
+                    <span className="block text-[#f56616]">Products</span>
+                    <span className="mt-1 block text-[0.72em] font-medium tracking-[-0.03em] text-white/55">
+                      Private Limited
                     </span>
                   </h3>
 
-                  <div className="mt-6 flex items-center gap-3">
+                  <p className="mt-4 text-[11px] leading-5 text-white/45">
+                    Snacks Division · Namkeen Unit
+                  </p>
+
+                  <div className="mt-5 flex items-center gap-3">
                     <span className="h-px w-8 bg-[#f56616]" />
 
                     <span className="text-[11px] text-white/45">

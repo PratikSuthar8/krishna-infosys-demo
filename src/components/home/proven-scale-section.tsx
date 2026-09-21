@@ -17,14 +17,14 @@ gsap.registerPlugin(ScrollTrigger);
 
 const metrics = [
   {
-    value: 850,
+    value: 950,
     suffix: "+",
     label: "Clients",
     note: "Relationships built across sectors and operating environments.",
     icon: Building2,
   },
   {
-    value: 2100,
+    value: 2200,
     suffix: "+",
     label: "Projects completed",
     note: "ELV projects delivered across diverse infrastructure requirements.",
@@ -60,7 +60,7 @@ const journey = [
   {
     year: "Today",
     title: "Built at scale",
-    description: "850+ Clients · 2,100+ Projects",
+    description: "950+ Clients · 2,200+ Projects",
   },
 ];
 
@@ -262,15 +262,14 @@ export function ProvenScaleSection() {
                   stiffness: 260,
                   damping: 22,
                 }}
-                className={`proof-metric group relative min-h-[310px] py-10 lg:px-9 lg:py-12 ${
-                  index !== 0
-                    ? "border-t border-black/10 lg:border-l lg:border-t-0"
-                    : ""
-                }`}
+                className={`proof-metric group relative min-h-[310px] py-10 lg:px-9 lg:py-12 ${index !== 0
+                  ? "border-t border-black/10 lg:border-l lg:border-t-0"
+                  : ""
+                  }`}
               >
                 <div className="flex items-start justify-between gap-6">
-                  <span className="text-[9px] font-bold uppercase tracking-[0.22em] text-black/30">
-                    Evidence / 0{index + 1}
+                  <span className="text-[12px] font-bold uppercase tracking-[0.22em] text-black/30">
+                    0{index + 1}
                   </span>
 
                   <span className="flex h-10 w-10 items-center justify-center rounded-full border border-black/10 text-black/35 transition-all duration-300 group-hover:border-[#f56616]/30 group-hover:bg-[#f56616] group-hover:text-white">
