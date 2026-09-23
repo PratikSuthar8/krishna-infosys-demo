@@ -13,6 +13,7 @@ import {
   LayoutGrid,
   List,
 } from "lucide-react";
+import { ConfirmDialog } from "@/components/admin/confirm-dialog";
 import { LEAD_STATUSES, type Lead, type LeadStatus } from "@/lib/crm";
 
 const emptyForm = {
@@ -37,6 +38,8 @@ export default function AdminLeadsPage() {
   const [saving, setSaving] = useState(false);
   const [showNew, setShowNew] = useState(false);
   const [form, setForm] = useState(emptyForm);
+  const [pendingDelete, setPendingDelete] = useState<{ id: string; label: string } | null>(null);
+  const [confirmLoading, setConfirmLoading] = useState(false);
   const [error, setError] = useState("");
   const [draggingId, setDraggingId] = useState<string | null>(null);
   const [dragOverStatus, setDragOverStatus] = useState<string | null>(null);
@@ -143,7 +146,6 @@ export default function AdminLeadsPage() {
   };
 
   const onDelete = async (id: string) => {
-    if (!confirm("Delete this lead?")) return;
     await fetch("/api/admin/leads", {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
@@ -426,7 +428,7 @@ export default function AdminLeadsPage() {
               <div className="flex items-center gap-1">
                 <button
                   type="button"
-                  onClick={() => onDelete(selected._id)}
+                  onClick={() => setPendingDelete({ id: selected._id, label: selected.name || "lead" })}
                   className="rounded-lg p-2 text-black/35 hover:bg-red-50 hover:text-red-600"
                 >
                   <Trash2 size={16} />
@@ -591,6 +593,26 @@ export default function AdminLeadsPage() {
           </div>
         </div>
       ) : null}
+      <ConfirmDialog
+        open={pendingDelete !== null}
+        title="Delete lead?"
+        description="Remove this lead from the CRM? This cannot be undone."
+        confirmLabel="Delete"
+        danger
+        loading={confirmLoading}
+        onCancel={() => setPendingDelete(null)}
+        onConfirm={async () => {
+          if (!pendingDelete) return;
+          setConfirmLoading(true);
+          try {
+            await onDelete(pendingDelete.id);
+            setPendingDelete(null);
+          } finally {
+            setConfirmLoading(false);
+          }
+        }}
+      />
+
     </div>
   );
 }

@@ -11,9 +11,7 @@ import {
 } from "@/lib/permissions";
 
 const COOKIE = "ki_admin_session";
-const PREAUTH = "ki_admin_preauth";
-const MAX_AGE_MS = 8 * 60 * 60 * 1000; // 8 hours hard cap
-const PREAUTH_AGE_MS = 10 * 60 * 1000; // 10 min to finish MFA
+const MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000;
 
 export type AdminUser = {
   _id: string;
@@ -23,8 +21,6 @@ export type AdminUser = {
   active: boolean;
   permissions: Permission[];
   attributes: AdminAttributes;
-  mfaEnabled?: boolean;
-  mustChangePassword?: boolean;
 };
 
 function secret() {
@@ -36,7 +32,7 @@ function sign(payload: string) {
   return payload + "." + sig;
 }
 
-function verify(token: string | undefined): { email: string; exp: number; kind: string } | null {
+function verify(token: string | undefined): { email: string; exp: number } | null {
   if (!token) return null;
   const i = token.lastIndexOf(".");
   if (i < 0) return null;
@@ -53,27 +49,17 @@ function verify(token: string | undefined): { email: string; exp: number; kind: 
   const parts = payload.split("|");
   const email = parts[0] ? decodeURIComponent(parts[0]) : "";
   const exp = Number(parts[1]);
-  const kind = parts[2] || "full";
   if (!email || !Number.isFinite(exp) || Date.now() > exp) return null;
-  return { email, exp, kind };
+  return { email, exp };
 }
 
 export function sessionCookieName() {
   return COOKIE;
 }
 
-export function preauthCookieName() {
-  return PREAUTH;
-}
-
 export function createSessionToken(email: string) {
   const exp = Date.now() + MAX_AGE_MS;
-  return sign(encodeURIComponent(email.toLowerCase()) + "|" + exp + "|full");
-}
-
-export function createPreauthToken(email: string) {
-  const exp = Date.now() + PREAUTH_AGE_MS;
-  return sign(encodeURIComponent(email.toLowerCase()) + "|" + exp + "|preauth");
+  return sign(encodeURIComponent(email.toLowerCase()) + "|" + exp);
 }
 
 export function sessionCookieOptions(token: string) {
@@ -84,19 +70,7 @@ export function sessionCookieOptions(token: string) {
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax" as const,
     path: "/",
-    // NO maxAge / expires → browser session cookie (cleared when browser closes)
-  };
-}
-
-export function preauthCookieOptions(token: string) {
-  return {
-    name: PREAUTH,
-    value: token,
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax" as const,
-    path: "/",
-    maxAge: Math.floor(PREAUTH_AGE_MS / 1000),
+    maxAge: Math.floor(MAX_AGE_MS / 1000),
   };
 }
 
@@ -112,23 +86,13 @@ function mapUser(doc: Record<string, unknown>): AdminUser {
     active: doc.active !== false,
     permissions: resolvePermissions(role, grant, deny),
     attributes: (doc.attributes as AdminAttributes) || {},
-    mfaEnabled: doc.mfaEnabled === true,
-    mustChangePassword: doc.mustChangePassword === true,
   };
 }
 
 export async function getSessionEmail(): Promise<string | null> {
   const jar = await cookies();
   const parsed = verify(jar.get(COOKIE)?.value);
-  if (!parsed || parsed.kind !== "full") return null;
-  return parsed.email;
-}
-
-export async function getPreauthEmail(): Promise<string | null> {
-  const jar = await cookies();
-  const parsed = verify(jar.get(PREAUTH)?.value);
-  if (!parsed || parsed.kind !== "preauth") return null;
-  return parsed.email;
+  return parsed ? parsed.email : null;
 }
 
 export async function getCurrentAdmin(): Promise<AdminUser | null> {
@@ -175,7 +139,7 @@ export async function ensureBootstrapAdmin() {
   const password = process.env.ADMIN_BOOTSTRAP_PASSWORD || "";
   const name = process.env.ADMIN_BOOTSTRAP_NAME || "Admin";
   if (!email || !password) {
-    console.warn("No admin_users and no ADMIN_BOOTSTRAP_*");
+    console.warn("No admin_users and no ADMIN_BOOTSTRAP_* — create a user manually");
     return;
   }
 
@@ -184,8 +148,6 @@ export async function ensureBootstrapAdmin() {
     name,
     role: "superadmin",
     active: true,
-    mfaEnabled: false,
-    mustChangePassword: false,
     grantPermissions: [],
     denyPermissions: [],
     attributes: {},

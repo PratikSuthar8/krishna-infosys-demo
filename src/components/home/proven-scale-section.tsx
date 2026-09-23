@@ -320,12 +320,12 @@ export function ProvenScaleSection() {
               </span>
 
               <div className="mt-2 flex items-baseline gap-2">
-                <strong className="text-3xl font-semibold tracking-[-0.05em]">
-                  22
+                <strong className="text-sm font-medium text-black/45 tracking-[-0.05em]">
+                  Highly
                 </strong>
 
                 <span className="text-sm font-medium text-black/45">
-                  Expert staff
+                  Experienced staff
                 </span>
               </div>
             </div>

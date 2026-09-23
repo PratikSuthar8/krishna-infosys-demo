@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { signOut, useSession } from "next-auth/react";
 import {
   LayoutDashboard,
   Briefcase,
@@ -13,14 +12,17 @@ import {
   X,
   ExternalLink,
   User,
+  Users,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { IdleLogout } from "@/components/admin/idle-logout";
 
 const nav = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
   { href: "/admin/jobs", label: "Jobs", icon: Briefcase },
   { href: "/admin/blog", label: "Blog", icon: Newspaper },
   { href: "/admin/leads", label: "Leads", icon: ContactRound },
+  { href: "/admin/users", label: "Users", icon: Users },
 ];
 
 function isActive(pathname: string, href: string, exact?: boolean) {
@@ -28,221 +30,239 @@ function isActive(pathname: string, href: string, exact?: boolean) {
   return pathname === href || pathname.startsWith(href + "/");
 }
 
-function UserMenu({
-  compact,
-}: {
-  compact?: boolean;
-}) {
-  const { data: session } = useSession();
+type Me = { name: string; email: string; role?: string };
+
+function UserMenu() {
   const [open, setOpen] = useState(false);
+  const [me, setMe] = useState<Me | null>(null);
   const ref = useRef<HTMLDivElement>(null);
 
-  const name = session?.user?.name || "Admin";
-  const email = session?.user?.email || "";
-  const image = session?.user?.image || null;
-  const initials = name
-    .split(" ")
-    .filter(Boolean)
-    .map((p) => p[0])
-    .join("")
-    .slice(0, 2)
-    .toUpperCase() || "A";
-
   useEffect(() => {
-    const onDoc = (e: MouseEvent) => {
-      if (!ref.current?.contains(e.target as Node)) setOpen(false);
-    };
-    document.addEventListener("mousedown", onDoc);
-    return () => document.removeEventListener("mousedown", onDoc);
+    fetch("/api/admin/me")
+      .then((r) => r.json())
+      .then((d) => {
+        if (d.ok && d.user) setMe(d.user);
+      })
+      .catch(() => {});
   }, []);
 
+  useEffect(() => {
+    if (!open) return;
+    const onDoc = (e: MouseEvent) => {
+      if (ref.current && ref.current.contains(e.target as Node) === false) {
+        setOpen(false);
+      }
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    document.addEventListener("mousedown", onDoc);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onDoc);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [open]);
+
+  const name = me?.name || "Admin";
+  const email = me?.email || "";
+  const initials =
+    name
+      .split(/\s+/)
+      .filter(Boolean)
+      .map((p) => p[0])
+      .join("")
+      .slice(0, 2)
+      .toUpperCase() || "A";
+
+  const logout = async () => {
+    setOpen(false);
+    await fetch("/api/admin/logout", { method: "POST" });
+    window.location.href = "/admin/login";
+  };
+
   return (
-    <div ref={ref} className={`relative ${compact ? "" : "px-3 pb-3"}`}>
+    <div ref={ref} className="relative px-3 pb-3">
+      {open ? (
+        <div
+          className="absolute bottom-[calc(100%+8px)] left-3 right-3 z-50 overflow-hidden rounded-2xl border border-black/10 bg-white py-1.5 shadow-[0_12px_40px_rgba(0,0,0,0.12)]"
+          role="menu"
+        >
+          <Link
+            href="/admin/profile"
+            role="menuitem"
+            onClick={() => setOpen(false)}
+            className="mx-1 flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-[13px] font-medium text-[#171717] transition-colors hover:bg-black/[0.04]"
+          >
+            <User size={15} className="shrink-0 text-black/45" />
+            Profile
+          </Link>
+          <div className="my-1 border-t border-black/[0.06]" />
+          <button
+            type="button"
+            role="menuitem"
+            onClick={logout}
+            className="mx-1 flex w-[calc(100%-8px)] items-center gap-2.5 rounded-xl px-3 py-2.5 text-left text-[13px] font-medium text-red-600 transition-colors hover:bg-red-50"
+          >
+            <LogOut size={15} className="shrink-0" />
+            Sign out
+          </button>
+        </div>
+      ) : null}
+
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className={`flex w-full items-center gap-3 rounded-xl p-2 text-left transition-colors hover:bg-black/[0.04] ${open ? "bg-black/[0.04]" : ""
-          }`}
         aria-expanded={open}
+        aria-haspopup="menu"
         aria-label="Account menu"
+        className={`flex w-full items-center gap-3 rounded-2xl border px-2.5 py-2 text-left transition-colors ${
+          open
+            ? "border-black/10 bg-black/[0.03]"
+            : "border-transparent hover:border-black/10 hover:bg-black/[0.03]"
+        }`}
       >
-        {image ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={image}
-            alt=""
-            className="h-10 w-10 shrink-0 rounded-full object-cover ring-1 ring-black/10"
-          />
-        ) : (
-          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#171717] text-[12px] font-semibold text-white">
-            {initials}
+        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#171717] text-[11px] font-semibold tracking-wide text-white">
+          {initials}
+        </span>
+        <span className="min-w-0 flex-1">
+          <span className="block truncate text-[13px] font-semibold leading-tight text-[#171717]">
+            {name}
           </span>
-        )}
-        {!compact ? (
-          <span className="min-w-0 flex-1">
-            <span className="block truncate text-sm font-semibold tracking-[-0.02em]">
-              {name}
-            </span>
-            <span className="block truncate text-[11px] text-black/40">{email}</span>
+          <span className="mt-0.5 block truncate text-[11px] leading-tight text-black/40">
+            {email || "Signed in"}
           </span>
-        ) : null}
+        </span>
       </button>
-
-      {open ? (
-        <div
-          className={`absolute z-50 w-[240px] overflow-hidden rounded-2xl border border-black/[0.08] bg-white shadow-[0_20px_50px_-20px_rgba(0,0,0,0.35)] ${compact
-              ? "bottom-0 left-12"
-              : "bottom-[calc(100%+8px)] left-3 right-3 w-auto"
-            }`}
-        >
-          <div className="border-b border-black/[0.06] px-4 py-3">
-            <p className="truncate text-sm font-semibold">{name}</p>
-            <p className="truncate text-[12px] text-black/40">{email}</p>
-          </div>
-          <div className="p-1.5">
-            <Link
-              href="/admin/profile"
-              onClick={() => setOpen(false)}
-              className="flex items-center gap-2 rounded-xl px-3 py-2.5 text-sm font-medium text-black/70 hover:bg-black/[0.04]"
-            >
-              <User size={15} />
-              View profile
-            </Link>
-            <Link
-              href="/"
-              target="_blank"
-              onClick={() => setOpen(false)}
-              className="flex items-center gap-2 rounded-xl px-3 py-2.5 text-sm font-medium text-black/70 hover:bg-black/[0.04]"
-            >
-              <ExternalLink size={15} />
-              View website
-            </Link>
-            <button
-              type="button"
-              onClick={() => signOut({ callbackUrl: "/admin/login" })}
-              className="flex w-full items-center gap-2 rounded-xl px-3 py-2.5 text-sm font-medium text-black/70 hover:bg-black/[0.04]"
-            >
-              <LogOut size={15} />
-              Sign out
-            </button>
-          </div>
-        </div>
-      ) : null}
     </div>
   );
 }
 
-export function AdminShell({
-  children,
-  userLabel,
-}: {
-  children: React.ReactNode;
-  userLabel?: string | null;
-}) {
+export function AdminShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const [open, setOpen] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [me, setMe] = useState<Me | null>(null);
 
-  const NavLinks = ({ onNavigate }: { onNavigate?: () => void }) => (
-    <nav className="flex flex-col gap-1 px-3">
-      {nav.map((item) => {
-        const Icon = item.icon;
-        const active = isActive(pathname, item.href, item.exact);
-        return (
-          <Link
-            key={item.href}
-            href={item.href}
-            onClick={onNavigate}
-            className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors ${active
-                ? "bg-[#171717] text-white!"
-                : "text-black/55 hover:bg-black/[0.04] hover:text-[#171717]"
-              }`}
-          >
-            <Icon size={17} strokeWidth={1.7} />
-            {item.label}
-          </Link>
-        );
-      })}
-    </nav>
-  );
+  useEffect(() => {
+    fetch("/api/admin/me")
+      .then((r) => r.json())
+      .then((d) => {
+        if (d.ok && d.user) setMe(d.user);
+      })
+      .catch(() => {});
+  }, []);
 
   return (
-    <div className="min-h-screen bg-[#f3f1ec] text-[#171717]">
-      {/* Mobile top bar */}
-      <div className="sticky top-0 z-40 flex items-center justify-between border-b border-black/[0.06] bg-white/90 px-4 py-3 backdrop-blur lg:hidden">
-        <button
-          type="button"
-          onClick={() => setOpen(true)}
-          className="flex h-10 w-10 items-center justify-center rounded-xl border border-black/10 bg-white"
-          aria-label="Open menu"
-        >
-          <Menu size={18} />
-        </button>
-        <p className="text-sm font-semibold tracking-[-0.02em]">Admin</p>
-        <UserMenu compact />
+    <div className="flex min-h-screen bg-[#f6f5f2] text-[#171717]">
+      <IdleLogout idleMs={15 * 60 * 1000} />
+      <aside className="sticky top-0 hidden h-screen w-[240px] shrink-0 flex-col border-r border-black/10 bg-white lg:flex">
+        <div className="border-b border-black/10 px-4 py-4">
+          <Link href="/admin" className="block">
+            <span className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#f56616]">
+              Krishna Infosys
+            </span>
+            <span className="mt-0.5 block truncate text-[15px] font-semibold tracking-[-0.02em]">
+              {me?.name || "Admin"}
+            </span>
+          </Link>
+        </div>
+
+        <nav className="flex-1 space-y-0.5 overflow-y-auto p-3">
+          {nav.map((item) => {
+            const Icon = item.icon;
+            const active = isActive(pathname, item.href, item.exact);
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-[13px] font-medium transition-colors ${
+                  active
+                    ? "bg-[#171717] !text-white hover:bg-[#171717] hover:!text-white [&_svg]:!text-white"
+                    : "text-black/55 hover:bg-black/[0.04] hover:text-black"
+                }`}
+              >
+                <Icon size={16} strokeWidth={1.75} className="shrink-0 text-current" />
+                <span>{item.label}</span>
+              </Link>
+            );
+          })}
+        </nav>
+
+        <div className="mt-auto border-t border-black/10 pt-2">
+          <a
+            href="/"
+            target="_blank"
+            rel="noreferrer"
+            className="mx-3 mb-1 flex items-center gap-2 rounded-xl px-3 py-2 text-[12px] text-black/40 hover:bg-black/[0.04] hover:text-black/70"
+          >
+            <ExternalLink size={14} />
+            View site
+          </a>
+          <UserMenu />
+        </div>
+      </aside>
+
+      <div className="flex min-w-0 flex-1 flex-col">
+        <header className="flex items-center justify-between border-b border-black/10 bg-white px-4 py-3 lg:hidden">
+          <button
+            type="button"
+            onClick={() => setMobileOpen(true)}
+            className="rounded-lg p-2 hover:bg-black/[0.04]"
+            aria-label="Open menu"
+          >
+            <Menu size={20} />
+          </button>
+          <span className="text-[13px] font-semibold">Admin</span>
+          <span className="w-9" />
+        </header>
+
+        <main className="flex-1 p-4 sm:p-6 lg:p-8">{children}</main>
       </div>
 
-      {/* Mobile drawer */}
-      {open ? (
+      {mobileOpen ? (
         <div className="fixed inset-0 z-50 lg:hidden">
           <button
             type="button"
-            className="absolute inset-0 bg-black/30"
+            className="absolute inset-0 bg-black/40"
             aria-label="Close menu"
-            onClick={() => setOpen(false)}
+            onClick={() => setMobileOpen(false)}
           />
-          <aside className="absolute left-0 top-0 flex h-full w-[280px] flex-col bg-white shadow-xl">
-            <div className="flex items-center justify-between border-b border-black/[0.06] px-4 py-4">
-              <div>
-                <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#f56616]">
-                  Krishna Infosys
-                </p>
-                <p className="text-sm font-semibold">Admin</p>
-              </div>
+          <div className="absolute left-0 top-0 flex h-full w-[260px] flex-col bg-white shadow-xl">
+            <div className="flex items-center justify-between border-b border-black/10 px-4 py-3">
+              <span className="text-[13px] font-semibold">Menu</span>
               <button
                 type="button"
-                onClick={() => setOpen(false)}
-                className="flex h-9 w-9 items-center justify-center rounded-lg border border-black/10"
+                onClick={() => setMobileOpen(false)}
+                className="rounded-lg p-2 hover:bg-black/[0.04]"
               >
-                <X size={16} />
+                <X size={18} />
               </button>
             </div>
-            <div className="flex-1 overflow-y-auto py-4">
-              <NavLinks onNavigate={() => setOpen(false)} />
-            </div>
-            <div className="border-t border-black/[0.06] pt-2">
-              <UserMenu />
-            </div>
-          </aside>
-        </div>
-      ) : null}
-
-      <div className="mx-auto flex min-h-screen max-w-[1600px]">
-        {/* Desktop sidebar */}
-        <aside className="sticky top-0 hidden h-screen w-[240px] shrink-0 flex-col border-r border-black/[0.06] bg-white lg:flex xl:w-[260px]">
-          <div className="border-b border-black/[0.06] px-5 py-5">
-            <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#f56616]">
-              Krishna Infosys
-            </p>
-            <p className="mt-1 text-base font-semibold tracking-[-0.03em]">
-              Admin console
-            </p>
-          </div>
-
-          <div className="flex-1 overflow-y-auto py-4">
-            <NavLinks />
-          </div>
-
-          <div className="border-t border-black/[0.06] pt-2">
+            <nav className="flex-1 space-y-0.5 p-3">
+              {nav.map((item) => {
+                const Icon = item.icon;
+                const active = isActive(pathname, item.href, item.exact);
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={() => setMobileOpen(false)}
+                    className={`flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-[13px] font-medium ${
+                      active
+                        ? "bg-[#171717] !text-white hover:!text-white [&_svg]:!text-white"
+                        : "text-black/60"
+                    }`}
+                  >
+                    <Icon size={16} className="shrink-0 text-current" />
+                    <span>{item.label}</span>
+                  </Link>
+                );
+              })}
+            </nav>
             <UserMenu />
           </div>
-        </aside>
-
-        <div className="flex min-h-0 min-w-0 flex-1 flex-col">
-          <div className="flex min-h-0 flex-1 flex-col px-3 py-3 sm:px-4 lg:px-5 lg:py-4">
-            {children}
-          </div>
         </div>
-      </div>
+      ) : null}
     </div>
   );
 }

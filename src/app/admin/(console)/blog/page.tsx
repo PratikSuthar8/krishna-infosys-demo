@@ -5,6 +5,7 @@ import { FormEvent, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
 import { Loader2, Plus, Pencil, Trash2, ExternalLink } from "lucide-react";
+import { ConfirmDialog } from "@/components/admin/confirm-dialog";
 
 type Post = {
   _id: string;
@@ -67,6 +68,8 @@ export default function AdminBlogPage() {
   const [items, setItems] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [pendingDelete, setPendingDelete] = useState<{ id: string; label: string } | null>(null);
+  const [confirmLoading, setConfirmLoading] = useState(false);
   const [error, setError] = useState("");
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState<FormState>(empty);
@@ -163,8 +166,7 @@ export default function AdminBlogPage() {
     }
   };
 
-  const onDelete = async (id: string, title: string) => {
-    if (!confirm('Delete post "' + title + '"?')) return;
+  const onDelete = async (id: string) => {
     await fetch("/api/admin/blog?id=" + encodeURIComponent(id), {
       method: "DELETE",
     });
@@ -400,7 +402,7 @@ export default function AdminBlogPage() {
                       </span>
                     </div>
                     <p className="mt-0.5 text-[12px] text-black/40">
-                      {post.category} Â· {post.date} Â· /blog/{post.slug}
+                      {post.category} · {post.date} · /blog/{post.slug}
                     </p>
                   </div>
                   <div className="flex items-center gap-1">
@@ -420,7 +422,7 @@ export default function AdminBlogPage() {
                     </button>
                     <button
                       type="button"
-                      onClick={() => onDelete(post._id, post.title)}
+                      onClick={() => setPendingDelete({ id: post._id, label: post.title })}
                       className="rounded-lg p-2 text-black/35 hover:bg-red-50 hover:text-red-600"
                     >
                       <Trash2 size={16} />
@@ -434,6 +436,30 @@ export default function AdminBlogPage() {
       )}
 
       {modal}
+      <ConfirmDialog
+        open={pendingDelete !== null}
+        title="Delete post?"
+        description={
+          pendingDelete
+            ? `Delete "${pendingDelete.label}"? This cannot be undone.`
+            : undefined
+        }
+        confirmLabel="Delete"
+        danger
+        loading={confirmLoading}
+        onCancel={() => setPendingDelete(null)}
+        onConfirm={async () => {
+          if (!pendingDelete) return;
+          setConfirmLoading(true);
+          try {
+            await onDelete(pendingDelete.id);
+            setPendingDelete(null);
+          } finally {
+            setConfirmLoading(false);
+          }
+        }}
+      />
+
     </div>
   );
 }

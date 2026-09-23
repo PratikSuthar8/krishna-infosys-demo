@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { requireAdmin } from "@/lib/admin-auth";
+import {requireAdmin, requirePermission} from "@/lib/admin-auth";
 import { getCollection } from "@/lib/mongodb";
 
 export const runtime = "nodejs";
@@ -10,7 +10,7 @@ export async function GET(
   context: { params: Promise<{ name: string }> },
 ) {
   try {
-    await requireAdmin();
+    await requirePermission("applications:read");
     const { name } = await context.params;
     const safe = String(name || "").replace(/[^a-zA-Z0-9._-]/g, "");
     if (!safe) {

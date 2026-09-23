@@ -1,14 +1,14 @@
 import { NextResponse } from "next/server";
 import { ObjectId } from "mongodb";
 import { getCollection } from "@/lib/mongodb";
-import { requireAdmin } from "@/lib/admin-auth";
+import {requireAdmin, requirePermission} from "@/lib/admin-auth";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function GET() {
   try {
-    await requireAdmin();
+    await requirePermission("leads:read");
     const col = await getCollection("enquiries");
     const items = await col.find({}).sort({ createdAt: -1 }).limit(200).toArray();
     return NextResponse.json({
@@ -22,7 +22,7 @@ export async function GET() {
 
 export async function PATCH(request: Request) {
   try {
-    await requireAdmin();
+    await requirePermission("leads:write");
     const body = await request.json();
     const id = String(body.id || "");
     const status = String(body.status || "");

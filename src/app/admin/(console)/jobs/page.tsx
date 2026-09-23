@@ -10,6 +10,7 @@ import {
   Download,
   Eye,
 } from "lucide-react";
+import { ConfirmDialog } from "@/components/admin/confirm-dialog";
 
 type Job = {
   _id: string;
@@ -73,6 +74,8 @@ export default function AdminJobsPage() {
   const [apps, setApps] = useState<Application[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [pendingDelete, setPendingDelete] = useState<{ id: string; label: string } | null>(null);
+  const [confirmLoading, setConfirmLoading] = useState(false);
   const [error, setError] = useState("");
   const [mode, setMode] = useState<Mode>("list");
   const [activeId, setActiveId] = useState<string | null>(null);
@@ -180,8 +183,7 @@ export default function AdminJobsPage() {
     }
   };
 
-  const onDelete = async (id: string, role: string) => {
-    if (!confirm(`Delete job “${role}”?`)) return;
+  const onDelete = async (id: string) => {
     await fetch(`/api/admin/jobs?id=${encodeURIComponent(id)}`, { method: "DELETE" });
     setMode("list");
     setActiveId(null);
@@ -483,7 +485,7 @@ export default function AdminJobsPage() {
           </button>
           <button
             type="button"
-            onClick={() => onDelete(active._id, active.role)}
+            onClick={() => setPendingDelete({ id: active._id, label: active.role })}
             className="inline-flex items-center gap-1 border border-red-500/30 px-3 py-2 text-[12px] text-red-400"
           >
             <Trash2 size={12} /> Delete
@@ -611,6 +613,30 @@ export default function AdminJobsPage() {
           )}
         </div>
       </div>
+      <ConfirmDialog
+        open={pendingDelete !== null}
+        title="Delete job?"
+        description={
+          pendingDelete
+            ? `Delete "${pendingDelete.label}"? This cannot be undone.`
+            : undefined
+        }
+        confirmLabel="Delete"
+        danger
+        loading={confirmLoading}
+        onCancel={() => setPendingDelete(null)}
+        onConfirm={async () => {
+          if (!pendingDelete) return;
+          setConfirmLoading(true);
+          try {
+            await onDelete(pendingDelete.id);
+            setPendingDelete(null);
+          } finally {
+            setConfirmLoading(false);
+          }
+        }}
+      />
+
     </div>
   );
 }

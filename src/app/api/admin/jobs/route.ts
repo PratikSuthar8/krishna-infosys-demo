@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { ObjectId } from "mongodb";
 import { getCollection } from "@/lib/mongodb";
-import { requireAdmin } from "@/lib/admin-auth";
+import {requireAdmin, requirePermission} from "@/lib/admin-auth";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -26,13 +26,13 @@ function normalizeList(v: unknown): string[] {
 
 function errResponse(error: unknown) {
   const message = error instanceof Error ? error.message : "Error";
-  const status = message === "Unauthorized" ? 401 : 500;
+  const status = message === "Unauthorized" ? 401 : message === "Forbidden" ? 403 : 500;
   return NextResponse.json({ ok: false, error: message }, { status });
 }
 
 export async function GET() {
   try {
-    await requireAdmin();
+    await requirePermission("jobs:read");
     const col = await getCollection("jobs");
     const items = await col.find({}).sort({ role: 1 }).toArray();
     return NextResponse.json({
@@ -46,7 +46,7 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
-    await requireAdmin();
+    await requirePermission("jobs:write");
     const body = await request.json();
     const role = String(body.role || "").trim();
     if (!role) {
@@ -82,7 +82,7 @@ export async function POST(request: Request) {
 
 export async function PUT(request: Request) {
   try {
-    await requireAdmin();
+    await requirePermission("jobs:write");
     const body = await request.json();
     const id = String(body.id || body._id || "").trim();
     if (!id) {
@@ -114,7 +114,7 @@ export async function PUT(request: Request) {
 
 export async function DELETE(request: Request) {
   try {
-    await requireAdmin();
+    await requirePermission("jobs:write");
     const url = new URL(request.url);
     let id = url.searchParams.get("id") || "";
     if (!id) {

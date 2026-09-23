@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { ObjectId } from "mongodb";
 import { getCollection } from "@/lib/mongodb";
-import { requireAdmin } from "@/lib/admin-auth";
+import {requireAdmin, requirePermission} from "@/lib/admin-auth";
 import { isLeadStatus, type LeadStatus } from "@/lib/crm";
 
 export const runtime = "nodejs";
@@ -9,7 +9,7 @@ export const dynamic = "force-dynamic";
 
 export async function GET(request: Request) {
   try {
-    await requireAdmin();
+    await requirePermission("leads:read");
     const { searchParams } = new URL(request.url);
     const status = searchParams.get("status");
     const q = (searchParams.get("q") || "").trim();
@@ -43,7 +43,7 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
-    await requireAdmin();
+    await requirePermission("leads:write");
     const body = await request.json();
     const name = String(body.name || "").trim();
     const email = String(body.email || "").trim();
@@ -82,7 +82,7 @@ export async function POST(request: Request) {
 
 export async function PATCH(request: Request) {
   try {
-    await requireAdmin();
+    await requirePermission("leads:write");
     const body = await request.json();
     const id = String(body.id || body._id || "").trim();
     if (!id) {
@@ -131,7 +131,7 @@ export async function PATCH(request: Request) {
 
 export async function DELETE(request: Request) {
   try {
-    await requireAdmin();
+    await requirePermission("leads:write");
     const body = await request.json().catch(() => ({}));
     const id = String(body.id || body._id || "").trim();
     if (!id) {

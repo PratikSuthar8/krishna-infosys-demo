@@ -1,83 +1,171 @@
 "use client";
 
-import { signIn } from "next-auth/react";
-import { useSearchParams } from "next/navigation";
-import { Suspense, useState } from "react";
-import { Loader2, ShieldCheck } from "lucide-react";
+import { FormEvent, useState, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Loader2, ArrowRight } from "lucide-react";
 
-function LoginInner() {
+function LoginForm() {
+  const router = useRouter();
   const params = useSearchParams();
-  const error = params.get("error");
+  const reason = params.get("reason");
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState(
+    reason === "idle" ? "Signed out due to inactivity." : "",
+  );
   const [loading, setLoading] = useState(false);
 
-  const onLogin = async () => {
+  const onSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    setError("");
     setLoading(true);
-    await signIn("microsoft-entra-id", {
-      callbackUrl: "/admin",
-      prompt: "select_account",
-    });
+    try {
+      const res = await fetch("/api/admin/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.ok) {
+        throw new Error(data.error || "Sign in failed");
+      }
+      let next = params.get("callbackUrl") || "/admin";
+      if (data.mustChangePassword) next = "/admin/change-password";
+      else if (data.mfaSetup) next = "/admin/mfa-setup";
+      else if (data.mfaRequired) next = "/admin/mfa-verify";
+      router.replace(next);
+      router.refresh();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Sign in failed");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <main className="relative flex min-h-screen items-center justify-center bg-[#f3f1ec] px-5 text-[#171717]">
+    <div className="relative flex min-h-screen overflow-hidden bg-[#0f0f0f]">
+      {/* Ambient orange */}
       <div
-        className="pointer-events-none absolute inset-0 opacity-40"
-        style={{
-          backgroundImage:
-            "linear-gradient(to right, rgba(0,0,0,0.04) 1px, transparent 1px), linear-gradient(to bottom, rgba(0,0,0,0.04) 1px, transparent 1px)",
-          backgroundSize: "56px 56px",
-        }}
+        className="pointer-events-none absolute left-[-20%] top-1/2 h-[70vh] w-[70vh] -translate-y-1/2 rounded-full opacity-30 blur-[140px]"
+        style={{ background: "radial-gradient(circle, #f56616 0%, transparent 65%)" }}
       />
-      <div className="relative w-full max-w-md">
-        <div className="mb-8 text-center">
+
+      {/* Left — copy only, no fake widgets */}
+      <div className="relative hidden w-[48%] flex-col justify-between border-r border-white/[0.06] px-12 py-14 lg:flex xl:px-16">
+        <div>
           <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#f56616]">
             Krishna Infosys
           </p>
-          <h1 className="mt-2 text-2xl font-semibold tracking-[-0.04em] sm:text-3xl">
-            Admin console
+          <h1 className="mt-10 max-w-[14ch] text-[2.75rem] font-semibold leading-[1.08] tracking-[-0.045em] text-white xl:text-[3.1rem]">
+            The command centre behind every project.
           </h1>
-          <p className="mt-2 text-sm leading-6 text-black/45">
-            Sign in with your organisation Microsoft account. Access is limited to
-            assigned users.
+          <p className="mt-6 max-w-[32ch] text-[15px] leading-7 text-white/40">
+            One place to steer careers, content and conversations — built for
+            teams delivering ELV programmes across India.
           </p>
         </div>
-        <div className="rounded-2xl border border-black/[0.08] bg-white p-7 shadow-[0_24px_60px_-36px_rgba(0,0,0,0.35)] sm:p-8">
-          <div className="flex items-center gap-3 rounded-xl border border-black/[0.06] bg-[#faf9f7] px-4 py-3">
-            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[#f56616]/10 text-[#f56616]">
-              <ShieldCheck size={18} strokeWidth={1.6} />
-            </span>
-            <div>
-              <p className="text-sm font-semibold tracking-[-0.02em]">Microsoft Entra ID</p>
-              <p className="text-[12px] text-black/40">SSO · assigned users only</p>
-            </div>
+
+        <div>
+          <div className="grid grid-cols-3 gap-8 border-t border-white/[0.07] pt-8">
+            {[
+              { value: "25+", label: "Years" },
+              { value: "2,100+", label: "Projects" },
+              { value: "850+", label: "Clients" },
+            ].map((m) => (
+              <div key={m.label}>
+                <p className="text-[1.5rem] font-semibold tracking-[-0.03em] text-white">
+                  {m.value}
+                </p>
+                <p className="mt-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-white/30">
+                  {m.label}
+                </p>
+              </div>
+            ))}
           </div>
-          {error ? (
-            <p className="mt-4 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
-              Sign-in failed ({error}). You may not be assigned to this application.
-            </p>
-          ) : null}
-          <button
-            type="button"
-            onClick={onLogin}
-            disabled={loading}
-            className="mt-6 flex w-full items-center justify-center gap-2 rounded-full bg-[#171717] px-5 py-3.5 text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-60"
-          >
-            {loading ? (
-              <>
-                <Loader2 size={16} className="animate-spin" />
-                Redirecting…
-              </>
-            ) : (
-              "Continue with Microsoft"
-            )}
-          </button>
-          <p className="mt-5 text-center text-[11px] leading-5 text-black/35">
-            By continuing you agree to use this console only for authorised company
-            operations.
+          <p className="mt-10 text-[11px] text-white/25">
+            © {new Date().getFullYear()} Krishna Infosys
           </p>
         </div>
       </div>
-    </main>
+
+      {/* Right form */}
+      <div className="relative flex flex-1 flex-col items-center justify-center px-5 py-12 sm:px-8">
+        <div className="mb-8 text-center lg:hidden">
+          <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#f56616]">
+            Krishna Infosys
+          </p>
+          <p className="mt-2 text-sm text-white/40">Admin console</p>
+        </div>
+
+        <div className="w-full max-w-[400px] rounded-2xl border border-white/[0.08] bg-[#1a1a1a] p-7 sm:p-8">
+          <div className="mb-7">
+            <h2 className="text-[1.5rem] font-semibold tracking-[-0.03em] text-white">
+              Sign in
+            </h2>
+            <p className="mt-1.5 text-[13px] text-white/40">
+              Enter your work email and password.
+            </p>
+          </div>
+
+          <form onSubmit={onSubmit} className="space-y-4">
+            <div>
+              <label className="text-[11px] font-semibold uppercase tracking-[0.12em] text-white/35">
+                Email
+              </label>
+              <input
+                type="email"
+                required
+                autoComplete="username"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="mt-1.5 w-full rounded-xl border border-white/[0.1] bg-white/[0.04] px-3.5 py-3 text-[14px] text-white outline-none transition placeholder:text-white/25 focus:border-[#f56616]/55"
+                placeholder="you@krishnainfosys.com"
+              />
+            </div>
+
+            <div>
+              <label className="text-[11px] font-semibold uppercase tracking-[0.12em] text-white/35">
+                Password
+              </label>
+              <input
+                type="password"
+                required
+                autoComplete="current-password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="mt-1.5 w-full rounded-xl border border-white/[0.1] bg-white/[0.04] px-3.5 py-3 text-[14px] text-white outline-none transition placeholder:text-white/25 focus:border-[#f56616]/55"
+                placeholder="••••••••"
+              />
+            </div>
+
+            {error ? (
+              <p className="rounded-xl border border-red-500/20 bg-red-500/10 px-3 py-2.5 text-[13px] text-red-300">
+                {error}
+              </p>
+            ) : null}
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="group mt-1 flex w-full items-center justify-center gap-2 rounded-full bg-[#f56616] py-3.5 text-[13px] font-bold uppercase tracking-[0.12em] text-white transition hover:bg-[#ff7a2e] disabled:opacity-60"
+            >
+              {loading ? (
+                <Loader2 size={16} className="animate-spin" />
+              ) : (
+                <>
+                  Sign in
+                  <ArrowRight
+                    size={15}
+                    className="transition-transform group-hover:translate-x-0.5"
+                  />
+                </>
+              )}
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -85,12 +173,12 @@ export default function AdminLoginPage() {
   return (
     <Suspense
       fallback={
-        <main className="flex min-h-screen items-center justify-center bg-[#f3f1ec]">
-          <div className="h-8 w-8 animate-pulse rounded-full bg-black/10" />
-        </main>
+        <div className="flex min-h-screen items-center justify-center bg-[#0f0f0f] text-white/40">
+          Loading…
+        </div>
       }
     >
-      <LoginInner />
+      <LoginForm />
     </Suspense>
   );
 }
