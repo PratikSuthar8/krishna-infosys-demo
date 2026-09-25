@@ -4,6 +4,7 @@ import { randomBytes } from "crypto";
 import { getCollection } from "@/lib/mongodb";
 import { hashPassword, requirePermission } from "@/lib/admin-auth";
 import type { AdminRole } from "@/lib/permissions";
+import { ROLE_PERMISSIONS } from "@/lib/permissions";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -17,13 +18,32 @@ function err(error: unknown) {
   return NextResponse.json({ ok: false, error: message }, { status });
 }
 
-/** Readable temp password: 12 chars, no ambiguous symbols */
 function generateTempPassword() {
-  const alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789";
+  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789";
   const bytes = randomBytes(12);
   let out = "";
-  for (let i = 0; i < 12; i++) out += alphabet[bytes[i] % alphabet.length];
+  for (let i = 0; i < 12; i++) out += chars[bytes[i] % chars.length];
   return out;
+}
+
+function publicUser(doc: Record<string, unknown>) {
+  return {
+    _id: String(doc._id),
+    email: doc.email,
+    name: doc.name,
+    role: doc.role,
+    active: doc.active !== false,
+    mustChangePassword: doc.mustChangePassword === true,
+    mfaEnabled: doc.mfaEnabled === true,
+    lastLoginAt: doc.lastLoginAt || null,
+    createdAt: doc.createdAt || null,
+    updatedAt: doc.updatedAt || null,
+  };
+}
+
+async function countSuperadmins() {
+  const col = await getCollection("admin_users");
+  return col.countDocuments({ role: "superadmin", active: { $ne: false } });
 }
 
 export async function GET() {
@@ -32,15 +52,17 @@ export async function GET() {
     const col = await getCollection("admin_users");
     const items = await col
       .find({})
-      .project({ passwordHash: 0 })
-      .sort({ email: 1 })
+      .project({ passwordHash: 0, mfaSecret: 0, mfaSecretPending: 0 })
+      .sort({ createdAt: -1, name: 1 })
       .toArray();
     return NextResponse.json({
       ok: true,
-      items: items.map((i) => ({ ...i, _id: String(i._id) })),
+      items: items.map((d) => publicUser(d as Record<string, unknown>)),
+      roles: ROLES,
+      rolePermissions: ROLE_PERMISSIONS,
     });
-  } catch (e) {
-    return err(e);
+  } catch (error) {
+    return err(error);
   }
 }
 
@@ -48,49 +70,63 @@ export async function POST(request: Request) {
   try {
     const me = await requirePermission("users:write");
     const body = await request.json();
-    const email = String(body.email || "").trim().toLowerCase();
+    const email = String(body.email || "")
+      .trim()
+      .toLowerCase();
     const name = String(body.name || "").trim();
-    let role = (body.role || "viewer") as AdminRole;
-    if (ROLES.indexOf(role) < 0) role = "viewer";
+    const role = (String(body.role || "editor") as AdminRole);
+    const active = body.active !== false;
+
+    if (!email || !name) {
+      return NextResponse.json(
+        { ok: false, error: "Name and email are required." },
+        { status: 400 },
+      );
+    }
+    if (!ROLES.includes(role)) {
+      return NextResponse.json({ ok: false, error: "Invalid role." }, { status: 400 });
+    }
     if (role === "superadmin" && me.role !== "superadmin") {
       return NextResponse.json(
         { ok: false, error: "Only superadmin can create superadmin." },
         { status: 403 },
       );
     }
-    if (!email) {
-      return NextResponse.json({ ok: false, error: "Email required." }, { status: 400 });
-    }
 
     const col = await getCollection("admin_users");
     const exists = await col.findOne({ email });
     if (exists) {
-      return NextResponse.json({ ok: false, error: "User already exists." }, { status: 409 });
+      return NextResponse.json(
+        { ok: false, error: "A user with this email already exists." },
+        { status: 409 },
+      );
     }
 
     const tempPassword = generateTempPassword();
-    const result = await col.insertOne({
+    const now = new Date();
+    const doc = {
       email,
-      name: name || email,
+      name,
       role,
-      active: true,
+      active,
       mustChangePassword: true,
-      grantPermissions: Array.isArray(body.grantPermissions) ? body.grantPermissions : [],
-      denyPermissions: Array.isArray(body.denyPermissions) ? body.denyPermissions : [],
-      attributes: body.attributes && typeof body.attributes === "object" ? body.attributes : {},
+      mfaEnabled: false,
+      mfaSecret: null,
       passwordHash: await hashPassword(tempPassword),
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    });
+      createdAt: now,
+      updatedAt: now,
+      createdBy: me.email || String((me as { _id?: string })._id || ""),
+    };
+    const result = await col.insertOne(doc);
 
-    // tempPassword returned ONCE — never stored in plain text
     return NextResponse.json({
       ok: true,
       id: String(result.insertedId),
       tempPassword,
+      user: publicUser({ ...doc, _id: result.insertedId }),
     });
-  } catch (e) {
-    return err(e);
+  } catch (error) {
+    return err(error);
   }
 }
 
@@ -98,16 +134,38 @@ export async function PUT(request: Request) {
   try {
     const me = await requirePermission("users:write");
     const body = await request.json();
-    const id = String(body.id || "");
+    const id = String(body.id || "").trim();
     if (!id || !ObjectId.isValid(id)) {
-      return NextResponse.json({ ok: false, error: "Invalid id" }, { status: 400 });
+      return NextResponse.json({ ok: false, error: "Invalid id." }, { status: 400 });
     }
+
+    const col = await getCollection("admin_users");
+    const target = await col.findOne({ _id: new ObjectId(id) });
+    if (!target) {
+      return NextResponse.json({ ok: false, error: "User not found." }, { status: 404 });
+    }
+
+    const meId = String((me as { _id?: string; id?: string })._id || (me as { id?: string }).id || "");
+    const isSelf =
+      (meId && String(target._id) === meId) ||
+      String(target.email || "").toLowerCase() === String(me.email || "").toLowerCase();
+
     const $set: Record<string, unknown> = { updatedAt: new Date() };
-    if (body.name !== undefined) $set.name = String(body.name).trim();
+    let tempPassword: string | undefined;
+
+    // --- profile fields ---
+    if (body.name !== undefined) {
+      const name = String(body.name).trim();
+      if (!name) {
+        return NextResponse.json({ ok: false, error: "Name is required." }, { status: 400 });
+      }
+      $set.name = name;
+    }
+
     if (body.role !== undefined) {
-      let role = body.role as AdminRole;
-      if (ROLES.indexOf(role) < 0) {
-        return NextResponse.json({ ok: false, error: "Invalid role" }, { status: 400 });
+      const role = String(body.role) as AdminRole;
+      if (!ROLES.includes(role)) {
+        return NextResponse.json({ ok: false, error: "Invalid role." }, { status: 400 });
       }
       if (role === "superadmin" && me.role !== "superadmin") {
         return NextResponse.json(
@@ -115,64 +173,127 @@ export async function PUT(request: Request) {
           { status: 403 },
         );
       }
+      if (isSelf && me.role === "superadmin" && role !== "superadmin") {
+        const n = await countSuperadmins();
+        if (n <= 1) {
+          return NextResponse.json(
+            { ok: false, error: "Cannot demote the last active superadmin." },
+            { status: 400 },
+          );
+        }
+      }
+      if (target.role === "superadmin" && role !== "superadmin" && me.role !== "superadmin") {
+        return NextResponse.json(
+          { ok: false, error: "Only superadmin can change a superadmin role." },
+          { status: 403 },
+        );
+      }
       $set.role = role;
     }
-    if (typeof body.active === "boolean") {
-      if (me._id === id && body.active === false) {
+
+    if (body.active !== undefined) {
+      const active = body.active !== false;
+      if (isSelf && !active) {
         return NextResponse.json(
-          { ok: false, error: "Cannot deactivate your own account." },
+          { ok: false, error: "You cannot deactivate your own account." },
           { status: 400 },
         );
       }
-      $set.active = body.active;
+      if (target.role === "superadmin" && !active) {
+        const n = await countSuperadmins();
+        if (n <= 1) {
+          return NextResponse.json(
+            { ok: false, error: "Cannot deactivate the last active superadmin." },
+            { status: 400 },
+          );
+        }
+      }
+      $set.active = active;
     }
-    if (Array.isArray(body.grantPermissions)) $set.grantPermissions = body.grantPermissions;
-    if (Array.isArray(body.denyPermissions)) $set.denyPermissions = body.denyPermissions;
-    if (body.attributes && typeof body.attributes === "object") $set.attributes = body.attributes;
 
-    // Admin can reset to a NEW temp password
-    let tempPassword: string | undefined;
+    // --- reset password ---
     if (body.resetPassword === true) {
       tempPassword = generateTempPassword();
       $set.passwordHash = await hashPassword(tempPassword);
       $set.mustChangePassword = true;
     }
 
-    const col = await getCollection("admin_users");
+    // --- reset MFA ---
+    if (body.resetMfa === true) {
+      $set.mfaEnabled = false;
+      $set.mfaSecret = null;
+      $set.mfaSecretPending = null;
+    }
+
     await col.updateOne({ _id: new ObjectId(id) }, { $set });
+    const updated = await col.findOne(
+      { _id: new ObjectId(id) },
+      { projection: { passwordHash: 0, mfaSecret: 0, mfaSecretPending: 0 } },
+    );
+
     return NextResponse.json({
       ok: true,
       ...(tempPassword ? { tempPassword } : {}),
+      user: updated ? publicUser(updated as Record<string, unknown>) : null,
     });
-  } catch (e) {
-    return err(e);
+  } catch (error) {
+    return err(error);
   }
 }
 
 export async function DELETE(request: Request) {
   try {
     const me = await requirePermission("users:write");
-    const id = new URL(request.url).searchParams.get("id") || "";
-    if (!id || !ObjectId.isValid(id)) {
-      return NextResponse.json({ ok: false, error: "Invalid id" }, { status: 400 });
+    const url = new URL(request.url);
+    let id = url.searchParams.get("id") || "";
+    if (!id) {
+      try {
+        const body = await request.json();
+        id = String(body.id || "");
+      } catch {
+        /* no body */
+      }
     }
-    if (me._id === id) {
+    if (!id || !ObjectId.isValid(id)) {
+      return NextResponse.json({ ok: false, error: "Invalid id." }, { status: 400 });
+    }
+
+    const col = await getCollection("admin_users");
+    const target = await col.findOne({ _id: new ObjectId(id) });
+    if (!target) {
+      return NextResponse.json({ ok: false, error: "User not found." }, { status: 404 });
+    }
+
+    const meId = String((me as { _id?: string; id?: string })._id || (me as { id?: string }).id || "");
+    const isSelf =
+      (meId && String(target._id) === meId) ||
+      String(target.email || "").toLowerCase() === String(me.email || "").toLowerCase();
+
+    if (isSelf) {
       return NextResponse.json(
-        { ok: false, error: "Cannot delete your own account." },
+        { ok: false, error: "You cannot delete your own account." },
         { status: 400 },
       );
     }
-    const col = await getCollection("admin_users");
-    const target = await col.findOne({ _id: new ObjectId(id) });
-    if (target && target.role === "superadmin" && me.role !== "superadmin") {
-      return NextResponse.json(
-        { ok: false, error: "Cannot delete superadmin." },
-        { status: 403 },
-      );
+    if (target.role === "superadmin") {
+      if (me.role !== "superadmin") {
+        return NextResponse.json(
+          { ok: false, error: "Only superadmin can delete a superadmin." },
+          { status: 403 },
+        );
+      }
+      const n = await countSuperadmins();
+      if (n <= 1) {
+        return NextResponse.json(
+          { ok: false, error: "Cannot delete the last active superadmin." },
+          { status: 400 },
+        );
+      }
     }
+
     await col.deleteOne({ _id: new ObjectId(id) });
     return NextResponse.json({ ok: true });
-  } catch (e) {
-    return err(e);
+  } catch (error) {
+    return err(error);
   }
 }
