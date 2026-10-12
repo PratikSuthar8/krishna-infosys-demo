@@ -6,9 +6,9 @@ import type { Metadata } from "next";
 import { buildMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = buildMetadata({
-    title: "Solutions",
+    title: "ELV Solutions in Ahmedabad | Security, AV, Networking",
     description:
-        "One ELV stack across five domains — security, communication, audio visual, networking and automation — designed as an integrated system.",
+        "Integrated ELV solutions in Ahmedabad: CCTV, access control, fire alarm, EPABX, audio-visual, networking and building automation — design to AMC.",
     path: "/solutions",
 });
 

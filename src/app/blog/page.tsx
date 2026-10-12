@@ -4,9 +4,9 @@ import { BlogHeroSection } from "@/components/blog/blog-hero-section";
 import { BlogListSection } from "@/components/blog/blog-list-section";
 
 export const metadata: Metadata = buildMetadata({
-  title: "Blog",
+  title: "ELV Insights & Guides | Krishna Infosys Blog",
   description:
-    "Practical writing on ELV design sequencing, infrastructure and support.",
+    "Practical notes on ELV design, CCTV, structured cabling and AMC from the Krishna Infosys engineering team.",
   path: "/blog",
 });
 

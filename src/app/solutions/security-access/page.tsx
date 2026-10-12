@@ -3,8 +3,8 @@ import { buildMetadata } from "@/lib/seo";
 import { DomainPage } from "@/components/solutions/shared/domain-page";
 
 export const metadata: Metadata = buildMetadata({
-  title: "Security & Access",
-  description: "CCTV, access control, intrusion alarm, boom barriers and video door phones — integrated security for commercial and industrial sites.",
+  title: "CCTV & Access Control Systems, Ahmedabad",
+  description: "CCTV surveillance, access control, intrusion alarm and perimeter systems in Ahmedabad — designed, installed and maintained by Krishna Infosys.",
   path: "/solutions/security-access",
 });
 

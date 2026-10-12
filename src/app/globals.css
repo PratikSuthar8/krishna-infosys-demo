@@ -3,6 +3,7 @@
 :root {
   /* Brand */
   --brand: #f36b16;
+  --brand-text: #c44a08;
   --brand-hover: #dc5b0b;
   --brand-soft: #fff3ea;
   --brand-subtle: #fff8f3;
@@ -204,5 +205,25 @@ button {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+}
+
+
+/* week2 a11y — audit: orange contrast + min type */
+.eyebrow {
+  color: var(--brand-text, #c44a08);
+  font-size: max(0.75rem, 12px);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 767px) {
+  body {
+    /* floor for very small utility labels in components */
+  }
+  .text-\[9px\],
+  .text-\[8px\],
+  .text-\[10px\] {
+    font-size: 12px !important;
   }
 }

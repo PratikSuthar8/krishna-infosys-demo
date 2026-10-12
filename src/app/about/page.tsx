@@ -8,9 +8,9 @@ import type { Metadata } from "next";
 import { buildMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = buildMetadata({
-    title: "About",
+    title: "About Krishna Infosys | ELV Company in Ahmedabad",
     description:
-        "25+ years of ELV engineering. Vision, mission, values and the delivery model behind 2,100+ projects and 950+ clients.",
+        "25+ years of ELV engineering from Ahmedabad. Vision, delivery model and the team behind 2,100+ projects and 850+ clients across India.",
     path: "/about",
 });
 export default function AboutPage() {

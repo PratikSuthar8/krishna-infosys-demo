@@ -6,9 +6,9 @@ import type { Metadata } from "next";
 import { buildMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = buildMetadata({
-    title: "Projects",
+    title: "ELV Projects in Ahmedabad & Across India | Krishna Infosys",
     description:
-        "Selected ELV programmes across logistics, healthcare, manufacturing and enterprise — 2,100+ projects delivered pan-India.",
+        "Selected ELV projects — security, communication, networking and automation programmes delivered by Krishna Infosys.",
     path: "/projects",
 });
 export default function ProjectsPage() {

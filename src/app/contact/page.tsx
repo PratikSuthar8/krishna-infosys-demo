@@ -5,9 +5,9 @@ import type { Metadata } from "next";
 import { buildMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = buildMetadata({
-    title: "Contact",
+    title: "Contact Krishna Infosys | ELV Quote in Ahmedabad",
     description:
-        "Contact Krishna Infosys for ELV project design, AMC coverage or technical consultation. Ahmedabad HQ · Pan-India delivery.",
+        "Request a consultation for CCTV, fire alarm, access control or ELV AMC in Ahmedabad. Navrangpura office — call, email or WhatsApp.",
     path: "/contact",
 });
 export default function ContactPage() {

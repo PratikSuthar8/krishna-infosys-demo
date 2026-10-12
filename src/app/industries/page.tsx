@@ -9,9 +9,9 @@ import { buildMetadata } from "@/lib/seo";
 
 
 export const metadata: Metadata = buildMetadata({
-    title: "Industries",
+    title: "ELV Systems for Industry & Enterprise | Ahmedabad",
     description:
-        "ELV systems for corporate, healthcare, education, hospitality, industrial, government, residential and retail environments.",
+        "ELV design and integration for manufacturing, healthcare, commercial and institutional sites across Gujarat and India.",
     path: "/industries",
 });
 export default function IndustriesPage() {

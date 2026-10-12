@@ -6,9 +6,9 @@ import { CareersWhySection } from "@/components/careers/careers-why-section";
 import { CareersCtaSection } from "@/components/careers/careers-cta-section";
 
 export const metadata: Metadata = buildMetadata({
-  title: "Careers",
+  title: "Careers at Krishna Infosys | Jobs in Ahmedabad",
   description:
-    "Join Krishna Infosys — growth-oriented ELV careers in projects, sales, engineering and operations. Ahmedabad HQ · Pan-India delivery.",
+    "Open roles in projects, engineering, sales and operations at Krishna Infosys, Ahmedabad.",
   path: "/careers",
 });
 

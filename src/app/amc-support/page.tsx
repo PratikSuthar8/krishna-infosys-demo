@@ -6,9 +6,9 @@ import type { Metadata } from "next";
 import { buildMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = buildMetadata({
-    title: "AMC & Support",
+    title: "CCTV & Fire Alarm AMC Services, Ahmedabad",
     description:
-        "Preventive maintenance, 24-hour corrective response, OEM escalation and lifecycle support for ELV systems.",
+        "Annual maintenance contracts for CCTV, fire alarm, access control and ELV systems in Ahmedabad. Preventive service, faster response and lower downtime.",
     path: "/amc-support",
 });
 export default function AmcSupportPage() {

@@ -6,6 +6,8 @@ import Link from "next/link";
 import { ArrowLeft, ArrowUpRight } from "lucide-react";
 import { getCollection } from "@/lib/mongodb";
 import { buildMetadata } from "@/lib/seo";
+import { JsonLd } from "@/components/seo/json-ld";
+import { articleSchema } from "@/lib/schema";
 
 type Post = {
   slug: string;
@@ -81,7 +83,16 @@ export default async function BlogPostPage({ params }: Props) {
   const html = isHtmlBody(post.body) ? post.body : null;
 
   return (
-    <main className="bg-[#f3f1ec] pt-[88px] text-[#171717]">
+    <>
+      <JsonLd
+        data={articleSchema({
+          title: post.title,
+          description: post.excerpt || post.title,
+          date: post.date,
+          slug: post.slug,
+        })}
+      />
+      <main className="bg-[#f3f1ec] pt-[88px] text-[#171717]">
       <article className="mx-auto max-w-[760px] px-5 py-16 sm:px-8 lg:py-24">
         <Link
           href="/blog"
@@ -233,5 +244,6 @@ export default async function BlogPostPage({ params }: Props) {
         }}
       />
     </main>
+    </>
   );
 }

@@ -11,6 +11,8 @@ import { OrganizationJsonLd } from "@/components/seo/organization-json-ld";
 
 import "./globals.css";
 import { SiteAnalytics } from "@/components/analytics/site-analytics";
+import { JsonLd } from "@/components/seo/json-ld";
+import { localBusinessSchema } from "@/lib/schema";
 import { WhatsAppFab } from "@/components/layout/whatsapp-fab";
 
 const geistSans = Geist({
@@ -29,7 +31,6 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   title: {
     default: `${siteConfig.name} | ${siteConfig.tagline}`,
-    template: `%s | ${siteConfig.name}`,
   },
   description: siteConfig.description,
   applicationName: siteConfig.name,
@@ -109,7 +110,8 @@ export default function RootLayout({
           <SiteChrome>{children}</SiteChrome>
         </SmoothScrollProvider>
         <CookieBanner />
-              <SiteAnalytics />
+              <JsonLd data={localBusinessSchema()} />
+        <SiteAnalytics />
         <WhatsAppFab />
       </body>
     </html>

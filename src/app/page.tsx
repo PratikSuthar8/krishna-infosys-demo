@@ -11,9 +11,9 @@ import type { Metadata } from "next";
 import { buildMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = buildMetadata({
-  title: "Krishna Infosys",
+  title: "CCTV, Fire Alarm & ELV Systems in Ahmedabad | Krishna Infosys",
   description:
-    "End-to-end ELV integration — security, communication, AV, networking and automation. Design, consult, execute and support from Ahmedabad across India.",
+    "CCTV installation, fire alarm, access control, EPABX and ELV systems in Ahmedabad. Design, execution and AMC support from Krishna Infosys — 25+ years, pan-India delivery.",
   path: "/",
 });
 

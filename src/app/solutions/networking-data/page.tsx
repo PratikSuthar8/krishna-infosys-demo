@@ -3,8 +3,8 @@ import { buildMetadata } from "@/lib/seo";
 import { DomainPage } from "@/components/solutions/shared/domain-page";
 
 export const metadata: Metadata = buildMetadata({
-  title: "Networking & Data",
-  description: "Structured cabling, fibre, Wi-Fi, server rooms and data-centre pathways — backbone for every ELV and IT load.",
+  title: "Structured Cabling & Networking, Ahmedabad",
+  description: "Structured cabling, LAN and network infrastructure in Ahmedabad for security, voice and data on one backbone.",
   path: "/solutions/networking-data",
 });
 
