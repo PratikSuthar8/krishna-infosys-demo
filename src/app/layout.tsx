@@ -10,6 +10,8 @@ import { siteConfig } from "@/lib/seo";
 import { OrganizationJsonLd } from "@/components/seo/organization-json-ld";
 
 import "./globals.css";
+import { SiteAnalytics } from "@/components/analytics/site-analytics";
+import { WhatsAppFab } from "@/components/layout/whatsapp-fab";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -107,6 +109,8 @@ export default function RootLayout({
           <SiteChrome>{children}</SiteChrome>
         </SmoothScrollProvider>
         <CookieBanner />
+              <SiteAnalytics />
+        <WhatsAppFab />
       </body>
     </html>
   );

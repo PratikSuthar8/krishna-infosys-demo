@@ -212,7 +212,7 @@ export function Footer() {
             <span className="hidden h-3 w-px bg-white/10 sm:block" />
 
             <span className="text-[8px] font-semibold uppercase tracking-[0.16em] text-white/20">
-              Ahmedabad · Gujarat · India
+              Navrangpura, Ahmedabad – 380009
             </span>
 
             <a

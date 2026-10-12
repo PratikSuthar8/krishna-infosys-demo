@@ -6,6 +6,7 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 type Body = {
+  company_website?: string;
 	name?: string;
 	organisation?: string;
 	email?: string;
@@ -19,6 +20,11 @@ const emailOk = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
 export async function POST(request: Request) {
 	try {
 		const body = (await request.json()) as Body;
+
+                // Honeypot: bots fill hidden field — pretend success, do not store
+                if (typeof body.company_website === "string" && body.company_website.trim()) {
+                        return NextResponse.json({ ok: true });
+                }
 		const name = (body.name ?? "").trim();
 		const organisation = (body.organisation ?? "").trim();
 		const email = (body.email ?? "").trim();

@@ -1,5 +1,7 @@
 "use client";
 
+import { trackEvent } from "@/lib/analytics";
+
 import { useEffect, useRef, useState, FormEvent } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -61,13 +63,22 @@ export function ContactFormSection() {
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify({
+          ...form,
+          company_website:
+            (
+              (e.currentTarget as HTMLFormElement).elements.namedItem(
+                "company_website",
+              ) as HTMLInputElement | null
+            )?.value || "",
+        }),
       });
       const data = await res.json();
       if (!res.ok || !data.ok) {
         throw new Error(data.error || "Something went wrong. Please try again.");
       }
       setStatus("success");
+      trackEvent("submit_brief", { method: "contact_form" });
       setForm({
         name: "",
         organisation: "",
@@ -142,6 +153,18 @@ export function ContactFormSection() {
               </div>
             ) : (
               <form onSubmit={onSubmit} className="space-y-4">
+      {/* honeypot — leave empty; bots fill it */}
+      <div className="absolute -left-[9999px] top-auto h-0 w-0 overflow-hidden" aria-hidden="true">
+        <label htmlFor="company_website">Company website</label>
+        <input
+          id="company_website"
+          name="company_website"
+          type="text"
+          tabIndex={-1}
+          autoComplete="off"
+        />
+      </div>
+
                 <div className="grid gap-4 sm:grid-cols-2">
                   <label className="block">
                     <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-[0.14em] text-black/40">
