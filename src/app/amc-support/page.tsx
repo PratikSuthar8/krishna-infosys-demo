@@ -1,10 +1,12 @@
 import { AmcHeroSection } from "@/components/amc/amc-hero-section";
 import { AmcCoverageSection } from "@/components/amc/amc-coverage-section";
 import { AmcServiceSection } from "@/components/amc/amc-service-section";
+import { AmcFaqSection } from "@/components/amc/amc-faq-section";
+import { amcFaqs } from "@/data/amc-faqs";
 import type { Metadata } from "next";
 import { buildMetadata } from "@/lib/seo";
 import { JsonLd } from "@/components/seo/json-ld";
-import { breadcrumbSchema, serviceSchema } from "@/lib/schema";
+import { breadcrumbSchema, serviceSchema, faqSchema } from "@/lib/schema";
 
 export const metadata: Metadata = buildMetadata({
   title: "CCTV & Fire Alarm AMC Services, Ahmedabad",
@@ -30,9 +32,15 @@ export default function AmcSupportPage() {
           { name: "AMC & Support", path: "/amc-support" },
         ])}
       />
+      <JsonLd
+        data={faqSchema(
+          amcFaqs.map((f) => ({ question: f.question, answer: f.answer })),
+        )}
+      />
       <AmcHeroSection />
       <AmcCoverageSection />
       <AmcServiceSection />
+      <AmcFaqSection />
     </main>
   );
 }
