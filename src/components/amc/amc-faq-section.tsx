@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { Plus, Minus } from "lucide-react";
 import { amcFaqs } from "@/data/amc-faqs";
 
@@ -47,6 +48,21 @@ export function AmcFaqSection() {
               </div>
             );
           })}
+        </div>
+
+        <div className="mt-10 flex flex-wrap items-center gap-3">
+          <Link
+            href="/contact"
+            className="inline-flex h-12 items-center justify-center rounded-full bg-[#171717] px-6 text-[13px] font-semibold text-white transition-colors hover:bg-[#f56616]"
+          >
+            Request an AMC discussion
+          </Link>
+          <Link
+            href="/solutions/security-access"
+            className="inline-flex h-12 items-center justify-center rounded-full border border-black/10 bg-white px-6 text-[13px] font-semibold text-[#171717] transition-colors hover:border-[#f56616]/40 hover:text-[#f56616]"
+          >
+            CCTV & access systems
+          </Link>
         </div>
       </div>
     </section>
