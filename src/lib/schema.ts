@@ -118,3 +118,62 @@ export function articleSchema(post: {
     mainEntityOfPage: `${siteUrl}/blog/${post.slug}`,
   };
 }
+
+
+export function serviceSchema(opts: {
+  name: string;
+  description: string;
+  path: string;
+  areaServed?: string;
+}) {
+  const siteUrl =
+    process.env.NEXT_PUBLIC_SITE_URL || "https://www.krishnainfosys.com";
+  return {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    name: opts.name,
+    description: opts.description,
+    provider: {
+      "@type": "LocalBusiness",
+      name: "Krishna Infosys",
+      "@id": `${siteUrl}/#business`,
+    },
+    areaServed: {
+      "@type": "City",
+      name: opts.areaServed || "Ahmedabad",
+    },
+    url: `${siteUrl}${opts.path.startsWith("/") ? opts.path : `/${opts.path}`}`,
+  };
+}
+
+export function breadcrumbSchema(
+  items: { name: string; path: string }[],
+) {
+  const siteUrl =
+    process.env.NEXT_PUBLIC_SITE_URL || "https://www.krishnainfosys.com";
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: items.map((item, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name: item.name,
+      item: `${siteUrl}${item.path.startsWith("/") ? item.path : `/${item.path}`}`,
+    })),
+  };
+}
+
+export function faqSchema(faqs: { question: string; answer: string }[]) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqs.map((f) => ({
+      "@type": "Question",
+      name: f.question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: f.answer,
+      },
+    })),
+  };
+}
