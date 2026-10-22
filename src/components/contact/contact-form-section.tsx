@@ -102,7 +102,7 @@ export function ContactFormSection() {
       ref={sectionRef}
       className="relative bg-[#f3f1ec] text-[#171717]"
     >
-      <div className="mx-auto max-w-[1500px] px-5 py-16 sm:px-8 lg:px-12 lg:py-24 xl:px-16">
+      <div className="mx-auto max-w-375 px-5 py-16 sm:px-8 lg:px-12 lg:py-24 xl:px-16">
         <div className="grid gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16">
           <div className="cf-block">
             <div className="flex items-center gap-3">
@@ -111,10 +111,10 @@ export function ContactFormSection() {
                 Project brief
               </span>
             </div>
-            <h2 className="mt-5 max-w-[420px] text-[clamp(1.9rem,3.2vw,3rem)] font-medium leading-[1.02] tracking-[-0.045em]">
+            <h2 className="mt-5 max-w-105 text-[clamp(1.9rem,3.2vw,3rem)] font-medium leading-[1.02] tracking-[-0.045em]">
               Tell us about the site and the systems you need.
             </h2>
-            <p className="mt-5 max-w-[400px] text-[15px] leading-7 text-black/50">
+            <p className="mt-5 max-w-100 text-[15px] leading-7 text-black/50">
               Share a short brief. We respond with a practical next step —
               survey, scope discussion or call-back.
             </p>
@@ -139,7 +139,7 @@ export function ContactFormSection() {
               <div className="flex flex-col items-start gap-4 py-8">
                 <CheckCircle2 className="text-[#f56616]" size={32} />
                 <h3 className="text-xl font-semibold tracking-[-0.03em]">Brief received</h3>
-                <p className="max-w-[420px] text-[15px] leading-7 text-black/50">
+                <p className="max-w-105 text-[15px] leading-7 text-black/50">
                   Thank you. Our team will review and get back to you shortly.
                   For urgent matters, call {contact.phone.display}.
                 </p>
@@ -153,17 +153,17 @@ export function ContactFormSection() {
               </div>
             ) : (
               <form onSubmit={onSubmit} className="space-y-4">
-      {/* honeypot — leave empty; bots fill it */}
-      <div className="absolute -left-[9999px] top-auto h-0 w-0 overflow-hidden" aria-hidden="true">
-        <label htmlFor="company_website">Company website</label>
-        <input
-          id="company_website"
-          name="company_website"
-          type="text"
-          tabIndex={-1}
-          autoComplete="off"
-        />
-      </div>
+                {/* honeypot — leave empty; bots fill it */}
+                <div className="absolute left-[-9999px] top-auto h-0 w-0 overflow-hidden" aria-hidden="true">
+                  <label htmlFor="company_website">Company website</label>
+                  <input
+                    id="company_website"
+                    name="company_website"
+                    type="text"
+                    tabIndex={-1}
+                    autoComplete="off"
+                  />
+                </div>
 
                 <div className="grid gap-4 sm:grid-cols-2">
                   <label className="block">
