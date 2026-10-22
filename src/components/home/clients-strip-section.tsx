@@ -11,15 +11,20 @@ gsap.registerPlugin(ScrollTrigger);
 
 export function ClientsStripSection() {
   const sectionRef = useRef<HTMLElement>(null);
-  const names = (featuredClients.length ? featuredClients : clientProjects).slice(0, 12);
+  const names =
+    featuredClients.length >= 8
+      ? featuredClients.slice(0, 12)
+      : clientProjects.filter((c) => c.featured).concat(
+          clientProjects.filter((c) => !c.featured),
+        ).slice(0, 12);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.from(".clients-strip-item", {
+      gsap.from(".cs-a", {
         y: 18,
         opacity: 0,
         duration: 0.55,
-        stagger: 0.04,
+        stagger: 0.03,
         ease: "power3.out",
         scrollTrigger: {
           trigger: sectionRef.current,
@@ -34,21 +39,21 @@ export function ClientsStripSection() {
   return (
     <section
       ref={sectionRef}
-      className="border-y border-black/6 bg-white text-[#171717]"
+      className="border-y border-black/[0.06] bg-white text-[#171717]"
     >
-      <div className="mx-auto max-w-[1500px] px-5 py-12 sm:px-8 lg:px-12 xl:px-16">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+      <div className="mx-auto max-w-[1500px] px-5 py-12 sm:px-8 lg:px-12 lg:py-14 xl:px-16">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#f56616]">
+            <p className="cs-a text-[10px] font-semibold uppercase tracking-[0.2em] text-[#f56616]">
               Selected clients
             </p>
-            <h2 className="mt-2 text-[clamp(1.35rem,2.2vw,1.75rem)] font-medium tracking-[-0.03em]">
+            <h2 className="cs-a mt-2 text-[clamp(1.25rem,2vw,1.6rem)] font-medium tracking-[-0.03em]">
               Organisations that trusted our ELV delivery
             </h2>
           </div>
           <Link
             href="/projects"
-            className="group inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.14em] text-black/45 transition-colors hover:text-[#171717]"
+            className="cs-a group inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.14em] text-black/40 transition-colors hover:text-[#171717]"
           >
             View projects
             <ArrowUpRight
@@ -58,14 +63,16 @@ export function ClientsStripSection() {
           </Link>
         </div>
 
-        <div className="mt-8 grid grid-cols-2 gap-px overflow-hidden border border-black/8 bg-black/8 sm:grid-cols-3 lg:grid-cols-4">
+        <div className="cs-a mt-8 grid grid-cols-2 gap-px overflow-hidden rounded-lg border border-black/[0.08] bg-black/[0.06] sm:grid-cols-3 lg:grid-cols-4">
           {names.map((c) => (
             <div
               key={c.id}
-              className="clients-strip-item flex min-h-[72px] items-center bg-white px-4 py-4"
-              title={c.name}
+              className="flex min-h-[88px] flex-col justify-center bg-white px-4 py-4 transition-colors hover:bg-[#f3f1ec]/80 sm:min-h-[96px] sm:px-5"
             >
-              <span className="text-[12px] font-semibold leading-snug tracking-[-0.01em] text-[#171717]/85">
+              <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#f56616]/90">
+                {c.sector}
+              </span>
+              <span className="mt-1.5 text-[13px] font-semibold leading-snug tracking-[-0.015em] text-[#171717] sm:text-[14px]">
                 {c.name}
               </span>
             </div>
