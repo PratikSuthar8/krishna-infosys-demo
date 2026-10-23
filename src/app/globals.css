@@ -227,3 +227,13 @@ button {
     font-size: 12px !important;
   }
 }
+
+
+@keyframes spin-rev {
+  to { transform: rotate(-360deg); }
+}
+.animate-\[spin_16s_linear_infinite_reverse\],
+.animate-\[spin_14s_linear_infinite_reverse\],
+.animate-\[spin_22s_linear_infinite\] {
+  /* fallback handled by arbitrary animations if Tailwind generates them */
+}

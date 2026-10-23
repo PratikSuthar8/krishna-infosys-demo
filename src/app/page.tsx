@@ -1,15 +1,73 @@
-import { HeroSection } from "@/components/home/hero-section";
-import { TrustEngineeringSection } from "@/components/home/trust-engineering-section";
-import { SolutionsEcosystemSection } from "@/components/home/solutions-ecosystem-section";
-import { ClientsStripSection } from "@/components/home/clients-strip-section";
-import { ClientSuccessSection } from "@/components/home/client-success-section";
-import { ProvenScaleSection } from "@/components/home/proven-scale-section";
-import { IndustriesSection } from "@/components/home/industries-section";
-import { WhyKrishnaSection } from "@/components/home/why-krishna-section";
-import { TechnologyEcosystemSection } from "@/components/home/technology-ecosystem-section";
-import { FinalCtaSection } from "@/components/home/final-cta-section";
+import dynamic from "next/dynamic";
 import type { Metadata } from "next";
 import { buildMetadata } from "@/lib/seo";
+import { HeroSection } from "@/components/home/hero-section";
+import { SectionSkeleton } from "@/components/ui/section-skeleton";
+
+// Below-fold: code-split so initial JS stays smaller
+const TrustEngineeringSection = dynamic(
+  () =>
+    import("@/components/home/trust-engineering-section").then(
+      (m) => m.TrustEngineeringSection,
+    ),
+  { loading: () => <SectionSkeleton /> },
+);
+const SolutionsEcosystemSection = dynamic(
+  () =>
+    import("@/components/home/solutions-ecosystem-section").then(
+      (m) => m.SolutionsEcosystemSection,
+    ),
+  { loading: () => <SectionSkeleton /> },
+);
+const ClientsStripSection = dynamic(
+  () =>
+    import("@/components/home/clients-strip-section").then(
+      (m) => m.ClientsStripSection,
+    ),
+  { loading: () => <SectionSkeleton className="min-h-[20vh]" /> },
+);
+const ClientSuccessSection = dynamic(
+  () =>
+    import("@/components/home/client-success-section").then(
+      (m) => m.ClientSuccessSection,
+    ),
+  { loading: () => <SectionSkeleton /> },
+);
+const ProvenScaleSection = dynamic(
+  () =>
+    import("@/components/home/proven-scale-section").then(
+      (m) => m.ProvenScaleSection,
+    ),
+  { loading: () => <SectionSkeleton /> },
+);
+const IndustriesSection = dynamic(
+  () =>
+    import("@/components/home/industries-section").then(
+      (m) => m.IndustriesSection,
+    ),
+  { loading: () => <SectionSkeleton /> },
+);
+const WhyKrishnaSection = dynamic(
+  () =>
+    import("@/components/home/why-krishna-section").then(
+      (m) => m.WhyKrishnaSection,
+    ),
+  { loading: () => <SectionSkeleton /> },
+);
+const TechnologyEcosystemSection = dynamic(
+  () =>
+    import("@/components/home/technology-ecosystem-section").then(
+      (m) => m.TechnologyEcosystemSection,
+    ),
+  { loading: () => <SectionSkeleton /> },
+);
+const FinalCtaSection = dynamic(
+  () =>
+    import("@/components/home/final-cta-section").then(
+      (m) => m.FinalCtaSection,
+    ),
+  { loading: () => <SectionSkeleton className="min-h-[30vh]" /> },
+);
 
 export const metadata: Metadata = buildMetadata({
   title: "CCTV, Fire Alarm & ELV Systems in Ahmedabad | Krishna Infosys",

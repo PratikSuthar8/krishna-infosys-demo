@@ -1,5 +1,6 @@
 "use client";
 
+
 import { useEffect, useRef } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -12,8 +13,8 @@ import {
   Network,
   Radio,
   Volume2,
-  Cpu,
   ShieldCheck,
+  Cpu,
 } from "lucide-react";
 
 const systems = [
@@ -163,7 +164,8 @@ export function HeroSection() {
       });
     }, heroRef);
 
-    return () => ctx.revert();
+    return (
+    ) => ctx.revert();
   }, []);
 
   const handleMouseMove = (event: React.MouseEvent<HTMLDivElement>) => {
@@ -317,7 +319,7 @@ export function HeroSection() {
           style={{ perspective: "1200px" }}
         >
           <div className="visual-inner absolute inset-[8%]">
-            {/* Outer technical circles */}
+{/* Outer technical circles */}
             <div className="absolute inset-[8%] rounded-full border border-dashed border-black/[0.12]" />
 
             <div className="orbit-one absolute inset-[17%] rounded-full border border-black/[0.08]">
@@ -339,18 +341,16 @@ export function HeroSection() {
 
               <div className="absolute inset-4 rounded-full border border-dashed border-black/[0.08]" />
 
-              <div className="relative flex h-[94px] w-[94px] flex-col items-center justify-center rounded-full bg-[#171717] text-white shadow-xl">
+                            <div className="relative flex h-[94px] w-[94px] flex-col items-center justify-center rounded-full bg-[#171717] text-white shadow-xl">
                 <Cpu
                   size={27}
                   strokeWidth={1.6}
                   className="text-[#f56616]"
                 />
-
                 <span className="mt-2 text-[9px] font-semibold uppercase tracking-[0.2em] text-white/60">
                   Integrated
                 </span>
-
-                <span className="text-sm font-semibold">
+                <span className="text-[10px] font-semibold tracking-[-0.02em] text-white">
                   ELV Core
                 </span>
               </div>
