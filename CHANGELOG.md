@@ -4,6 +4,11 @@ All notable changes to the Krishna Infosys website are documented in this file.
 
 Format: [Semantic Versioning](https://semver.org/).
 
+## [1.0.2] — 2026-10-26
+
+### Changed
+- package.json aligned to release tag v1.0.2 for configuration control.
+
 ## [1.0.1] — 2026-10-26
 
 ### Changed
