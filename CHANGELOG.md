@@ -4,6 +4,14 @@ All notable changes to the Krishna Infosys website are documented in this file.
 
 Format: [Semantic Versioning](https://semver.org/).
 
+## [1.0.1] — 2026-10-26
+
+### Changed
+- ISO release process correction (proper semver tag after baseline v1.0.0).
+
+### Fixed
+- Invalid git tag naming from non-interactive shell version bump.
+
 ## [1.0.0] — 2026-10-26
 
 ### Added
