@@ -332,7 +332,7 @@ export function TrustEngineeringSection() {
       >
         <div
           ref={desktopPanelRef}
-          className="relative mx-auto h-[calc(100vh-118px)] min-h-[610px] max-h-[790px] max-w-[1500px] px-12 xl:px-16"
+          className="relative mx-auto h-[calc(100svh-118px)] min-h-[610px] max-h-[790px] max-w-[1500px] px-12 xl:px-16"
         >
           <div className="flex h-full flex-col border-t border-white/[0.08]">
             {/* Stage navigation */}

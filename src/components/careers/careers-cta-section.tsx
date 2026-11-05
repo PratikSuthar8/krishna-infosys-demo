@@ -47,7 +47,7 @@ export function CareersCtaSection() {
             </a>
             <a
               href={contact.phone.href}
-              className="group inline-flex items-center gap-2 text-[13px] font-semibold text-black/55 transition-colors hover:text-[#f56616]"
+              className="group inline-flex min-h-11 items-center gap-2 text-[13px] font-semibold text-black/55 transition-colors hover:text-[#f56616]"
             >
               <Phone size={14} />
               {contact.phone.display}

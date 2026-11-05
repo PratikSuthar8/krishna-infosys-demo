@@ -71,14 +71,14 @@ export function DomainCta({ domain }: { domain: DomainConfig }) {
                 </Link>
                 <Link
                   href="/amc-support"
-                  className="group inline-flex items-center gap-2 text-[13px] font-semibold text-black/50 transition-colors hover:text-[#f56616]"
+                  className="group inline-flex min-h-11 items-center gap-2 text-[13px] font-semibold text-black/50 transition-colors hover:text-[#f56616]"
                 >
                   AMC & support
                   <ArrowUpRight size={14} className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
                 </Link>
                 <Link
                   href="/solutions"
-                  className="group inline-flex items-center gap-2 text-[13px] font-semibold text-black/50 transition-colors hover:text-[#f56616]"
+                  className="group inline-flex min-h-11 items-center gap-2 text-[13px] font-semibold text-black/50 transition-colors hover:text-[#f56616]"
                 >
                   All solutions
                   <ArrowUpRight size={14} className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
@@ -88,11 +88,11 @@ export function DomainCta({ domain }: { domain: DomainConfig }) {
             <div className="border-t border-black/10 pt-8 lg:border-t-0 lg:border-l lg:pl-12 lg:pt-0">
               <span className="text-[9px] font-bold uppercase tracking-[0.18em] text-black/30">Direct contact</span>
               <div className="mt-5 space-y-4">
-                <a href={contact.phone.href} className="flex items-center gap-3 text-sm text-black/55 transition-colors hover:text-[#171717]">
+                <a href={contact.phone.href} className="flex min-h-11 items-center gap-3 text-sm text-black/55 transition-colors hover:text-[#171717]">
                   <Phone size={15} className="text-[#f56616]" />
                   {contact.phone.display}
                 </a>
-                <a href={mailTo("general")} className="flex items-center gap-3 text-sm text-black/55 transition-colors hover:text-[#171717]">
+                <a href={mailTo("general")} className="flex min-h-11 items-center gap-3 text-sm text-black/55 transition-colors hover:text-[#171717]">
                   <Mail size={15} className="text-[#f56616]" />
                   {contact.email.general}
                 </a>
@@ -104,7 +104,7 @@ export function DomainCta({ domain }: { domain: DomainConfig }) {
                     <Link
                       key={item.href}
                       href={item.href}
-                      className="group inline-flex items-center gap-2 text-[13px] font-semibold text-black/60 transition-colors hover:text-[#f56616]"
+                      className="group inline-flex min-h-11 items-center gap-2 text-[13px] font-semibold text-black/60 transition-colors hover:text-[#f56616]"
                     >
                       {item.label}
                       <ArrowUpRight size={13} className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />

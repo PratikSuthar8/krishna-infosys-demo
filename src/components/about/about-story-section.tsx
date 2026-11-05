@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { setupCountUps } from "@/lib/count-up";
 import {
     ArrowUpRight,
     Building2,
@@ -111,6 +112,8 @@ export function AboutStorySection() {
         const mm = gsap.matchMedia();
 
         const ctx = gsap.context(() => {
+            setupCountUps(section);
+
             gsap.from(".story-intro-reveal", {
                 y: 42,
                 opacity: 0,
@@ -318,7 +321,7 @@ export function AboutStorySection() {
             <div ref={journeyRef} className="relative hidden lg:block">
                 <div
                     ref={panelRef}
-                    className="relative mx-auto h-[calc(100vh-118px)] min-h-[610px] max-h-[790px] max-w-[1500px] px-12 xl:px-16"
+                    className="relative mx-auto h-[calc(100svh-118px)] min-h-[610px] max-h-[790px] max-w-[1500px] px-12 xl:px-16"
                 >
                     <div className="flex h-full flex-col border-t border-white/[0.08]">
                         {/* Stage nav + progress */}
@@ -538,14 +541,18 @@ export function AboutStorySection() {
             <div className="relative border-t border-white/[0.08]">
                 <div className="mx-auto grid max-w-[1500px] gap-6 px-5 py-12 sm:grid-cols-2 sm:px-8 lg:grid-cols-4 lg:px-12 lg:py-14 xl:px-16">
                     {[
-                        { value: "2,200+", label: "Projects delivered" },
-                        { value: "950+", label: "Happy clients" },
-                        { value: "24+", label: "Years experience" },
-                        { value: "<1.5%", label: "Complaint ratio" },
+                        { value: 2200, display: "2,200", suffix: "+", label: "Projects delivered" },
+                        { value: 950, display: "950", suffix: "+", label: "Happy clients" },
+                        { value: 24, display: "24", suffix: "+", label: "Years experience" },
+                        { value: 1.5, display: "1.5", decimals: 1, prefix: "<", suffix: "%", label: "Complaint ratio" },
                     ].map((item) => (
                         <div key={item.label} className="border-l border-white/10 pl-5">
                             <div className="text-2xl font-semibold tracking-[-0.04em] text-[#f56616]">
-                                {item.value}
+                                {item.prefix}
+                                <span data-count={item.value} data-decimals={item.decimals ?? 0}>
+                                    {item.display}
+                                </span>
+                                {item.suffix}
                             </div>
                             <div className="mt-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-white/35">
                                 {item.label}

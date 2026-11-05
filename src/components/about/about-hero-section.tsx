@@ -15,7 +15,20 @@ export function AboutHeroSection() {
     const sectionRef = useRef<HTMLElement>(null);
 
     useEffect(() => {
+        const mm = gsap.matchMedia();
+
         const ctx = gsap.context(() => {
+            // Slow ambient ring rotation, same as the home hero — skipped for reduced motion.
+            mm.add("(prefers-reduced-motion: no-preference)", () => {
+                gsap.to(".about-hero-orbit", {
+                    rotate: 360,
+                    duration: 60,
+                    repeat: -1,
+                    ease: "none",
+                    transformOrigin: "50% 50%",
+                });
+            });
+
             const timeline = gsap.timeline({
                 defaults: { ease: "power3.out" },
             });
@@ -76,7 +89,10 @@ export function AboutHeroSection() {
                 );
         }, sectionRef);
 
-        return () => ctx.revert();
+        return () => {
+            mm.revert();
+            ctx.revert();
+        };
     }, []);
 
     return (
@@ -97,9 +113,15 @@ export function AboutHeroSection() {
                 }}
             />
 
+            {/* Orange ambient glow — same as home */}
             <div
                 aria-hidden="true"
-                className="pointer-events-none absolute -right-40 top-24 hidden h-[480px] w-[480px] rounded-full border border-black/[0.04] lg:block"
+                className="pointer-events-none absolute right-[-12rem] top-[5%] h-[34rem] w-[34rem] rounded-full bg-[#f56616]/[0.055] blur-[90px]"
+            />
+
+            <div
+                aria-hidden="true"
+                className="about-hero-orbit pointer-events-none absolute -right-40 top-24 hidden h-[480px] w-[480px] rounded-full border border-black/[0.04] lg:block"
             >
                 <div className="absolute inset-16 rounded-full border border-dashed border-[#f56616]/20" />
                 <div className="absolute inset-32 rounded-full border border-black/[0.05]" />
@@ -170,7 +192,7 @@ export function AboutHeroSection() {
                     </div>
 
                     {/* Right — proof meta */}
-                    <div className="grid gap-3 sm:grid-cols-2">
+                    <div className="grid grid-cols-2 gap-3">
                         {[
                             {
                                 label: "Experience",
@@ -199,7 +221,7 @@ export function AboutHeroSection() {
                         ].map((item) => (
                             <div
                                 key={item.label}
-                                className="about-hero-meta border border-black/[0.08] bg-white/70 px-5 py-5 backdrop-blur-sm"
+                                className="about-hero-meta border border-black/[0.08] bg-white/70 px-4 py-4 backdrop-blur-sm sm:px-5 sm:py-5"
                             >
                                 <div className="flex items-center justify-between gap-3">
                                     <span className="text-[9px] font-bold uppercase tracking-[0.18em] text-black/35">
@@ -213,7 +235,7 @@ export function AboutHeroSection() {
                                         />
                                     )}
                                 </div>
-                                <div className="mt-3 text-[1.65rem] font-semibold tracking-[-0.04em] text-black/80">
+                                <div className="mt-3 text-[1.4rem] font-semibold tracking-[-0.04em] text-black/80 sm:text-[1.65rem]">
                                     {item.value}
                                 </div>
                                 <div className="mt-1 text-[11px] font-medium text-black/40">

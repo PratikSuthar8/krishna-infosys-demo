@@ -61,7 +61,7 @@ export function ProjectsFeaturedSection() {
           </div>
           <Link
             href="#index"
-            className="feat-a group inline-flex shrink-0 items-center gap-2 text-[11px] font-bold uppercase tracking-[0.14em] text-white/40 transition-colors hover:text-white"
+            className="feat-a group inline-flex min-h-11 shrink-0 items-center gap-2 text-[11px] font-bold uppercase tracking-[0.14em] text-white/40 transition-colors hover:text-white"
           >
             Full index
             <ArrowUpRight

@@ -7,6 +7,7 @@ import Link from "next/link";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { motion } from "framer-motion";
+import { setupCountUps } from "@/lib/count-up";
 import {
     ArrowUpRight,
     MapPin,
@@ -20,10 +21,10 @@ import {
 gsap.registerPlugin(ScrollTrigger);
 
 const metrics = [
-    { value: "24+", label: "Years of excellence", note: "Since 2001" },
-    { value: "950+", label: "Satisfied clients", note: "Across verticals" },
-    { value: "2,200+", label: "Projects delivered", note: "Pan-India" },
-    { value: "<1.5%", label: "Complaint ratio", note: "Service discipline" },
+    { value: 24, display: "24", suffix: "+", label: "Years of excellence", note: "Since 2001" },
+    { value: 950, display: "950", suffix: "+", label: "Satisfied clients", note: "Across verticals" },
+    { value: 2200, display: "2,200", suffix: "+", label: "Projects delivered", note: "Pan-India" },
+    { value: 1.5, display: "1.5", decimals: 1, prefix: "<", suffix: "%", label: "Complaint ratio", note: "Service discipline" },
 ];
 
 const presence = [
@@ -52,6 +53,8 @@ export function AboutPresenceSection() {
 
     useEffect(() => {
         const ctx = gsap.context(() => {
+            setupCountUps(sectionRef.current!, "top 88%");
+
             gsap.from(".presence-reveal", {
                 y: 40,
                 opacity: 0,
@@ -159,7 +162,11 @@ export function AboutPresenceSection() {
                             className="presence-metric border border-black/[0.08] bg-white/70 px-5 py-6 backdrop-blur-sm"
                         >
                             <div className="text-[clamp(1.8rem,3vw,2.6rem)] font-semibold tracking-[-0.05em] text-[#171717]">
-                                {item.value}
+                                {item.prefix}
+                                <span data-count={item.value} data-decimals={item.decimals ?? 0}>
+                                    {item.display}
+                                </span>
+                                {item.suffix}
                             </div>
                             <div className="mt-2 text-[11px] font-bold uppercase tracking-[0.14em] text-black/45">
                                 {item.label}
@@ -253,7 +260,7 @@ export function AboutPresenceSection() {
                                 >
                                     <Link
                                         href="/solutions"
-                                        className="group inline-flex items-center gap-2 text-[13px] font-semibold text-white/50 transition-colors hover:text-white"
+                                        className="group inline-flex min-h-11 items-center gap-2 text-[13px] font-semibold text-white/50 transition-colors hover:text-white"
                                     >
                                         View solutions
                                         <ArrowUpRight
@@ -274,7 +281,7 @@ export function AboutPresenceSection() {
                             <div className="mt-5 space-y-4">
                                 <a
                                     href={contact.phone.href}
-                                    className="group flex items-center gap-3 text-sm text-white/60 transition-colors hover:text-white"
+                                    className="group flex min-h-11 items-center gap-3 text-sm text-white/60 transition-colors hover:text-white"
                                 >
                                     <Phone size={15} strokeWidth={1.5} className="text-[#f56616]" />
                                     <span>{contact.phone.display}</span>
@@ -282,7 +289,7 @@ export function AboutPresenceSection() {
 
                                 <a
                                     href="mailto:info@krishnainfosys.com"
-                                    className="group flex items-center gap-3 text-sm text-white/60 transition-colors hover:text-white"
+                                    className="group flex min-h-11 items-center gap-3 text-sm text-white/60 transition-colors hover:text-white"
                                 >
                                     <Mail size={15} strokeWidth={1.5} className="text-[#f56616]" />
                                     <span>info@krishnainfosys.com</span>

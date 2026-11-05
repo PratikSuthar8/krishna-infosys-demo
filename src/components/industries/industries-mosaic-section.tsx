@@ -240,7 +240,7 @@ export function IndustriesMosaicSection() {
                     </p>
                     <Link
                         href="/contact"
-                        className="group inline-flex items-center gap-2 text-[13px] font-semibold text-white transition-colors hover:text-[#f56616]"
+                        className="group inline-flex min-h-11 items-center gap-2 text-[13px] font-semibold text-white transition-colors hover:text-[#f56616]"
                     >
                         Describe your environment
                         <ArrowUpRight

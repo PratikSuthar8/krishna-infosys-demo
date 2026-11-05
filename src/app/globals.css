@@ -204,7 +204,11 @@ button {
     scroll-behavior: auto !important;
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+    /* 0s, not 0.01ms: the default transition-property is "all", so any non-zero
+       duration here makes every GSAP style write restart a transition and the
+       scroll reveals never get past opacity 0. */
+    transition-duration: 0s !important;
+    transition-delay: 0s !important;
   }
 }
 
@@ -217,14 +221,20 @@ button {
   text-transform: uppercase;
 }
 
-@media (max-width: 767px) {
-  body {
-    /* floor for very small utility labels in components */
-  }
+/* Minimum type size for tiny utility labels: 12px on phones and tablets,
+   11px on laptops and desktops (these were 8-10px before). */
+@media (max-width: 1023px) {
   .text-\[9px\],
   .text-\[8px\],
   .text-\[10px\] {
     font-size: 12px !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  .text-\[9px\],
+  .text-\[8px\] {
+    font-size: 11px !important;
   }
 }
 

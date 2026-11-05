@@ -523,7 +523,7 @@ export function Navbar() {
                 <button
                   type="button"
                   onClick={closeMobileMenu}
-                  className="flex h-10 w-10 items-center justify-center rounded-full transition-all duration-300 hover:bg-surface hover:text-brand"
+                  className="flex h-11 w-11 items-center justify-center rounded-full transition-all duration-300 hover:bg-surface hover:text-brand"
                   aria-label="Close navigation menu"
                 >
                   <X size={21} strokeWidth={1.8} />

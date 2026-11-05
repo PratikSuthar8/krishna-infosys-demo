@@ -78,12 +78,12 @@ export function Footer() {
             <span className="text-[8px] font-bold uppercase tracking-[0.2em] text-white/25">
               Navigate
             </span>
-            <nav className="mt-5 flex flex-col items-start gap-3.5">
+            <nav className="mt-3 flex flex-col items-start gap-0 lg:mt-5 lg:gap-3.5">
               {navigation.map((item) => (
                 <Link
                   key={item.label}
                   href={item.href}
-                  className="group flex items-center gap-2 text-sm font-medium text-white/52 transition-colors hover:text-white"
+                  className="group flex min-h-11 items-center gap-2 text-sm font-medium text-white/52 transition-colors hover:text-white lg:min-h-0"
                 >
                   {item.label}
                   <ArrowUpRight
@@ -100,12 +100,12 @@ export function Footer() {
             <span className="text-[8px] font-bold uppercase tracking-[0.2em] text-white/25">
               Solutions
             </span>
-            <nav className="mt-5 flex flex-col items-start gap-3.5">
+            <nav className="mt-3 flex flex-col items-start gap-0 lg:mt-5 lg:gap-3.5">
               {solutions.map((item) => (
                 <Link
                   key={item.label}
                   href={item.href}
-                  className="text-sm font-medium text-white/52 transition-colors hover:text-white"
+                  className="flex min-h-11 items-center text-sm font-medium text-white/52 transition-colors hover:text-white lg:min-h-0"
                 >
                   {item.label}
                 </Link>
@@ -118,12 +118,12 @@ export function Footer() {
             <span className="text-[8px] font-bold uppercase tracking-[0.2em] text-white/25">
               Company
             </span>
-            <nav className="mt-5 flex flex-col items-start gap-3.5">
+            <nav className="mt-3 flex flex-col items-start gap-0 lg:mt-5 lg:gap-3.5">
               {company.map((item) => (
                 <Link
                   key={item.label}
                   href={item.href}
-                  className="group flex items-center gap-2 text-sm font-medium text-white/52 transition-colors hover:text-white"
+                  className="group flex min-h-11 items-center gap-2 text-sm font-medium text-white/52 transition-colors hover:text-white lg:min-h-0"
                 >
                   {item.label}
                   <ArrowUpRight
@@ -144,7 +144,7 @@ export function Footer() {
             <div className="mt-5 space-y-4">
               <a
                 href={contact.phone.href}
-                className="group flex items-start gap-3"
+                className="group flex min-h-11 items-start gap-3"
               >
                 <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-white/10 text-[#f56616] transition-colors group-hover:border-[#f56616]/40">
                   <Phone size={13} strokeWidth={1.6} />
@@ -161,7 +161,7 @@ export function Footer() {
 
               <a
                 href={`mailto:${contact.email.general}`}
-                className="group flex items-start gap-3"
+                className="group flex min-h-11 items-start gap-3"
               >
                 <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-white/10 text-[#f56616] transition-colors group-hover:border-[#f56616]/40">
                   <Mail size={13} strokeWidth={1.6} />
@@ -179,7 +179,7 @@ export function Footer() {
 
             <Link
               href="/contact"
-              className="group mt-7 inline-flex items-center gap-3 text-[9px] font-bold uppercase tracking-[0.16em] text-white/70 transition-colors hover:text-white"
+              className="group mt-7 inline-flex min-h-11 items-center gap-3 text-[9px] font-bold uppercase tracking-[0.16em] text-white/70 transition-colors hover:text-white"
             >
               Contact Krishna Infosys
               <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#f56616] text-white">
@@ -203,7 +203,7 @@ export function Footer() {
               <Link
                 key={item.href}
                 href={item.href}
-                className="text-[9px] font-medium text-white/35 transition-colors hover:text-[#f56616]"
+                className="inline-flex min-h-11 items-center text-[9px] font-medium text-white/35 transition-colors hover:text-[#f56616] lg:min-h-0"
               >
                 {item.label}
               </Link>
@@ -217,7 +217,7 @@ export function Footer() {
 
             <a
               href={contact.web.href}
-              className="text-[9px] font-medium text-white/35 transition-colors hover:text-[#f56616]"
+              className="inline-flex min-h-11 items-center text-[9px] font-medium text-white/35 transition-colors hover:text-[#f56616] lg:min-h-0"
             >
               {contact.web.display}
             </a>
@@ -225,7 +225,7 @@ export function Footer() {
             <button
               type="button"
               onClick={scrollToTop}
-              className="group flex items-center gap-2 text-[8px] font-bold uppercase tracking-[0.16em] text-white/30 transition-colors hover:text-white"
+              className="group flex min-h-11 items-center gap-2 text-[8px] font-bold uppercase tracking-[0.16em] text-white/30 transition-colors hover:text-white lg:min-h-0"
               aria-label="Back to top"
             >
               Back to top

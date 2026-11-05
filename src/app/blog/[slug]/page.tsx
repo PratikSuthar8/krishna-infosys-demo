@@ -96,7 +96,7 @@ export default async function BlogPostPage({ params }: Props) {
       <article className="mx-auto max-w-[760px] px-5 py-16 sm:px-8 lg:py-24">
         <Link
           href="/blog"
-          className="inline-flex items-center gap-2 text-[13px] font-semibold text-black/45 transition hover:text-[#171717]"
+          className="inline-flex min-h-11 items-center gap-2 text-[13px] font-semibold text-black/45 transition hover:text-[#171717]"
         >
           <ArrowLeft size={14} />
           All articles

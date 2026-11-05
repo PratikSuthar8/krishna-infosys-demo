@@ -40,7 +40,7 @@ export function JobDetailView({
       <div className="mx-auto max-w-[1500px] px-5 py-14 sm:px-8 lg:px-12 lg:py-20 xl:px-16">
         <Link
           href="/careers"
-          className="inline-flex items-center gap-2 text-[13px] font-semibold text-black/50 transition-colors hover:text-[#f56616]"
+          className="inline-flex min-h-11 items-center gap-2 text-[13px] font-semibold text-black/50 transition-colors hover:text-[#f56616]"
         >
           <ArrowLeft size={14} />
           All openings
@@ -186,14 +186,14 @@ export function JobDetailView({
               <div className="mt-5 space-y-3 border-t border-white/10 pt-5 text-[13px] text-white/55">
                 <a
                   href={mailTo("hr")}
-                  className="flex items-center gap-2 transition-colors hover:text-white"
+                  className="flex min-h-11 items-center gap-2 transition-colors hover:text-white"
                 >
                   <Mail size={14} className="text-[#f56616]" />
                   {contact.email.hr}
                 </a>
                 <a
                   href={contact.phone.href}
-                  className="flex items-center gap-2 transition-colors hover:text-white"
+                  className="flex min-h-11 items-center gap-2 transition-colors hover:text-white"
                 >
                   <Phone size={14} className="text-[#f56616]" />
                   {contact.phone.display}

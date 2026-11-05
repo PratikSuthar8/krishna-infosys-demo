@@ -336,18 +336,18 @@ export function HeroSection() {
             <div className="absolute left-[7%] top-1/2 h-px w-[86%] -translate-y-1/2 bg-gradient-to-r from-transparent via-black/[0.07] to-transparent" />
 
             {/* Central system */}
-            <div className="absolute left-1/2 top-1/2 flex h-[170px] w-[170px] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-black/[0.08] bg-white shadow-[0_30px_80px_rgba(0,0,0,0.08)]">
+            <div className="absolute left-1/2 top-1/2 flex h-[112px] w-[112px] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-black/[0.08] bg-white xl:h-[170px] xl:w-[170px] shadow-[0_30px_80px_rgba(0,0,0,0.08)]">
               <div className="pulse-ring absolute inset-[-14px] rounded-full border border-[#f56616]/20" />
 
               <div className="absolute inset-4 rounded-full border border-dashed border-black/[0.08]" />
 
-                            <div className="relative flex h-[94px] w-[94px] flex-col items-center justify-center rounded-full bg-[#171717] text-white shadow-xl">
+                            <div className="relative flex h-[72px] w-[72px] flex-col items-center justify-center rounded-full bg-[#171717] text-white shadow-xl xl:h-[94px] xl:w-[94px]">
                 <Cpu
                   size={27}
                   strokeWidth={1.6}
                   className="text-[#f56616]"
                 />
-                <span className="mt-2 text-[9px] font-semibold uppercase tracking-[0.2em] text-white/60">
+                <span className="mt-2 hidden text-[9px] font-semibold uppercase tracking-[0.2em] text-white/60 xl:block">
                   Integrated
                 </span>
                 <span className="text-[10px] font-semibold tracking-[-0.02em] text-white">
@@ -408,8 +408,8 @@ export function HeroSection() {
                   key={system.label}
                   className={`system-node absolute ${system.position}`}
                 >
-                  <div className="group flex min-w-[120px] items-center gap-2.5 rounded-2xl border border-black/[0.08] bg-white/90 p-3 shadow-[0_14px_40px_rgba(0,0,0,0.055)] backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-[#f56616]/25 hover:shadow-[0_20px_50px_rgba(0,0,0,0.09)]">
-                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#f56616]/10 text-[#f56616] transition-colors duration-300 group-hover:bg-[#f56616] group-hover:text-white">
+                  <div className="group flex min-w-[104px] items-center gap-2 rounded-2xl border border-black/[0.08] bg-white/90 p-2 shadow-[0_14px_40px_rgba(0,0,0,0.055)] backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-[#f56616]/25 hover:shadow-[0_20px_50px_rgba(0,0,0,0.09)] xl:min-w-[120px] xl:gap-2.5 xl:p-3">
+                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-[#f56616]/10 xl:h-9 xl:w-9 text-[#f56616] transition-colors duration-300 group-hover:bg-[#f56616] group-hover:text-white">
                       <Icon size={19} strokeWidth={1.7} />
                     </div>
 
@@ -428,7 +428,7 @@ export function HeroSection() {
             })}
 
             {/* Floating micro elements */}
-            <div className="absolute right-[12%] top-[47%] flex items-center gap-2 rounded-full border border-black/[0.07] bg-white px-3 py-2 shadow-sm">
+            <div className="absolute right-[12%] top-[47%] hidden items-center gap-2 rounded-full xl:flex border border-black/[0.07] bg-white px-3 py-2 shadow-sm">
               <ShieldCheck
                 size={13}
                 className="text-[#f56616]"
@@ -438,7 +438,7 @@ export function HeroSection() {
               </span>
             </div>
 
-            <div className="absolute bottom-[10%] left-[14%] flex h-9 w-9 items-center justify-center rounded-full border border-black/[0.08] bg-white shadow-sm">
+            <div className="absolute bottom-[10%] left-[14%] hidden h-9 w-9 items-center justify-center rounded-full xl:flex border border-black/[0.08] bg-white shadow-sm">
               <Volume2
                 size={15}
                 strokeWidth={1.6}

@@ -217,14 +217,14 @@ export function PrivacyContent() {
                 <div className="legal-reveal mt-10 flex flex-wrap items-center gap-4">
                     <Link
                         href="/terms"
-                        className="group inline-flex items-center gap-2 text-[13px] font-semibold text-black/60 transition-colors hover:text-[#f56616]"
+                        className="group inline-flex min-h-11 items-center gap-2 text-[13px] font-semibold text-black/60 transition-colors hover:text-[#f56616]"
                     >
                         Terms & Conditions
                         <ArrowUpRight size={14} />
                     </Link>
                     <Link
                         href="/contact"
-                        className="group inline-flex items-center gap-2 text-[13px] font-semibold text-black/60 transition-colors hover:text-[#f56616]"
+                        className="group inline-flex min-h-11 items-center gap-2 text-[13px] font-semibold text-black/60 transition-colors hover:text-[#f56616]"
                     >
                         Contact us
                         <ArrowUpRight size={14} />

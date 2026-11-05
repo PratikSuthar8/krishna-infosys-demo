@@ -148,7 +148,7 @@ export function IndustriesCtaSection() {
                                 >
                                     <Link
                                         href="/solutions"
-                                        className="group inline-flex items-center gap-2 text-[13px] font-semibold text-black/50 transition-colors hover:text-[#f56616]"
+                                        className="group inline-flex min-h-11 items-center gap-2 text-[13px] font-semibold text-black/50 transition-colors hover:text-[#f56616]"
                                     >
                                         View solutions
                                         <ArrowUpRight
@@ -168,7 +168,7 @@ export function IndustriesCtaSection() {
                             <div className="mt-5 space-y-4">
                                 <a
                                     href={contact.phone.href}
-                                    className="flex items-center gap-3 text-sm text-black/55 transition-colors hover:text-[#171717]"
+                                    className="flex min-h-11 items-center gap-3 text-sm text-black/55 transition-colors hover:text-[#171717]"
                                 >
                                     <Phone size={15} strokeWidth={1.5} className="text-[#f56616]" />
                                     {contact.phone.display}
@@ -176,7 +176,7 @@ export function IndustriesCtaSection() {
 
                                 <a
                                     href="mailto:info@krishnainfosys.com"
-                                    className="flex items-center gap-3 text-sm text-black/55 transition-colors hover:text-[#171717]"
+                                    className="flex min-h-11 items-center gap-3 text-sm text-black/55 transition-colors hover:text-[#171717]"
                                 >
                                     <Mail size={15} strokeWidth={1.5} className="text-[#f56616]" />
                                     info@krishnainfosys.com

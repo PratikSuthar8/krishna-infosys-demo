@@ -177,7 +177,7 @@ export function SolutionsHeroSection() {
                     {/* RIGHT */}
                     <div className="sol-hero-stage relative mx-auto w-full max-w-[480px] lg:mx-0">
                         <div
-                            className="relative mx-auto h-[380px] w-[380px] sm:h-[420px] sm:w-[420px]"
+                            className="relative mx-auto aspect-square w-full max-w-[380px] sm:max-w-[420px]"
                             onMouseEnter={() => setPaused(true)}
                             onMouseLeave={() => setPaused(false)}
                         >
@@ -194,7 +194,7 @@ export function SolutionsHeroSection() {
                                 <span className="mt-1 text-[13px] font-semibold tracking-[-0.02em]">
                                     5 domains
                                 </span>
-                                <span className="mt-1 text-[8px] uppercase tracking-[0.16em] text-white/30">
+                                <span className="mt-1 text-[8px] uppercase tracking-[0.06em] text-white/45">
                                     One stack
                                 </span>
                             </div>
@@ -205,21 +205,25 @@ export function SolutionsHeroSection() {
                                 const on = active === i;
                                 const angle = (360 / stack.length) * i - 90;
                                 const rad = (angle * Math.PI) / 180;
-                                const radius = 150; // slightly larger orbit for bigger nodes
+                                // Radius as a share of the stage so the orbit scales with the screen
+                                const radius = 37.5;
                                 const x = Math.cos(rad) * radius;
                                 const y = Math.sin(rad) * radius;
 
                                 return (
-                                    <button
+                                    <div
                                         key={item.id}
-                                        type="button"
-                                        className={`sol-node absolute z-30 flex flex-col items-center gap-2 transition-transform duration-500 ${on ? "scale-110" : "scale-100"
-                                            }`}
+                                        className="absolute z-30"
                                         style={{
-                                            left: "50%",
-                                            top: "50%",
-                                            transform: `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`,
+                                            left: `${50 + x}%`,
+                                            top: `${50 + y}%`,
+                                            transform: "translate(-50%, -50%)",
                                         }}
+                                    >
+                                    <button
+                                        type="button"
+                                        className={`sol-node flex flex-col items-center gap-2 transition-transform duration-500 ${on ? "scale-110" : "scale-100"
+                                            }`}
                                         onMouseEnter={() => {
                                             setPaused(true);
                                             setActive(i);
@@ -246,6 +250,7 @@ export function SolutionsHeroSection() {
                                             {item.label}
                                         </span>
                                     </button>
+                                    </div>
                                 );
                             })}
                         </div>
@@ -279,18 +284,22 @@ export function SolutionsHeroSection() {
                             </AnimatePresence>
 
                             {/* progress dots */}
-                            <div className="mt-3 flex items-center gap-1.5">
+                            <div className="-mb-2 mt-0 flex items-center">
                                 {stack.map((item, i) => (
                                     <button
                                         key={item.id}
                                         type="button"
                                         aria-label={`Show ${item.label}`}
                                         onClick={() => setActive(i)}
-                                        className={`h-1 rounded-full transition-all duration-400 ${i === active
-                                            ? "w-6 bg-[#f56616]"
-                                            : "w-1.5 bg-black/15 hover:bg-black/30"
-                                            }`}
-                                    />
+                                        className="group flex h-11 items-center justify-center px-2.5"
+                                    >
+                                        <span
+                                            className={`block h-1 rounded-full transition-all duration-400 ${i === active
+                                                ? "w-6 bg-[#f56616]"
+                                                : "w-1.5 bg-black/15 group-hover:bg-black/30"
+                                                }`}
+                                        />
+                                    </button>
                                 ))}
                             </div>
                         </div>

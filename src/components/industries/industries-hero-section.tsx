@@ -147,7 +147,7 @@ export function IndustriesHeroSection() {
                             >
                                 <a
                                     href="#mosaic"
-                                    className="group inline-flex items-center gap-2 text-[13px] font-semibold text-black/55 transition-colors hover:text-[#f56616]"
+                                    className="group inline-flex min-h-11 items-center gap-2 text-[13px] font-semibold text-black/55 transition-colors hover:text-[#f56616]"
                                 >
                                     Browse verticals
                                     <ArrowUpRight
@@ -162,7 +162,7 @@ export function IndustriesHeroSection() {
                     {/* RIGHT — orbital constellation */}
                     <div className="ind-hero-stage relative mx-auto w-full max-w-[480px] lg:mx-0">
                         <div
-                            className="relative mx-auto h-[400px] w-[400px] sm:h-[440px] sm:w-[440px]"
+                            className="relative mx-auto aspect-square w-full max-w-[400px] sm:max-w-[440px]"
                             onMouseEnter={() => setPaused(true)}
                             onMouseLeave={() => setPaused(false)}
                         >
@@ -172,14 +172,14 @@ export function IndustriesHeroSection() {
                             <div className="pointer-events-none absolute inset-[20%] rounded-full border border-black/[0.05]" />
 
                             {/* center */}
-                            <div className="absolute left-1/2 top-1/2 z-20 flex h-[120px] w-[120px] -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center rounded-full border border-[#f56616]/35 bg-[#171717] text-white shadow-[0_20px_60px_rgba(23,23,23,0.25)]">
+                            <div className="absolute left-1/2 top-1/2 z-20 flex h-[132px] w-[132px] -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center rounded-full border border-[#f56616]/35 bg-[#171717] text-white shadow-[0_20px_60px_rgba(23,23,23,0.25)]">
                                 <span className="font-mono text-[9px] tracking-[0.2em] text-[#f56616]">
                                     ELV
                                 </span>
                                 <span className="mt-1 text-[13px] font-semibold tracking-[-0.02em]">
                                     8 verticals
                                 </span>
-                                <span className="mt-1 text-[8px] uppercase tracking-[0.16em] text-white/30">
+                                <span className="mt-1 text-[8px] uppercase tracking-[0.06em] text-white/45">
                                     One standard
                                 </span>
                             </div>
@@ -190,21 +190,25 @@ export function IndustriesHeroSection() {
                                 const on = active === i;
                                 const angle = (360 / marks.length) * i - 90;
                                 const rad = (angle * Math.PI) / 180;
-                                const radius = 155;
+                                // Radius as a share of the stage so the orbit scales with the screen
+                                const radius = 38;
                                 const x = Math.cos(rad) * radius;
                                 const y = Math.sin(rad) * radius;
 
                                 return (
-                                    <button
+                                    <div
                                         key={item.label}
-                                        type="button"
-                                        className={`ind-orb absolute z-30 flex flex-col items-center gap-1.5 transition-transform duration-500 ${on ? "scale-110" : "scale-100"
-                                            }`}
+                                        className="absolute z-30"
                                         style={{
-                                            left: "50%",
-                                            top: "50%",
-                                            transform: `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`,
+                                            left: `${50 + x}%`,
+                                            top: `${50 + y}%`,
+                                            transform: "translate(-50%, -50%)",
                                         }}
+                                    >
+                                    <button
+                                        type="button"
+                                        className={`ind-orb flex flex-col items-center gap-1.5 transition-transform duration-500 ${on ? "scale-110" : "scale-100"
+                                            }`}
                                         onMouseEnter={() => {
                                             setPaused(true);
                                             setActive(i);
@@ -231,6 +235,7 @@ export function IndustriesHeroSection() {
                                             {item.label}
                                         </span>
                                     </button>
+                                    </div>
                                 );
                             })}
                         </div>
@@ -263,18 +268,22 @@ export function IndustriesHeroSection() {
                                 </motion.div>
                             </AnimatePresence>
 
-                            <div className="mt-3 flex items-center gap-1.5">
+                            <div className="-mb-2 mt-0 flex items-center">
                                 {marks.map((item, i) => (
                                     <button
                                         key={item.label}
                                         type="button"
                                         aria-label={item.label}
                                         onClick={() => setActive(i)}
-                                        className={`h-1 rounded-full transition-all duration-400 ${i === active
-                                            ? "w-5 bg-[#f56616]"
-                                            : "w-1.5 bg-black/15 hover:bg-black/30"
-                                            }`}
-                                    />
+                                        className="group flex h-11 items-center justify-center px-2.5"
+                                    >
+                                        <span
+                                            className={`block h-1 rounded-full transition-all duration-400 ${i === active
+                                                ? "w-5 bg-[#f56616]"
+                                                : "w-1.5 bg-black/15 group-hover:bg-black/30"
+                                                }`}
+                                        />
+                                    </button>
                                 ))}
                             </div>
                         </div>

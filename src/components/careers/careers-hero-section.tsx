@@ -66,7 +66,7 @@ export function CareersHeroSection() {
             </a>
             <Link
               href="/about"
-              className="group inline-flex items-center gap-2 text-[13px] font-semibold text-black/55 transition-colors hover:text-[#f56616]"
+              className="group inline-flex min-h-11 items-center gap-2 text-[13px] font-semibold text-black/55 transition-colors hover:text-[#f56616]"
             >
               About the company
               <ArrowUpRight size={14} className="transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />

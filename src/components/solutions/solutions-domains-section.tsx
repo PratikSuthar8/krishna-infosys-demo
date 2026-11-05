@@ -338,7 +338,7 @@ export function SolutionsDomainsSection() {
                                             <div className="chap-reveal mt-8">
                                                 <Link
                                                     href="/contact"
-                                                    className="group inline-flex items-center gap-2 text-[13px] font-semibold text-white transition-colors hover:text-[#f56616]"
+                                                    className="group inline-flex min-h-11 items-center gap-2 text-[13px] font-semibold text-white transition-colors hover:text-[#f56616]"
                                                 >
                                                     Discuss this domain
                                                     <ArrowUpRight
@@ -383,7 +383,7 @@ export function SolutionsDomainsSection() {
                             key={d.id}
                             type="button"
                             onClick={() => scrollToChapter(i)}
-                            className={`shrink-0 border px-3.5 py-2 text-[11px] font-semibold transition-colors ${i === activeIndex
+                            className={`min-h-11 shrink-0 border px-3.5 py-2 text-[11px] font-semibold transition-colors ${i === activeIndex
                                 ? "border-[#f56616] bg-[#f56616] text-white!"
                                 : "border-white/15 text-white/50"
                                 }`}

@@ -96,7 +96,7 @@ export function JobApplyForm({ jobSlug, jobRole, open, onClose }: Props) {
         role="dialog"
         aria-modal="true"
         aria-labelledby="apply-title"
-        className="relative z-10 max-h-[92vh] w-full max-w-lg overflow-y-auto border border-black/10 bg-white p-6 shadow-2xl sm:rounded-2xl sm:p-8"
+        className="relative z-10 max-h-[92svh] w-full max-w-lg overflow-y-auto border border-black/10 bg-white p-6 shadow-2xl sm:rounded-2xl sm:p-8"
       >
         <div className="flex items-start justify-between gap-3">
           <div>
@@ -113,7 +113,8 @@ export function JobApplyForm({ jobSlug, jobRole, open, onClose }: Props) {
           <button
             type="button"
             onClick={onClose}
-            className="flex h-9 w-9 items-center justify-center rounded-full border border-black/10 text-black/50 hover:text-[#171717]"
+            aria-label="Close application form"
+            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-black/10 text-black/50 hover:text-[#171717]"
           >
             <X size={16} />
           </button>
@@ -179,7 +180,7 @@ export function JobApplyForm({ jobSlug, jobRole, open, onClose }: Props) {
             />
 
             <label className="flex cursor-pointer flex-col gap-2 border border-dashed border-black/15 bg-[#f3f1ec]/80 px-4 py-4">
-              <span className="inline-flex items-center gap-2 text-[13px] font-semibold text-[#171717]">
+              <span className="inline-flex min-h-11 items-center gap-2 text-[13px] font-semibold text-[#171717]">
                 <Upload size={15} className="text-[#f56616]" />
                 Resume * (PDF or Word, max 5MB)
               </span>

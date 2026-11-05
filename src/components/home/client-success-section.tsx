@@ -468,7 +468,7 @@ export function ClientSuccessSection() {
 
         {/* Dots + portfolio link */}
         <div className="success-reveal mt-8 flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap">
             {cases.map((c, i) => (
               <button
                 key={c.id}
@@ -478,12 +478,16 @@ export function ClientSuccessSection() {
                   if (i === active || animating) return;
                   transitionTo(i, i > active ? 1 : -1);
                 }}
-                className={`h-1.5 rounded-full transition-all ${
-                  i === active
-                    ? "w-8 bg-[#f56616]"
-                    : "w-1.5 bg-black/15 hover:bg-black/30"
-                }`}
-              />
+                className="group flex h-11 items-center justify-center px-2.5"
+              >
+                <span
+                  className={`block h-1.5 rounded-full transition-all ${
+                    i === active
+                      ? "w-8 bg-[#f56616]"
+                      : "w-1.5 bg-black/15 group-hover:bg-black/30"
+                  }`}
+                />
+              </button>
             ))}
           </div>
 

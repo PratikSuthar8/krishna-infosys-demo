@@ -311,8 +311,8 @@ export function SolutionsEcosystemSection() {
             </div>
 
             <h2 className="mt-5 max-w-[850px] text-[clamp(2.8rem,4.7vw,5.2rem)] font-medium leading-[0.93] tracking-[-0.055em]">
-              One infrastructure.
-              <span className="ml-[0.18em] text-black/30">
+              One infrastructure.{" "}
+              <span className="text-black/30">
                 Every system connected.
               </span>
             </h2>

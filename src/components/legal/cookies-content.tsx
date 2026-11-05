@@ -150,14 +150,14 @@ export function CookiesContent() {
                 <div className="legal-reveal mt-16 flex flex-wrap gap-4 border-t border-black/10 pt-8">
                     <Link
                         href="/privacy"
-                        className="group inline-flex items-center gap-2 text-[13px] font-semibold text-black/60 transition-colors hover:text-[#f56616]"
+                        className="group inline-flex min-h-11 items-center gap-2 text-[13px] font-semibold text-black/60 transition-colors hover:text-[#f56616]"
                     >
                         Privacy Policy
                         <ArrowUpRight size={14} />
                     </Link>
                     <Link
                         href="/terms"
-                        className="group inline-flex items-center gap-2 text-[13px] font-semibold text-black/60 transition-colors hover:text-[#f56616]"
+                        className="group inline-flex min-h-11 items-center gap-2 text-[13px] font-semibold text-black/60 transition-colors hover:text-[#f56616]"
                     >
                         Terms & Conditions
                         <ArrowUpRight size={14} />

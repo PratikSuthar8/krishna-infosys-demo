@@ -118,7 +118,7 @@ export function ContactPresenceSection() {
                     <div className="flex flex-wrap gap-5">
                         <Link
                             href="/solutions"
-                            className="group inline-flex items-center gap-2 text-[13px] font-semibold text-white transition-colors hover:text-[#f56616]"
+                            className="group inline-flex min-h-11 items-center gap-2 text-[13px] font-semibold text-white transition-colors hover:text-[#f56616]"
                         >
                             Solutions
                             <ArrowUpRight
@@ -128,7 +128,7 @@ export function ContactPresenceSection() {
                         </Link>
                         <Link
                             href="/industries"
-                            className="group inline-flex items-center gap-2 text-[13px] font-semibold text-white transition-colors hover:text-[#f56616]"
+                            className="group inline-flex min-h-11 items-center gap-2 text-[13px] font-semibold text-white transition-colors hover:text-[#f56616]"
                         >
                             Industries
                             <ArrowUpRight
@@ -138,7 +138,7 @@ export function ContactPresenceSection() {
                         </Link>
                         <Link
                             href="/amc-support"
-                            className="group inline-flex items-center gap-2 text-[13px] font-semibold text-white transition-colors hover:text-[#f56616]"
+                            className="group inline-flex min-h-11 items-center gap-2 text-[13px] font-semibold text-white transition-colors hover:text-[#f56616]"
                         >
                             AMC & Support
                             <ArrowUpRight
