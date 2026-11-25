@@ -7,12 +7,11 @@ import { CookieBanner } from "@/components/cookies/cookie-banner";
 import { SiteChrome } from "@/components/layout/site-chrome";
 import type { Metadata, Viewport } from "next";
 import { siteConfig } from "@/lib/seo";
-import { OrganizationJsonLd } from "@/components/seo/organization-json-ld";
 
 import "./globals.css";
 import { SiteAnalytics } from "@/components/analytics/site-analytics";
 import { JsonLd } from "@/components/seo/json-ld";
-import { localBusinessSchema } from "@/lib/schema";
+import { siteGraphSchema } from "@/lib/schema";
 import { WhatsAppFab } from "@/components/layout/whatsapp-fab";
 
 const geistSans = Geist({
@@ -80,15 +79,6 @@ export const metadata: Metadata = {
       "max-video-preview": -1,
     },
   },
-    icons: {
-    icon: [
-      { url: "/icon.png", type: "image/png", sizes: "512x512" },
-      { url: "/icon-32.png", type: "image/png", sizes: "32x32" },
-      { url: "/icon-16.png", type: "image/png", sizes: "16x16" },
-    ],
-    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],
-    shortcut: "/icon-32.png",
-  },
 };
 
 export const viewport: Viewport = {
@@ -105,12 +95,11 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
       <body>
-        <OrganizationJsonLd />
+        <JsonLd data={siteGraphSchema()} />
         <SmoothScrollProvider>
           <SiteChrome>{children}</SiteChrome>
         </SmoothScrollProvider>
         <CookieBanner />
-              <JsonLd data={localBusinessSchema()} />
         <SiteAnalytics />
         <WhatsAppFab />
       </body>

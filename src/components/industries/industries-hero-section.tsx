@@ -98,12 +98,12 @@ export function IndustriesHeroSection() {
                     <div>
                         <div className="ind-hero-eyebrow flex items-center gap-3">
                             <span className="h-px w-8 bg-[#f56616]" />
-                            <span className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[#f56616]">
-                                Industries
-                            </span>
+                            <h1 className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[#f56616]">
+                                ELV &amp; Security Systems for Hospitals, Factories, Offices and Campuses
+                            </h1>
                         </div>
 
-                        <h1 className="mt-7">
+                        <p className="mt-7">
                             <span className="ind-hero-line block overflow-hidden">
                                 <span className="block text-[clamp(2.6rem,5.5vw,5.6rem)] font-medium leading-[0.92] tracking-[-0.06em]">
                                     Built for the
@@ -119,7 +119,7 @@ export function IndustriesHeroSection() {
                                     you operate in.
                                 </span>
                             </span>
-                        </h1>
+                        </p>
 
                         <p className="ind-hero-copy mt-7 max-w-[500px] text-base leading-7 text-black/55 sm:text-[17px] sm:leading-8">
                             ELV systems shaped by sector reality — hospitals, campuses,

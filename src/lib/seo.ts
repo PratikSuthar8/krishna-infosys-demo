@@ -23,9 +23,13 @@ export type PageSeo = {
   path: string;
   image?: string;
   noIndex?: boolean;
+  type?: "website" | "article";
+  publishedTime?: string;
+  modifiedTime?: string;
 };
 
 export function absoluteUrl(path: string) {
+  if (/^https?:\/\//i.test(path)) return path;
   const base = siteConfig.url.replace(/\/$/, "");
   const p = path.startsWith("/") ? path : `/${path}`;
   return `${base}${p}`;
@@ -49,7 +53,10 @@ export function buildMetadata(page: PageSeo) {
     description,
     alternates: { canonical: url },
     openGraph: {
-      type: "website" as const,
+      type: page.type ?? "website",
+      ...(page.type === "article"
+        ? { publishedTime: page.publishedTime, modifiedTime: page.modifiedTime }
+        : {}),
       locale: siteConfig.locale,
       url,
       siteName: siteConfig.name,

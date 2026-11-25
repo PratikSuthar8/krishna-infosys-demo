@@ -1,6 +1,3 @@
-"use client";
-
-import { useEffect, useState } from "react";
 import Link from "next/link";
 import { ArrowUpRight, Newspaper } from "lucide-react";
 
@@ -13,33 +10,11 @@ type Post = {
   readTime?: string;
 };
 
-export function BlogListSection() {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [loaded, setLoaded] = useState(false);
-
-  useEffect(() => {
-    fetch("/api/blog")
-      .then((r) => r.json())
-      .then((d) => {
-        if (d.ok && Array.isArray(d.posts)) setPosts(d.posts);
-      })
-      .catch(() => {})
-      .finally(() => setLoaded(true));
-  }, []);
-
+export function BlogListSection({ posts }: { posts: Post[] }) {
   return (
     <section className="bg-[#f3f1ec] pb-24 pt-10 sm:pb-28">
       <div className="mx-auto max-w-[1100px] px-5 sm:px-8 lg:px-10">
-        {!loaded ? (
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {[0, 1, 2].map((i) => (
-              <div
-                key={i}
-                className="h-48 animate-pulse rounded-2xl bg-black/[0.04]"
-              />
-            ))}
-          </div>
-        ) : posts.length === 0 ? (
+        {posts.length === 0 ? (
           <div className="flex flex-col items-center rounded-2xl border border-black/[0.06] bg-white px-6 py-20 text-center">
             <span className="flex h-12 w-12 items-center justify-center rounded-2xl border border-black/10 bg-[#faf9f7] text-[#f56616]">
               <Newspaper size={22} />

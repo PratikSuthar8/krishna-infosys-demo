@@ -54,6 +54,8 @@ export type DomainConfig = {
   path: string;
   navLabel: string;
   eyebrow: string;
+  /** Keyword H1 (service + city). The heroLines below are the styled slogan. */
+  seoH1: string;
   heroLines: [string, string];
   heroCopy: string;
   heroCta: string;
@@ -80,6 +82,7 @@ export const domains: Record<DomainId, DomainConfig> = {
     path: "/solutions/security-access",
     navLabel: "Security & Access",
     eyebrow: "Solutions · Security & Access",
+    seoH1: "CCTV & Access Control Systems in Ahmedabad",
     heroLines: ["Integrated protection", "for people, premises and assets."],
     heroCopy:
       "CCTV, access control, intrusion, barriers and video door phones designed as one defensive layer — monitored, documented and supportable after handover.",
@@ -246,6 +249,7 @@ export const domains: Record<DomainId, DomainConfig> = {
     path: "/solutions/communication",
     navLabel: "Communication",
     eyebrow: "Solutions · Communication",
+    seoH1: "EPABX, Intercom & PA Systems in Ahmedabad",
     heroLines: ["Connected communication", "across every environment."],
     heroCopy:
       "EPABX / IP PBX, intercom, public address, video conferencing and distribution links — designed for clear operations, not isolated handsets.",
@@ -395,6 +399,7 @@ export const domains: Record<DomainId, DomainConfig> = {
     path: "/solutions/audio-visual",
     navLabel: "Audio Visual",
     eyebrow: "Solutions · Audio Visual",
+    seoH1: "Audio Visual & Video Conferencing Systems in Ahmedabad",
     heroLines: ["Immersive AV systems", "engineered around the space."],
     heroCopy:
       "Home theatre, professional audio, digital signage and auditorium systems — image, sound and control designed for daily reliability, not one-time demos.",
@@ -545,6 +550,7 @@ export const domains: Record<DomainId, DomainConfig> = {
     path: "/solutions/networking-data",
     navLabel: "Networking & Data",
     eyebrow: "Solutions · Networking & Data",
+    seoH1: "Structured Cabling & Network Installation in Ahmedabad",
     heroLines: ["Reliable infrastructure", "for connected operations."],
     heroCopy:
       "Structured cabling, fibre, Wi-Fi, server rooms and data-centre pathways — the backbone under every ELV layer, sized for cameras, voice, AV and business traffic together.",
@@ -695,6 +701,7 @@ export const domains: Record<DomainId, DomainConfig> = {
     path: "/solutions/automation-safety",
     navLabel: "Automation & Safety",
     eyebrow: "Solutions · Automation & Safety",
+    seoH1: "Fire Alarm & Building Automation Systems in Ahmedabad",
     heroLines: ["Intelligent control", "with integrated life-safety."],
     heroCopy:
       "Home automation, building automation and fire alarm systems — comfort, efficiency and safety designed to work with the wider ELV stack, not against it.",

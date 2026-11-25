@@ -1,45 +1,25 @@
-export const dynamic = "force-dynamic";
-
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, ArrowUpRight } from "lucide-react";
-import { getCollection } from "@/lib/mongodb";
+import { getPublishedPost, getPublishedPosts } from "@/lib/content";
 import { buildMetadata } from "@/lib/seo";
 import { JsonLd } from "@/components/seo/json-ld";
-import { articleSchema } from "@/lib/schema";
+import { articleSchema, breadcrumbSchema } from "@/lib/schema";
 
-type Post = {
-  slug: string;
-  title: string;
-  excerpt?: string;
-  category?: string;
-  date?: string;
-  readTime?: string;
-  body?: string | string[];
-  published?: boolean;
-};
 
 type Props = { params: Promise<{ slug: string }> };
 
-async function getPost(slug: string): Promise<Post | null> {
-  try {
-    const col = await getCollection("blog_posts");
-    const post = await col.findOne({
-      slug,
-      $or: [
-        { published: true },
-        { published: { $exists: false } },
-        { published: null },
-      ],
-    });
-    if (!post) return null;
-    const { _id, ...rest } = post as Post & { _id: unknown };
-    return rest as Post;
-  } catch {
-    return null;
-  }
+// Pages are generated once, cached, and refreshed hourly (or immediately when
+// a post is saved in the admin console via revalidatePath).
+export const revalidate = 3600;
+
+export async function generateStaticParams() {
+  const posts = await getPublishedPosts();
+  return posts.map((p) => ({ slug: p.slug }));
 }
+
+const getPost = getPublishedPost;
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
@@ -49,6 +29,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: post.title,
     description: post.excerpt || post.title,
     path: `/blog/${post.slug}`,
+    image: post.image,
+    type: "article",
+    publishedTime: post.date,
+    modifiedTime: post.updatedAt,
   });
 }
 
@@ -80,7 +64,10 @@ export default async function BlogPostPage({ params }: Props) {
   if (!post) notFound();
 
   const paragraphs = toParagraphs(post.body);
-  const html = isHtmlBody(post.body) ? post.body : null;
+  // The page title is the only <h1>; demote any h1 typed in the editor body.
+  const html = isHtmlBody(post.body)
+    ? post.body.replace(/<h1(\s|>)/gi, "<h2$1").replace(/<\/h1>/gi, "</h2>")
+    : null;
 
   return (
     <>
@@ -89,8 +76,18 @@ export default async function BlogPostPage({ params }: Props) {
           title: post.title,
           description: post.excerpt || post.title,
           date: post.date,
+          updated: post.updatedAt,
+          author: post.author,
+          image: post.image,
           slug: post.slug,
         })}
+      />
+      <JsonLd
+        data={breadcrumbSchema([
+          { name: "Home", path: "/" },
+          { name: "Blog", path: "/blog" },
+          { name: post.title, path: `/blog/${post.slug}` },
+        ])}
       />
       <main className="bg-[#f3f1ec] pt-[88px] text-[#171717]">
       <article className="mx-auto max-w-[760px] px-5 py-16 sm:px-8 lg:py-24">
@@ -168,81 +165,6 @@ export default async function BlogPostPage({ params }: Props) {
         </div>
       </article>
 
-      {/* Public article typography for TipTap HTML */}
-      <style
-        dangerouslySetInnerHTML={{
-          __html: `
-.blog-article-body h1 {
-  font-size: clamp(1.5rem, 3vw, 2rem);
-  font-weight: 700;
-  line-height: 1.2;
-  letter-spacing: -0.03em;
-  color: #171717;
-  margin: 1.5rem 0 0.75rem;
-}
-.blog-article-body h2 {
-  font-size: clamp(1.25rem, 2.5vw, 1.5rem);
-  font-weight: 650;
-  line-height: 1.25;
-  letter-spacing: -0.025em;
-  color: #171717;
-  margin: 1.35rem 0 0.6rem;
-}
-.blog-article-body h3 {
-  font-size: 1.15rem;
-  font-weight: 600;
-  line-height: 1.3;
-  color: #171717;
-  margin: 1.15rem 0 0.5rem;
-}
-.blog-article-body p {
-  margin: 0 0 1rem;
-  line-height: 1.75;
-}
-.blog-article-body ul {
-  list-style: disc;
-  padding-left: 1.35rem;
-  margin: 0 0 1rem;
-}
-.blog-article-body ol {
-  list-style: decimal;
-  padding-left: 1.35rem;
-  margin: 0 0 1rem;
-}
-.blog-article-body li {
-  margin: 0.35rem 0;
-  line-height: 1.7;
-}
-.blog-article-body blockquote {
-  border-left: 3px solid #f56616;
-  padding-left: 1rem;
-  color: #555;
-  margin: 1rem 0;
-}
-.blog-article-body a {
-  color: #f56616;
-  text-decoration: underline;
-}
-.blog-article-body table {
-  width: 100%;
-  border-collapse: collapse;
-  margin: 1rem 0;
-}
-.blog-article-body th,
-.blog-article-body td {
-  border: 1px solid rgba(0,0,0,0.12);
-  padding: 0.5rem 0.75rem;
-  text-align: left;
-}
-.blog-article-body th {
-  background: rgba(0,0,0,0.04);
-  font-weight: 600;
-}
-.blog-article-body strong { font-weight: 700; color: #171717; }
-.blog-article-body em { font-style: italic; }
-`,
-        }}
-      />
     </main>
     </>
   );

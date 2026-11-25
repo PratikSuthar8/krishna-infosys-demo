@@ -3,6 +3,8 @@ import { ContactFormSection } from "@/components/contact/contact-form-section";
 import { ContactPresenceSection } from "@/components/contact/contact-presence-section";
 import type { Metadata } from "next";
 import { buildMetadata } from "@/lib/seo";
+import { JsonLd } from "@/components/seo/json-ld";
+import { breadcrumbSchema } from "@/lib/schema";
 
 export const metadata: Metadata = buildMetadata({
     title: "Contact Krishna Infosys | ELV Quote in Ahmedabad",
@@ -13,6 +15,7 @@ export const metadata: Metadata = buildMetadata({
 export default function ContactPage() {
     return (
         <main>
+            <JsonLd data={breadcrumbSchema([{ name: "Home", path: "/" }, { name: "Contact", path: "/contact" }])} />
             <ContactHeroSection />
             <ContactFormSection />
             <ContactPresenceSection />

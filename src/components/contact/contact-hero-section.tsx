@@ -51,12 +51,12 @@ export function ContactHeroSection() {
                 <div className="max-w-[860px]">
                     <div className="con-hero-eyebrow flex items-center gap-3">
                         <span className="h-px w-8 bg-[#f56616]" />
-                        <span className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[#f56616]">
-                            Contact
-                        </span>
+                        <h1 className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[#f56616]">
+                            Contact Krishna Infosys — ELV Consultation in Navrangpura, Ahmedabad
+                        </h1>
                     </div>
 
-                    <h1 className="mt-7">
+                    <p className="mt-7">
                         <span className="con-hero-line block overflow-hidden">
                             <span className="block text-[clamp(2.6rem,5.6vw,5.8rem)] font-medium leading-[0.92] tracking-[-0.06em]">
                                 Tell us about
@@ -67,7 +67,7 @@ export function ContactHeroSection() {
                                 the environment.
                             </span>
                         </span>
-                    </h1>
+                    </p>
 
                     <p className="con-hero-copy mt-8 max-w-[520px] text-base leading-7 text-black/55 sm:text-lg sm:leading-8">
                         Project scope, AMC coverage or a site walkthrough — share the

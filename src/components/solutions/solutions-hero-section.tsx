@@ -118,12 +118,12 @@ export function SolutionsHeroSection() {
                     <div>
                         <div className="sol-hero-eyebrow flex items-center gap-3">
                             <span className="h-px w-8 bg-[#f56616]" />
-                            <span className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[#f56616]">
-                                Solutions
-                            </span>
+                            <h1 className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[#f56616]">
+                                ELV &amp; Security Solutions in Ahmedabad
+                            </h1>
                         </div>
 
-                        <h1 className="mt-7">
+                        <p className="mt-7">
                             <span className="sol-hero-line block overflow-hidden">
                                 <span className="block text-[clamp(2.6rem,5.5vw,5.6rem)] font-medium leading-[0.92] tracking-[-0.06em]">
                                     One ELV stack.
@@ -134,7 +134,7 @@ export function SolutionsHeroSection() {
                                     Five engineered domains.
                                 </span>
                             </span>
-                        </h1>
+                        </p>
 
                         <p className="sol-hero-copy mt-7 max-w-[500px] text-base leading-7 text-black/55 sm:text-[17px] sm:leading-8">
                             Security, communication, AV, networking and automation — designed

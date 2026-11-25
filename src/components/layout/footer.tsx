@@ -55,6 +55,7 @@ export function Footer() {
                 alt="Krishna Infosys"
                 width={1832}
                 height={848}
+                sizes="128px"
                 className="h-auto w-[128px]"
               />
             </Link>

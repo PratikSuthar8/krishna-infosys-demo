@@ -4,92 +4,189 @@ const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL ||
   "https://www.krishnainfosys.com";
 
-export function localBusinessSchema() {
+/**
+ * One linked graph for the whole site: Organization + LocalBusiness + WebSite.
+ * Rendered once in app/layout.tsx. Other schemas reference these by @id.
+ */
+export function siteGraphSchema() {
   const lines = contact.address.operational.lines;
   const street = lines.slice(0, -1).join(", ");
-  const phone = contact.phone.raw;
-  const wa = (contact as { whatsapp?: { raw?: string } }).whatsapp?.raw;
+  const orgId = `${siteUrl}/#organization`;
+  const businessId = `${siteUrl}/#business`;
+  const sameAs = [contact.social.instagram, contact.maps.href].filter(Boolean);
 
   return {
     "@context": "https://schema.org",
-    "@type": "LocalBusiness",
-    "@id": `${siteUrl}/#business`,
-    name: "Krishna Infosys",
-    description:
-      "ELV turnkey solutions — CCTV, access control, fire alarm, EPABX, networking and automation in Ahmedabad, Gujarat.",
-    url: siteUrl,
-    telephone: phone,
-    email: contact.email.general,
-    image: `${siteUrl}/brand/logo.png`,
-    address: {
-      "@type": "PostalAddress",
-      streetAddress: street,
-      addressLocality: "Ahmedabad",
-      addressRegion: "Gujarat",
-      postalCode: "380009",
-      addressCountry: "IN",
-    },
-    geo: {
-      "@type": "GeoCoordinates",
-      // approximate Navrangpura; refine in GBP if needed
-      latitude: 23.033863,
-      longitude: 72.558563,
-    },
-    openingHoursSpecification: [
+    "@graph": [
       {
-        "@type": "OpeningHoursSpecification",
-        dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
-        opens: "10:30",
-        closes: "18:30",
+        "@type": "Organization",
+        "@id": orgId,
+        name: "Krishna Infosys",
+        url: siteUrl,
+        logo: {
+          "@type": "ImageObject",
+          url: `${siteUrl}/icon.png`,
+          width: 512,
+          height: 512,
+        },
+        description:
+          "ISO 9001:2015 ELV systems integrator in Ahmedabad: CCTV, fire alarm, access control, EPABX, PA, AV, networking and automation — design, installation and AMC since 2001.",
+        foundingDate: "2001",
+        email: contact.email.general,
+        telephone: contact.phone.raw,
+        address: {
+          "@type": "PostalAddress",
+          streetAddress: street,
+          addressLocality: "Ahmedabad",
+          addressRegion: "Gujarat",
+          postalCode: "380009",
+          addressCountry: "IN",
+        },
+        contactPoint: [
+          {
+            "@type": "ContactPoint",
+            contactType: "sales",
+            telephone: contact.phone.raw,
+            email: contact.email.sales,
+            areaServed: "IN",
+            availableLanguage: ["en", "gu", "hi"],
+          },
+          {
+            "@type": "ContactPoint",
+            contactType: "customer support",
+            telephone: `+${contact.whatsapp.raw}`,
+            email: contact.email.support,
+            areaServed: "IN",
+            availableLanguage: ["en", "gu", "hi"],
+          },
+        ],
+        sameAs,
       },
       {
-        "@type": "OpeningHoursSpecification",
-        dayOfWeek: "Saturday",
-        opens: "10:30",
-        closes: "17:30",
+        "@type": "LocalBusiness",
+        "@id": businessId,
+        name: "Krishna Infosys",
+        parentOrganization: { "@id": orgId },
+        description:
+          "CCTV installation, fire alarm systems, access control, EPABX/intercom, PA systems, structured cabling and ELV AMC in Ahmedabad, Gujarat.",
+        url: siteUrl,
+        telephone: contact.phone.raw,
+        email: contact.email.general,
+        image: `${siteUrl}/og-default.png`,
+        logo: `${siteUrl}/icon.png`,
+        address: {
+          "@type": "PostalAddress",
+          streetAddress: street,
+          addressLocality: "Ahmedabad",
+          addressRegion: "Gujarat",
+          postalCode: "380009",
+          addressCountry: "IN",
+        },
+        geo: {
+          "@type": "GeoCoordinates",
+          // approximate Navrangpura; refine to the exact pin from Google Business Profile
+          latitude: 23.033863,
+          longitude: 72.558563,
+        },
+        hasMap: contact.maps.href,
+        openingHoursSpecification: [
+          {
+            "@type": "OpeningHoursSpecification",
+            dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+            opens: "10:30",
+            closes: "18:30",
+          },
+          {
+            "@type": "OpeningHoursSpecification",
+            dayOfWeek: "Saturday",
+            opens: "10:30",
+            closes: "17:30",
+          },
+        ],
+        areaServed: [
+          { "@type": "City", name: "Ahmedabad" },
+          { "@type": "City", name: "Gandhinagar" },
+          { "@type": "State", name: "Gujarat" },
+          { "@type": "Country", name: "India" },
+        ],
+        knowsAbout: [
+          "CCTV installation",
+          "IP surveillance",
+          "Fire alarm systems",
+          "Access control systems",
+          "EPABX and intercom",
+          "Public address systems",
+          "Video conferencing",
+          "Structured cabling",
+          "Boom barriers and gate automation",
+          "Home automation",
+          "ELV annual maintenance contracts",
+        ],
+        priceRange: "₹₹",
+        sameAs,
+      },
+      {
+        "@type": "WebSite",
+        "@id": `${siteUrl}/#website`,
+        url: siteUrl,
+        name: "Krishna Infosys",
+        alternateName: ["Krishna Infosys Ahmedabad", "krishnainfosys.com"],
+        inLanguage: "en-IN",
+        publisher: { "@id": orgId },
       },
     ],
-    sameAs: [
-      (contact as { maps?: { href?: string } }).maps?.href,
-      wa ? `https://wa.me/${wa}` : undefined,
-    ].filter(Boolean),
-    areaServed: {
-      "@type": "City",
-      name: "Ahmedabad",
-    },
-    priceRange: "$$",
   };
 }
 
 export function jobPostingSchema(job: {
   title: string;
   description: string;
+  /** Full description as simple HTML; preferred over `description` */
+  html?: string;
   datePosted?: string;
   validThrough?: string;
   employmentType?: string;
+  location?: string;
+  experience?: string;
   slug: string;
 }) {
   return {
     "@context": "https://schema.org",
     "@type": "JobPosting",
     title: job.title,
-    description: job.description,
-    datePosted: job.datePosted || new Date().toISOString().slice(0, 10),
+    description: job.html || `<p>${job.description}</p>`,
+    // Real posting date only. Never default to "today": Google treats
+    // constantly-new dates as a spam signal for job listings.
+    ...(job.datePosted ? { datePosted: job.datePosted } : {}),
+    ...(job.validThrough ? { validThrough: job.validThrough } : {}),
     hiringOrganization: {
       "@type": "Organization",
+      "@id": `${siteUrl}/#organization`,
       name: "Krishna Infosys",
       sameAs: siteUrl,
+      logo: `${siteUrl}/icon.png`,
     },
     jobLocation: {
       "@type": "Place",
       address: {
         "@type": "PostalAddress",
+        streetAddress: contact.address.operational.lines.slice(0, -1).join(", "),
         addressLocality: "Ahmedabad",
         addressRegion: "Gujarat",
+        postalCode: "380009",
         addressCountry: "IN",
       },
     },
     employmentType: job.employmentType || "FULL_TIME",
+    ...(job.experience
+      ? {
+          experienceRequirements: {
+            "@type": "OccupationalExperienceRequirements",
+            description: job.experience,
+          },
+        }
+      : {}),
+    directApply: true,
     url: `${siteUrl}/careers/${job.slug}`,
   };
 }
@@ -98,24 +195,30 @@ export function articleSchema(post: {
   title: string;
   description: string;
   date?: string;
+  updated?: string;
+  author?: string;
+  image?: string;
   slug: string;
 }) {
+  const image = post.image
+    ? post.image.startsWith("http")
+      ? post.image
+      : `${siteUrl}${post.image.startsWith("/") ? "" : "/"}${post.image}`
+    : `${siteUrl}/og-default.png`;
   return {
     "@context": "https://schema.org",
-    "@type": "Article",
+    "@type": "BlogPosting",
     headline: post.title,
     description: post.description,
+    image: [image],
     datePublished: post.date,
-    author: { "@type": "Organization", name: "Krishna Infosys" },
-    publisher: {
-      "@type": "Organization",
-      name: "Krishna Infosys",
-      logo: {
-        "@type": "ImageObject",
-        url: `${siteUrl}/brand/logo.png`,
-      },
-    },
+    dateModified: post.updated || post.date,
+    author: post.author
+      ? { "@type": "Person", name: post.author, worksFor: { "@id": `${siteUrl}/#organization` } }
+      : { "@type": "Organization", "@id": `${siteUrl}/#organization`, name: "Krishna Infosys" },
+    publisher: { "@id": `${siteUrl}/#organization` },
     mainEntityOfPage: `${siteUrl}/blog/${post.slug}`,
+    inLanguage: "en-IN",
   };
 }
 

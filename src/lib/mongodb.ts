@@ -10,11 +10,13 @@ function getClientPromise(): Promise<MongoClient> {
   if (!uri) {
     throw new Error("Missing MONGODB_URI in environment");
   }
-  if (process.env.NODE_ENV === "development") {
-    global._mongoClientPromise ??= new MongoClient(uri).connect();
-    return global._mongoClientPromise;
-  }
-  return new MongoClient(uri).connect();
+  // Reuse one client per server instance (dev and production). Creating a new
+  // MongoClient per call opened a fresh connection on every request.
+  global._mongoClientPromise ??= new MongoClient(uri).connect().catch((err) => {
+    global._mongoClientPromise = undefined;
+    throw err;
+  });
+  return global._mongoClientPromise;
 }
 
 /** Lazy: does not read env until the promise is used */

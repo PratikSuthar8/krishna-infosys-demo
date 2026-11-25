@@ -65,12 +65,12 @@ export function AmcHeroSection() {
                 <div className="max-w-[900px]">
                     <div className="amc-hero-eyebrow flex items-center gap-3">
                         <span className="h-px w-8 bg-[#f56616]" />
-                        <span className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[#f56616]">
-                            AMC & Support
-                        </span>
+                        <h1 className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[#f56616]">
+                            CCTV, Fire Alarm &amp; ELV AMC Services in Ahmedabad
+                        </h1>
                     </div>
 
-                    <h1 className="mt-7">
+                    <p className="mt-7">
                         <span className="amc-hero-line block overflow-hidden">
                             <span className="block text-[clamp(2.6rem,5.6vw,5.8rem)] font-medium leading-[0.92] tracking-[-0.06em]">
                                 Systems stay
@@ -86,7 +86,7 @@ export function AmcHeroSection() {
                                 commissioning.
                             </span>
                         </span>
-                    </h1>
+                    </p>
 
                     <p className="amc-hero-copy mt-8 max-w-[520px] text-base leading-7 text-black/55 sm:text-lg sm:leading-8">
                         Structured annual maintenance, corrective response and

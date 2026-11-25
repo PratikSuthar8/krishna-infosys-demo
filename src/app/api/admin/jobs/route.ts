@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { ObjectId } from "mongodb";
 import { getCollection } from "@/lib/mongodb";
+import { refreshPublicContent } from "@/lib/revalidate-content";
 import {requireAdmin, requirePermission} from "@/lib/admin-auth";
 
 export const runtime = "nodejs";
@@ -74,6 +75,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ ok: false, error: "slug already exists" }, { status: 409 });
     }
     const result = await col.insertOne(doc);
+    refreshPublicContent("jobs");
     return NextResponse.json({ ok: true, id: String(result.insertedId), slug });
   } catch (error) {
     return errResponse(error);
@@ -106,6 +108,7 @@ export async function PUT(request: Request) {
 
     const col = await getCollection("jobs");
     await col.updateOne({ _id: new ObjectId(id) }, { $set });
+    refreshPublicContent("jobs");
     return NextResponse.json({ ok: true });
   } catch (error) {
     return errResponse(error);
@@ -126,6 +129,7 @@ export async function DELETE(request: Request) {
     }
     const col = await getCollection("jobs");
     await col.deleteOne({ _id: new ObjectId(id) });
+    refreshPublicContent("jobs");
     return NextResponse.json({ ok: true });
   } catch (error) {
     return errResponse(error);

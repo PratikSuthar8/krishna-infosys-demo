@@ -1,80 +1,60 @@
 import type { MetadataRoute } from "next";
 import { siteConfig } from "@/lib/seo";
-import { getCollection } from "@/lib/mongodb";
+import { getPublishedJobs, getPublishedPosts } from "@/lib/content";
 
-export const dynamic = "force-dynamic";
+// Cached and refreshed hourly (and immediately after admin blog/job edits).
+export const revalidate = 3600;
 
-const staticRoutes = [
-  "",
-  "/about",
-  "/solutions",
-  "/solutions/security-access",
-  "/solutions/communication",
-  "/solutions/audio-visual",
-  "/solutions/networking-data",
-  "/solutions/automation-safety",
-  "/industries",
-  "/projects",
-  "/amc-support",
-  "/contact",
-  "/careers",
-  "/blog",
-  "/terms",
-  "/privacy",
-  "/cookies",
+/**
+ * Real "last content change" dates. Google ignores <lastmod> when it is always
+ * "now", so update a date here only when that page's content actually changes.
+ */
+const staticRoutes: { path: string; lastModified: string }[] = [
+  { path: "", lastModified: "2026-11-25" },
+  { path: "/about", lastModified: "2026-11-25" },
+  { path: "/solutions", lastModified: "2026-11-25" },
+  { path: "/solutions/security-access", lastModified: "2026-11-25" },
+  { path: "/solutions/communication", lastModified: "2026-11-25" },
+  { path: "/solutions/audio-visual", lastModified: "2026-11-25" },
+  { path: "/solutions/networking-data", lastModified: "2026-11-25" },
+  { path: "/solutions/automation-safety", lastModified: "2026-11-25" },
+  { path: "/industries", lastModified: "2026-11-25" },
+  { path: "/projects", lastModified: "2026-11-05" },
+  { path: "/amc-support", lastModified: "2026-11-05" },
+  { path: "/contact", lastModified: "2026-11-05" },
+  { path: "/careers", lastModified: "2026-11-05" },
+  { path: "/blog", lastModified: "2026-11-25" },
+  { path: "/terms", lastModified: "2026-08-06" },
+  { path: "/privacy", lastModified: "2026-08-06" },
+  { path: "/cookies", lastModified: "2026-11-05" },
 ];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = siteConfig.url.replace(/\/$/, "");
-  const now = new Date();
 
-  const entries: MetadataRoute.Sitemap = staticRoutes.map((path) => ({
-    url: `${base}${path || "/"}`,
-    lastModified: now,
-    changeFrequency: path === "" ? "weekly" : "monthly",
-    priority: path === "" ? 1 : path.split("/").length <= 2 ? 0.8 : 0.6,
+  const entries: MetadataRoute.Sitemap = staticRoutes.map((r) => ({
+    url: `${base}${r.path || "/"}`,
+    lastModified: new Date(r.lastModified),
   }));
 
-  try {
-    const jobs = await getCollection("jobs");
-    const jobDocs = await jobs
-      .find({ $or: [{ published: true }, { published: { $exists: false } }] })
-      .project({ slug: 1, updatedAt: 1 })
-      .toArray();
-    for (const j of jobDocs) {
-      if (!j.slug) continue;
-      entries.push({
-        url: `${base}/careers/${j.slug}`,
-        lastModified: j.updatedAt ? new Date(j.updatedAt) : now,
-        changeFrequency: "weekly",
-        priority: 0.5,
-      });
-    }
-  } catch {
-    // DB unavailable — return static routes only
+  const [jobs, posts] = await Promise.all([getPublishedJobs(), getPublishedPosts()]);
+
+  for (const j of jobs) {
+    if (!j.slug) continue;
+    const lm = j.updatedAt || j.datePosted;
+    entries.push({
+      url: `${base}/careers/${j.slug}`,
+      ...(lm ? { lastModified: new Date(lm) } : {}),
+    });
   }
 
-  try {
-    const posts = await getCollection("blog_posts");
-    const postDocs = await posts
-      .find({})
-      .project({ slug: 1, date: 1, updatedAt: 1 })
-      .toArray();
-    for (const p of postDocs) {
-      if (!p.slug) continue;
-      entries.push({
-        url: `${base}/blog/${p.slug}`,
-        lastModified: p.updatedAt
-          ? new Date(p.updatedAt)
-          : p.date
-            ? new Date(p.date)
-            : now,
-        changeFrequency: "weekly",
-        priority: 0.5,
-      });
-    }
-  } catch {
-    // ignore
+  for (const p of posts) {
+    if (!p.slug) continue;
+    const lm = p.updatedAt || p.date;
+    entries.push({
+      url: `${base}/blog/${p.slug}`,
+      ...(lm ? { lastModified: new Date(lm) } : {}),
+    });
   }
 
   return entries;

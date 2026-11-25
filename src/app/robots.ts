@@ -8,8 +8,9 @@ export default function robots(): MetadataRoute.Robots {
 		rules: {
 			userAgent: "*",
 			allow: "/",
+			// Admin console and internal APIs have no search value.
+			disallow: ["/admin", "/api/"],
 		},
 		sitemap: `${base}/sitemap.xml`,
-		host: base,
 	};
 }

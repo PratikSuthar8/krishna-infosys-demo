@@ -289,7 +289,7 @@ export function AboutStorySection() {
                             </span>
                         </div>
                         <div className="mt-8 font-mono text-[11px] tracking-[0.12em] text-white/30">
-                            2001 — PRESENT · 24+ YEARS
+                            2001 — PRESENT · 25+ YEARS
                         </div>
                     </div>
 
@@ -543,7 +543,7 @@ export function AboutStorySection() {
                     {[
                         { value: 2200, display: "2,200", suffix: "+", label: "Projects delivered" },
                         { value: 950, display: "950", suffix: "+", label: "Happy clients" },
-                        { value: 24, display: "24", suffix: "+", label: "Years experience" },
+                        { value: 25, display: "25", suffix: "+", label: "Years experience" },
                         { value: 1.5, display: "1.5", decimals: 1, prefix: "<", suffix: "%", label: "Complaint ratio" },
                     ].map((item) => (
                         <div key={item.label} className="border-l border-white/10 pl-5">

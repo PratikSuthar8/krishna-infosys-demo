@@ -11,6 +11,9 @@ export const contact = {
     href: "https://wa.me/919979485888",
     raw: "919979485888",
   },
+  social: {
+    instagram: "https://www.instagram.com/krishnainfosys/",
+  },
   maps: {
     href: "https://goo.gl/maps/a8DveHjavC22",
     label: "Open in Google Maps",

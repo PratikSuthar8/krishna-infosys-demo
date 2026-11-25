@@ -1,19 +1,25 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import Link from "next/link";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ArrowUpRight, Briefcase, Mail } from "lucide-react";
 import { contact } from "@/lib/contact";
-import type { Job } from "@/lib/jobs";
+type Opening = {
+  slug: string;
+  role: string;
+  department?: string;
+  summary?: string;
+  location?: string;
+  type?: string;
+  experience?: string;
+};
 
 gsap.registerPlugin(ScrollTrigger);
 
-export function CareersOpeningsSection() {
+export function CareersOpeningsSection({ openings }: { openings: Opening[] }) {
   const sectionRef = useRef<HTMLElement>(null);
-  const [openings, setOpenings] = useState<Job[]>([]);
-  const [loaded, setLoaded] = useState(false);
 
   // contact.email is { general, sales, support, hr, ceo }
   const hrMail =
@@ -23,30 +29,6 @@ export function CareersOpeningsSection() {
 
 
   useEffect(() => {
-    let cancelled = false;
-    fetch("/api/jobs")
-      .then((r) => r.json())
-      .then((d) => {
-        if (cancelled) return;
-        if (d.ok && Array.isArray(d.jobs)) {
-          setOpenings(d.jobs);
-        } else {
-          setOpenings([]);
-        }
-      })
-      .catch(() => {
-        if (!cancelled) setOpenings([]);
-      })
-      .finally(() => {
-        if (!cancelled) setLoaded(true);
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
-  useEffect(() => {
-    if (!loaded) return;
     const section = sectionRef.current;
     if (!section) return;
     const ctx = gsap.context(() => {
@@ -60,7 +42,7 @@ export function CareersOpeningsSection() {
       });
     }, section);
     return () => ctx.revert();
-  }, [loaded, openings.length]);
+  }, [openings.length]);
 
   return (
     <section
@@ -95,12 +77,7 @@ export function CareersOpeningsSection() {
           </div>
         </div>
 
-        {!loaded ? (
-          <div className="open-anim py-20 text-center">
-            <div className="mx-auto h-8 w-8 animate-pulse rounded-full bg-white/10" />
-            <p className="mt-4 text-sm text-white/35">Loading roles…</p>
-          </div>
-        ) : openings.length === 0 ? (
+        {openings.length === 0 ? (
           <div className="open-anim mx-auto max-w-lg py-16 text-center sm:py-20">
             <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.04]">
               <Briefcase size={26} strokeWidth={1.5} className="text-[#f56616]" />

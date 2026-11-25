@@ -72,7 +72,7 @@ const FinalCtaSection = dynamic(
 export const metadata: Metadata = buildMetadata({
   title: "CCTV, Fire Alarm & ELV Systems in Ahmedabad | Krishna Infosys",
   description:
-    "CCTV installation, fire alarm, access control, EPABX and ELV systems in Ahmedabad. Design, execution and AMC support from Krishna Infosys — 25+ years, pan-India delivery.",
+    "CCTV installation, fire alarm, access control, EPABX and ELV systems in Ahmedabad. Design, installation and AMC from Krishna Infosys since 2001.",
   path: "/",
 });
 

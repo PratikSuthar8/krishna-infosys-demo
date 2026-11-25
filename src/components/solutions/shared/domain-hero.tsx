@@ -37,11 +37,11 @@ export function DomainHero({ domain }: { domain: DomainConfig }) {
         <div className="max-w-[900px]">
           <div className="dom-hero-eyebrow flex items-center gap-3">
             <span className="h-px w-8 bg-[#f56616]" />
-            <span className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[#f56616]">
-              {domain.eyebrow}
-            </span>
+            <h1 className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[#f56616]">
+              {domain.seoH1}
+            </h1>
           </div>
-          <h1 className="mt-7">
+          <p className="mt-7">
             <span className="dom-hero-line block overflow-hidden">
               <span className="block text-[clamp(2.5rem,5.4vw,5.4rem)] font-medium leading-[0.92] tracking-[-0.06em]">
                 {domain.heroLines[0]}
@@ -52,7 +52,7 @@ export function DomainHero({ domain }: { domain: DomainConfig }) {
                 {domain.heroLines[1]}
               </span>
             </span>
-          </h1>
+          </p>
           <p className="dom-hero-copy mt-8 max-w-[540px] text-base leading-7 text-black/55 sm:text-lg sm:leading-8">
             {domain.heroCopy}
           </p>

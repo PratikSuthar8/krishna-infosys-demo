@@ -190,6 +190,7 @@ export function Navbar() {
                 alt="Krishna Infosys"
                 width={1832}
                 height={848}
+                sizes="140px"
                 priority
                 className={`h-auto transition-all duration-500 ${
                   scrolled
@@ -516,6 +517,7 @@ export function Navbar() {
                     alt="Krishna Infosys"
                     width={1832}
                     height={848}
+                    sizes="124px"
                     className="h-auto w-[112px] sm:w-[124px]"
                   />
                 </Link>

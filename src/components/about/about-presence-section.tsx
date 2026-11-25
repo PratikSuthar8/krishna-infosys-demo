@@ -21,7 +21,7 @@ import {
 gsap.registerPlugin(ScrollTrigger);
 
 const metrics = [
-    { value: 24, display: "24", suffix: "+", label: "Years of excellence", note: "Since 2001" },
+    { value: 25, display: "25", suffix: "+", label: "Years of excellence", note: "Since 2001" },
     { value: 950, display: "950", suffix: "+", label: "Satisfied clients", note: "Across verticals" },
     { value: 2200, display: "2,200", suffix: "+", label: "Projects delivered", note: "Pan-India" },
     { value: 1.5, display: "1.5", decimals: 1, prefix: "<", suffix: "%", label: "Complaint ratio", note: "Service discipline" },

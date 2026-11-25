@@ -133,12 +133,12 @@ export function AboutHeroSection() {
                     <div>
                         <div className="about-hero-eyebrow flex items-center gap-3">
                             <span className="h-px w-8 bg-[#f56616]" />
-                            <span className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[#f56616]">
-                                About Krishna Infosys
-                            </span>
+                            <h1 className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[#f56616]">
+                                About Krishna Infosys — ELV Systems Company in Ahmedabad
+                            </h1>
                         </div>
 
-                        <h1 className="mt-7 max-w-[920px]">
+                        <p className="mt-7 max-w-[920px]">
                             <span className="about-hero-line block overflow-hidden">
                                 <span className="block text-[clamp(2.8rem,6.2vw,6.4rem)] font-medium leading-[0.92] tracking-[-0.06em]">
                                     Engineering trust
@@ -149,7 +149,7 @@ export function AboutHeroSection() {
                                     since 2001.
                                 </span>
                             </span>
-                        </h1>
+                        </p>
 
                         <p className="about-hero-copy mt-8 max-w-[560px] text-base leading-7 text-black/55 sm:text-lg sm:leading-8">
                             A leading ELV turnkey project consulting company based in
@@ -196,7 +196,7 @@ export function AboutHeroSection() {
                         {[
                             {
                                 label: "Experience",
-                                value: "24+",
+                                value: "25+",
                                 note: "Years",
                                 icon: Award,
                             },
@@ -208,7 +208,7 @@ export function AboutHeroSection() {
                             },
                             {
                                 label: "Projects",
-                                value: "2,100+",
+                                value: "2,200+",
                                 note: "Delivered",
                                 icon: null,
                             },

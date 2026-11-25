@@ -8,7 +8,7 @@ import { JsonLd } from "@/components/seo/json-ld";
 import { breadcrumbSchema } from "@/lib/schema";
 
 export const metadata: Metadata = buildMetadata({
-  title: "ELV Solutions in Ahmedabad | Security, AV, Networking",
+  title: "ELV & Security Solutions in Ahmedabad",
   description:
     "Integrated ELV solutions in Ahmedabad: CCTV, access control, fire alarm, EPABX, audio-visual, networking and building automation — design to AMC.",
   path: "/solutions",

@@ -230,29 +230,32 @@ export function HeroSection() {
           <div className="hero-eyebrow mb-8 flex items-center gap-3">
             <span className="h-px w-8 bg-[#f56616]" />
 
-            <span className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#f56616] sm:text-xs">
-              Design · Consult · Execute
-            </span>
+            {/* SEO: the page's single H1 names the services and the city.
+                The large slogan below is a styled paragraph. */}
+            <h1 className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#f56616] sm:text-xs">
+              CCTV, Fire Alarm &amp; ELV Systems in Ahmedabad
+            </h1>
           </div>
 
-          <h1 className="max-w-[820px] text-[clamp(3.3rem,5.9vw,6.6rem)] font-semibold leading-[0.88] tracking-[-0.065em] text-[#171717]">
+          <p className="max-w-[820px] text-[clamp(3.3rem,5.9vw,6.6rem)] font-semibold leading-[0.88] tracking-[-0.065em] text-[#171717]">
             <span className="hero-line block">
-              Infrastructure
+              Infrastructure{" "}
             </span>
 
             <span className="hero-line block">
-              that thinks
+              that thinks{" "}
             </span>
 
             <span className="hero-line block text-[#f56616]">
               ahead.
             </span>
-          </h1>
+          </p>
 
           <p className="hero-copy mt-8 max-w-[660px] text-base leading-7 text-[#626262] sm:text-lg sm:leading-8">
-            Integrated ELV solutions engineered around your environment —
-            bringing security, communication, automation and connectivity
-            together as one intelligent ecosystem.
+            Krishna Infosys designs, installs and maintains CCTV surveillance,
+            fire alarm, access control, EPABX and networking systems for
+            businesses in Ahmedabad and across India — 2,200+ projects since
+            2001, under one ISO 9001:2015 team.
           </p>
 
           <div className="hero-actions mt-8 flex flex-wrap items-center gap-3">

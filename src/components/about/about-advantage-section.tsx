@@ -59,7 +59,7 @@ const advantages = [
         code: "P",
         title: "Proven Track Record",
         description:
-            "2,100+ projects delivered with a service complaint ratio under 1.5% — discipline measured after handover.",
+            "2,200+ projects delivered with a service complaint ratio under 1.5% — discipline measured after handover.",
         icon: ShieldCheck,
         span: "featured",
         stats: [
