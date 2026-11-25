@@ -53,7 +53,7 @@ export function AmcFaqSection() {
         <div className="mt-10 flex flex-wrap items-center gap-3">
           <Link
             href="/contact"
-            className="inline-flex h-12 items-center justify-center rounded-full bg-[#171717] px-6 text-[13px] font-semibold text-white transition-colors hover:bg-[#f56616]"
+            className="inline-flex h-12 items-center justify-center rounded-full bg-[#171717] px-6 text-[13px] font-semibold text-white! transition-colors hover:bg-[#f56616]"
           >
             Request an AMC discussion
           </Link>
