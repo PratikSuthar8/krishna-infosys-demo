@@ -2,15 +2,16 @@ import type { MetadataRoute } from "next";
 import { siteConfig } from "@/lib/seo";
 
 export default function robots(): MetadataRoute.Robots {
-	const base = siteConfig.url.replace(/\/$/, "");
+  const base = siteConfig.url.replace(/\/$/, "");
 
-	return {
-		rules: {
-			userAgent: "*",
-			allow: "/",
-			// Admin console and internal APIs have no search value.
-			disallow: ["/admin", "/api/"],
-		},
-		sitemap: `${base}/sitemap.xml`,
-	};
+  return {
+    rules: [
+      {
+        userAgent: "*",
+        allow: "/",
+        disallow: ["/admin", "/api/"],
+      },
+    ],
+    sitemap: `${base}/sitemap.xml`,
+  };
 }
