@@ -12,7 +12,7 @@ import "./globals.css";
 import { SiteAnalytics } from "@/components/analytics/site-analytics";
 import { JsonLd } from "@/components/seo/json-ld";
 import { siteGraphSchema } from "@/lib/schema";
-import { WhatsAppFab } from "@/components/layout/whatsapp-fab";
+import { ZensiaWidget } from "@/components/ai/zensia-widget";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -101,7 +101,7 @@ export default function RootLayout({
         </SmoothScrollProvider>
         <CookieBanner />
         <SiteAnalytics />
-        <WhatsAppFab />
+        <ZensiaWidget />
       </body>
     </html>
   );
