@@ -2,15 +2,11 @@ import type { MetadataRoute } from "next";
 import { siteConfig } from "@/lib/seo";
 import { getPublishedJobs, getPublishedPosts } from "@/lib/content";
 
-// Cached and refreshed hourly (and immediately after admin blog/job edits).
+// Refresh the sitemap hourly. Admin content updates can also trigger revalidation.
 export const revalidate = 3600;
 
-/**
- * Real "last content change" dates. Google ignores <lastmod> when it is always
- * "now", so update a date here only when that page's content actually changes.
- */
-const staticRoutes: { path: string; lastModified: string }[] = [
-  { path: "", lastModified: "2026-11-25" },
+const staticRoutes: { path: string; lastModified?: string }[] = [
+  { path: "/", lastModified: "2026-11-25" },
   { path: "/about", lastModified: "2026-11-25" },
   { path: "/solutions", lastModified: "2026-11-25" },
   { path: "/solutions/security-access", lastModified: "2026-11-25" },
@@ -24,37 +20,62 @@ const staticRoutes: { path: string; lastModified: string }[] = [
   { path: "/contact", lastModified: "2026-11-05" },
   { path: "/careers", lastModified: "2026-11-05" },
   { path: "/blog", lastModified: "2026-11-25" },
-  { path: "/terms", lastModified: "2026-08-06" },
-  { path: "/privacy", lastModified: "2026-08-06" },
-  { path: "/cookies", lastModified: "2026-11-05" },
 ];
+
+function validDate(value?: string): Date | undefined {
+  if (!value) return undefined;
+
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? undefined : date;
+}
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = siteConfig.url.replace(/\/$/, "");
 
-  const entries: MetadataRoute.Sitemap = staticRoutes.map((r) => ({
-    url: `${base}${r.path || "/"}`,
-    lastModified: new Date(r.lastModified),
+  const entries: MetadataRoute.Sitemap = staticRoutes.map((route) => ({
+    url: `${base}${route.path}`,
+    ...(validDate(route.lastModified)
+      ? { lastModified: validDate(route.lastModified) }
+      : {}),
   }));
 
-  const [jobs, posts] = await Promise.all([getPublishedJobs(), getPublishedPosts()]);
+  const [jobs, posts] = await Promise.all([
+    getPublishedJobs(),
+    getPublishedPosts(),
+  ]);
 
-  for (const j of jobs) {
-    if (!j.slug) continue;
-    const lm = j.updatedAt || j.datePosted;
+  const addedUrls = new Set(entries.map((entry) => entry.url));
+
+  for (const job of jobs) {
+    if (!job.slug) continue;
+
+    const url = `${base}/careers/${job.slug}`;
+    if (addedUrls.has(url)) continue;
+
+    const lastModified = validDate(job.updatedAt || job.datePosted);
+
     entries.push({
-      url: `${base}/careers/${j.slug}`,
-      ...(lm ? { lastModified: new Date(lm) } : {}),
+      url,
+      ...(lastModified ? { lastModified } : {}),
     });
+
+    addedUrls.add(url);
   }
 
-  for (const p of posts) {
-    if (!p.slug) continue;
-    const lm = p.updatedAt || p.date;
+  for (const post of posts) {
+    if (!post.slug) continue;
+
+    const url = `${base}/blog/${post.slug}`;
+    if (addedUrls.has(url)) continue;
+
+    const lastModified = validDate(post.updatedAt || post.date);
+
     entries.push({
-      url: `${base}/blog/${p.slug}`,
-      ...(lm ? { lastModified: new Date(lm) } : {}),
+      url,
+      ...(lastModified ? { lastModified } : {}),
     });
+
+    addedUrls.add(url);
   }
 
   return entries;
